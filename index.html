@@ -404,6 +404,7 @@ function frame(now){const dt=Math.min(64,now-last);last=now;T+=dt/1000;
     g.fillStyle='#fff';g.beginPath();g.arc(ax,ay,3,0,TAU);g.fill();pill(l.t,lx,ly)});
   requestAnimationFrame(frame)}
 render();requestAnimationFrame(frame);
+if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)$('camBtn').click();
 })();
 </script>
 </body></html>
