@@ -131,3 +131,5 @@ button{font-family:inherit}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.6}}
 
 .credits{text-align:right;margin-top:8px}.credits summary{cursor:pointer;text-align:center}.credits ul{padding-inline-start:18px;line-height:1.8;margin:8px 0}
+
+.byline{font-family:var(--display);font-size:17px;font-weight:700;color:var(--accent);margin-bottom:10px}

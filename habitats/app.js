@@ -747,7 +747,7 @@ let mode = 'home';
 function showHome() {
   mode = 'home'; endQuest(); clearWorld(); cur = null; S.stopScape();
   $('home').hidden = false; $('hud').hidden = true; $('lostHud').hidden = true; $('game').hidden = true; $('homeBtn').hidden = true;
-  $('title').textContent = 'أماكن العيش'; $('subtitle').textContent = 'الفصل الرابع · العلوم · رابع ابتدائي';
+  $('title').textContent = 'أماكن العيش'; $('subtitle').textContent = 'د. أفنان الطلحي · العلوم · رابع ابتدائي';
   $('sky').style.background = 'linear-gradient(#0d3b2c,#071a14)'; history.replaceState(null, '', location.pathname);
 }
 $('homeBtn').onclick = () => { if (xrOn) renderer.xr.getSession()?.end(); showHome(); };
