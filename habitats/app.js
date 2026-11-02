@@ -85,7 +85,22 @@ async function enableOrientation() {
     addEventListener('deviceorientation', onOri);
   } catch (e) {}
 }
-function recenter() { if (ori) yaw0 = ori.alpha; anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); toast('تم توسيط الموطن أمامك'); }
+let needCenter = true;
+// شاشة الجوال الطولية أضيق، فنبعد الكاميرا حتى يظهر الموطن كاملًا
+const fitK = () => Math.max(1, 0.62 / Math.min(camera.aspect, 0.62));
+// يضع الموطن في منتصف ما تراه الكاميرا الآن (مهما كانت زاوية الجوال)
+function centerInView() {
+  camera.updateMatrixWorld(true);
+  const f = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  const dist = 2.6 * fitK() * anchor.scale.x;
+  anchor.position.copy(camera.position).addScaledVector(f, dist);
+  anchor.position.y -= 0.3 * anchor.scale.x;           // مركز المجسّم (لا قاعدته) في وسط الشاشة
+  anchor.rotation.set(0, Math.atan2(-f.x, -f.z), 0);    // واجهة الموطن مقابلة للمستخدمة
+}
+function recenter() {
+  if (sensor() && ori) centerInView(); else { anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); orbit.az = 0; }
+  toast('تم توسيط الموطن أمامك');
+}
 function applyOrientation() {
   const a = THREE.MathUtils.degToRad(ori.alpha - (yaw0 ?? 0)), b = THREE.MathUtils.degToRad(ori.beta), g = THREE.MathUtils.degToRad(ori.gamma);
   eul.set(b, a, -g, 'YXZ'); camera.quaternion.setFromEuler(eul); camera.quaternion.multiply(q1);
@@ -261,7 +276,8 @@ async function makeAnimal(id) {
   const mdl = new THREE.Group(); const yawG = new THREE.Group(); yawG.rotation.y = d.yaw || 0; yawG.add(obj); mdl.add(yawG);
   mdl.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(mdl, true), size = new THREE.Vector3(); box.getSize(size);
-  const s = d.len ? d.len / Math.max(size.x, size.z) : d.h / size.y;
+  const BIG = mode === 'lost' ? 1 : (d.beh === 'swim' ? (d.len > 0.4 ? 1.25 : 1.6) : d.beh === 'fly' ? 1.4 : 1.7);
+  const s = (d.len ? d.len / Math.max(size.x, size.z) : d.h / size.y) * BIG;
   mdl.scale.multiplyScalar(s);
   mdl.updateMatrixWorld(true);
   box.setFromObject(mdl, true); const c = new THREE.Vector3(); box.getCenter(c); box.getSize(size);
@@ -625,14 +641,15 @@ function showLabel(a, ms = 3500) {
 // ───────────────────────── اللمس والسحب ─────────────────────────
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
 const ptrs = new Map(); let gesture = null;
-canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() }); S.unlock(); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; gesture = { d: Math.hypot(a.x - b.x, a.y - b.y), s: anchor.scale.x, r: orbit.r }; } });
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); if (mode === 'lost' && !xrOn && ptrs.size === 0) { ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); if (tryGrab()) { grab.id = e.pointerId; return; } } ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() }); S.unlock(); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; gesture = { d: Math.hypot(a.x - b.x, a.y - b.y), s: anchor.scale.x, r: orbit.r }; } });
 canvas.addEventListener('pointermove', e => {
+  if (grab && grab.id === e.pointerId) { ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); dragTo(); return; }
   const p = ptrs.get(e.pointerId); if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
   if (ptrs.size === 2 && gesture) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); const k = d / gesture.d; if (sensor()) { const s = THREE.MathUtils.clamp(gesture.s * k, 0.3, 4); anchor.scale.setScalar(s); } else orbit.r = THREE.MathUtils.clamp(gesture.r / k, 0.6, 6); return; }
   if (ptrs.size === 1) { if (sensor() || xrOn) anchor.rotation.y += dx * 0.01; else { orbit.az -= dx * 0.008; orbit.pol = THREE.MathUtils.clamp(orbit.pol - dy * 0.006, 0.25, 1.45); } }
 });
-const end = e => { const p = ptrs.get(e.pointerId); ptrs.delete(e.pointerId); if (ptrs.size < 2) gesture = null; if (p && Math.hypot(p.x - p.x0, p.y - p.y0) < 10 && performance.now() - p.t < 400 && !xrOn) tap(e.clientX, e.clientY); };
-canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); gesture = null; });
+const end = e => { if (grab && grab.id === e.pointerId) { drop(); return; } const p = ptrs.get(e.pointerId); ptrs.delete(e.pointerId); if (ptrs.size < 2) gesture = null; if (p && Math.hypot(p.x - p.x0, p.y - p.y0) < 10 && performance.now() - p.t < 400 && !xrOn) tap(e.clientX, e.clientY); };
+canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', e => { if (grab && grab.id === e.pointerId) drop(); ptrs.delete(e.pointerId); gesture = null; });
 canvas.addEventListener('wheel', e => { e.preventDefault(); if (sensor()) anchor.scale.setScalar(THREE.MathUtils.clamp(anchor.scale.x * (e.deltaY > 0 ? 0.92 : 1.08), 0.3, 4)); else orbit.r = THREE.MathUtils.clamp(orbit.r * (e.deltaY > 0 ? 1.08 : 0.92), 0.6, 6); }, { passive: false });
 
 function tap(x, y) { ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); pickRay(); }
@@ -695,6 +712,7 @@ $('weatherBtn').onclick = () => {
 };
 
 // ───────────────────────── الواقع المعزز الحقيقي (WebXR) ─────────────────────────
+let xrCtrl = null, xrJustDropped = false;
 let xrOn = false, xrPlaced = false, hitSrc = null, reticle = null;
 async function checkXR() { try { return !!(navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')); } catch (e) { return false; } }
 $('xrBtn').onclick = startXR;
@@ -708,7 +726,12 @@ async function startXR() {
     const viewer = await session.requestReferenceSpace('viewer'); hitSrc = await session.requestHitTestSource({ space: viewer });
     if (!reticle) { reticle = new THREE.Mesh(new THREE.RingGeometry(0.12, 0.15, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xffd04a })); reticle.matrixAutoUpdate = false; scene.add(reticle); }
     const ctrl = renderer.xr.getController(0); scene.add(ctrl);
+    xrCtrl = ctrl;
+    const ctrlRay = () => { const m = new THREE.Matrix4().identity().extractRotation(ctrl.matrixWorld); ray.ray.origin.setFromMatrixPosition(ctrl.matrixWorld); ray.ray.direction.set(0, 0, -1).applyMatrix4(m); };
+    ctrl.addEventListener('selectstart', () => { if (xrPlaced && mode === 'lost') { ctrlRay(); if (tryGrab()) grab.xr = true; } });
+    ctrl.addEventListener('selectend', () => { if (grab?.xr) { drop(); xrJustDropped = true; } });
     ctrl.addEventListener('select', () => {
+      if (xrJustDropped) { xrJustDropped = false; return; }
       if (!xrPlaced && reticle.visible) { anchor.position.setFromMatrixPosition(reticle.matrix); anchor.visible = true; xrPlaced = true; reticle.visible = false; toast('هذا الموطن على أرض فصلك! تجوّلي حوله 👣', 2400); return; }
       const m = new THREE.Matrix4().identity().extractRotation(ctrl.matrixWorld); ray.ray.origin.setFromMatrixPosition(ctrl.matrixWorld); ray.ray.direction.set(0, 0, -1).applyMatrix4(m); pickRay();
     });
@@ -736,8 +759,8 @@ async function openHabitat(h) {
   $('sky').style.background = H.sky; $('title').textContent = H.name; $('subtitle').textContent = (H.lesson === 1 ? 'الدرس الأول · مواطن على اليابسة' : 'الدرس الثاني · مواطن في الماء');
   try { root = await buildHabitat(h); } catch (e) { console.error(e); toast('تعذّر تحميل الموطن، أعيدي المحاولة'); $('loader').hidden = true; return; }
   if (cur !== h) return;
-  anchor.add(root); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1);
-  orbit.az = 0; orbit.pol = h === 'ocean' ? 0.95 : 1.0; orbit.r = h === 'forest' ? 3.3 : 3.0;
+  anchor.add(root); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); needCenter = true;
+  orbit.az = 0; orbit.pol = h === 'ocean' ? 0.95 : 1.0; orbit.r = (h === 'forest' ? 3.3 : 3.0) * fitK();
   $('loader').hidden = true; $('hud').hidden = false; $('homeBtn').hidden = false; $('sheet').hidden = true;
   $('chips').innerHTML = H.chips.map(c => `<span class="chip">${c}</span>`).join('');
   $('weatherBtn').classList.remove('on'); $('hint').style.opacity = 1;
@@ -773,7 +796,7 @@ async function openLost() {
   });
   const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.06, 32), std(0xffffff, 0.5)); ped.position.y = 0.03; g.add(ped);
   await Promise.all(jobs);
-  root = g; anchor.add(g); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); orbit.az = 0; orbit.pol = 0.85; orbit.r = 3.4;
+  root = g; anchor.add(g); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); needCenter = true; orbit.az = 0; orbit.pol = 0.85; orbit.r = 2.8 * fitK();
   const pool = shuffle(Object.keys(ANIMALS).filter(k => !['stork', 'tang', 'stag'].includes(k))).slice(0, 10);
   lost = { spots, pool, i: 0, score: 0, a: null, busy: false };
   $('loader').hidden = true; $('lostHud').hidden = false; $('homeBtn').hidden = false;
@@ -785,15 +808,43 @@ async function nextLost() {
   if (lost.i >= lost.pool.length) { $('lostQ').textContent = `انتهت اللعبة! أعدتِ ${lost.score} من ${lost.pool.length} حيوانات إلى مواطنها 🎉`; $('lostScore').textContent = '⭐'.repeat(Math.round(lost.score / 2)); confetti(); S.play('win'); $('lostHint').textContent = 'اضغطي ➜ للعودة للقائمة'; lost.done = true; return; }
   const id = lost.pool[lost.i];
   const a = await makeAnimal(id); const d = a.d;
-  a.wrap.position.set(0, d.len ? 0.18 : 0.06, 0); a.held = true; if (d.len) a.wrap.scale.setScalar(0.18 / d.len * (d.len > 0.3 ? 1.3 : 1)); if (d.h && d.h > 0.4) a.wrap.scale.setScalar(0.4 / d.h);
+  a.held = true; a.wrap.scale.setScalar(d.len && !d.ground ? 0.34 / d.len : 0.26 / (d.h || d.len * 0.5)); a.home0 = new THREE.Vector3(0, (d.len && !d.ground) ? 0.2 : 0.06, 0); a.wrap.position.copy(a.home0);
   root.add(a.wrap); animals.push(a); lost.a = a; a.tries = 0;
   play(a, 'idle'); showLabel(a, 0); S.play(d.sound);
-  $('lostQ').textContent = `${d.emo} ${d.name} تائه! المسي موطنه الصحيح`; $('lostScore').textContent = `${lost.i + 1} / ${lost.pool.length} · ⭐ ${lost.score}`;
-  $('lostHint').textContent = sensor() ? 'حرّكي الجوال لتري المواطن الخمسة حولك' : 'اسحبي لتدوير المشهد';
+  $('lostQ').textContent = `${d.emo} ${d.name} تائه! امسكيه بإصبعك وانقليه إلى موطنه`; $('lostScore').textContent = `${lost.i + 1} / ${lost.pool.length} · ⭐ ${lost.score}`;
+  $('lostHint').textContent = xrOn ? 'المسي الحيوان مطوّلًا وحرّكي الجوال نحو موطنه ثم ارفعي إصبعك' : 'اسحبي الحيوان بإصبعك وأفلتيه فوق موطنه';
+}
+// ——— الإمساك بالحيوان وسحبه ———
+let grab = null; const dragPlane = new THREE.Plane(), hitPt = new THREE.Vector3();
+function tryGrab() {
+  if (mode !== 'lost' || !lost || lost.busy || lost.done || !lost.a) return false;
+  const h = ray.intersectObject(lost.a.wrap, true)[0]; if (!h) return false;
+  grab = { a: lost.a }; S.play('pop'); play(lost.a, lost.a.act.run ? 'run' : 'walk'); return true;
+}
+function dragTo() {
+  if (!grab) return; root.updateMatrixWorld(true);
+  const p = new THREE.Vector3(0, 0.1, 0); root.localToWorld(p);
+  dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 1, 0), p);
+  if (!ray.ray.intersectPlane(dragPlane, hitPt)) return;
+  const l = root.worldToLocal(hitPt.clone()); const r = Math.hypot(l.x, l.z); if (r > 0.95) l.multiplyScalar(0.95 / r);
+  const w = grab.a.wrap; const prev = w.position.clone(); w.position.set(l.x, 0.18 + Math.sin(performance.now() / 120) * 0.01, l.z);
+  const dx = w.position.x - prev.x, dz = w.position.z - prev.z; if (Math.hypot(dx, dz) > 0.002) w.rotation.y = Math.atan2(dx, dz);
+  const near = nearSpot(l); for (const [k, sp] of Object.entries(lost.spots)) sp.scale.setScalar(k === near ? 1.12 : 1);
+}
+function nearSpot(l) { let best = null, bd = 0.3; for (const [k, sp] of Object.entries(lost.spots)) { const d = Math.hypot(sp.position.x - l.x, sp.position.z - l.z); if (d < bd) { bd = d; best = k; } } return best; }
+function drop() {
+  if (!grab) return; const a = grab.a; grab = null; Object.values(lost.spots).forEach(sp => sp.scale.setScalar(1));
+  const h = nearSpot(a.wrap.position);
+  if (h) lostChoose(h); else flyBack(a);
+}
+function flyBack(a) {
+  const from = a.wrap.position.clone(); let k = 0; play(a, 'idle');
+  const step = () => { k += 0.05; const e = Math.min(1, k); a.wrap.position.lerpVectors(from, a.home0, e); a.wrap.position.y += Math.sin(e * Math.PI) * 0.08; if (e < 1) requestAnimationFrame(step); };
+  step();
 }
 function lostChoose(h) {
   if (!lost || lost.busy || lost.done) return; const a = lost.a; if (!a) return;
-  if (a.d.home !== h) { a.tries++; S.play('bad'); toast(`${a.d.name} لا يعيش في ${HABITATS[h].name}، حاولي مرة أخرى`, 2000); return; }
+  if (a.d.home !== h) { a.tries++; S.play('bad'); toast(`${a.d.name} لا يعيش في ${HABITATS[h].name}، حاولي مرة أخرى`, 2000); flyBack(a); return; }
   lost.busy = true; if (a.tries === 0) lost.score++; S.play('good'); toast('أحسنتِ! ' + a.d.name + ' يعيش في ' + HABITATS[h].name, 2000);
   const s = lost.spots[h]; const n = s.userData.n = (s.userData.n || 0) + 1;
   const goal = s.position.clone().add(new THREE.Vector3(Math.cos(n * 2.2) * 0.1, a.d.len ? 0.12 : 0.05, Math.sin(n * 2.2) * 0.1));
@@ -823,7 +874,8 @@ renderer.setAnimationLoop((time, frame) => {
     const hits = frame.getHitTestResults(hitSrc);
     if (hits.length) { const pose = hits[0].getPose(renderer.xr.getReferenceSpace()); reticle.visible = true; reticle.matrix.fromArray(pose.transform.matrix); } else reticle.visible = false;
   }
-  if (!xrOn) { if (sensor() && ori) { camera.position.set(0, 0, 0); applyOrientation(); } else applyOrbit(); }
+  if (!xrOn) { if (sensor() && ori) { camera.position.set(0, 0, 0); applyOrientation(); if (needCenter && root) { centerInView(); needCenter = false; } } else applyOrbit(); }
+  if (grab?.xr && xrCtrl) { const m = new THREE.Matrix4().identity().extractRotation(xrCtrl.matrixWorld); ray.ray.origin.setFromMatrixPosition(xrCtrl.matrixWorld); ray.ray.direction.set(0, 0, -1).applyMatrix4(m); dragTo(); }
   if (root) { animals.forEach(a => stepAnimal(a, dt, t)); stepFx(dt, t); }
   updateSun();
   renderer.render(scene, camera);
@@ -834,4 +886,4 @@ startCamera();                       // تفتح الكاميرا مباشرة �
 await document.fonts?.ready;
 if (Q.get('h') && HABITATS[Q.get('h')]) openHabitat(Q.get('h'));
 else if (Q.get('g') === 'lost') openLost();
-window.__hab = { animals: () => animals, orbit, anchor, openHabitat, openLost, stepFx, setStorm: v => { storm = v; if (fx.rain && cur === 'forest') fx.rain.visible = v; } };
+window.__hab = { lost: () => lost, camera, root: () => root, animals: () => animals, orbit, anchor, openHabitat, openLost, stepFx, setStorm: v => { storm = v; if (fx.rain && cur === 'forest') fx.rain.visible = v; } };
