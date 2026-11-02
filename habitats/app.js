@@ -75,7 +75,8 @@ let ori = null, oriOK = false, yaw0 = null, screenOri = 0;
 const zee = new THREE.Vector3(0, 0, 1), q1 = new THREE.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
 const eul = new THREE.Euler(), q0 = new THREE.Quaternion();
 addEventListener('orientationchange', () => { screenOri = (screen.orientation?.angle ?? window.orientation ?? 0); });
-const sensor = () => oriOK && camOn && !xrOn;
+let useGyro = false;   // تتبّع حركة الجوال اختياري؛ الافتراضي: المشهد ثابت في منتصف الشاشة
+const sensor = () => useGyro && oriOK && camOn && !xrOn;
 function onOri(e) { if (e.alpha == null) return; ori = e; if (!oriOK) { oriOK = true; yaw0 = e.alpha; } }
 async function enableOrientation() {
   try {
@@ -98,7 +99,7 @@ function centerInView() {
   anchor.rotation.set(0, Math.atan2(-f.x, -f.z), 0);    // واجهة الموطن مقابلة للمستخدمة
 }
 function recenter() {
-  if (sensor() && ori) centerInView(); else { anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); orbit.az = 0; }
+  if (sensor() && ori) centerInView(); else { anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); Object.assign(orbit, orbit0); }
   toast('تم توسيط الموطن أمامك');
 }
 function applyOrientation() {
@@ -108,7 +109,7 @@ function applyOrientation() {
 }
 
 // وضع المدار عند غياب المستشعر (حاسوب أو جهاز بلا مستشعر)
-const orbit = { az: 0, pol: 1.0, r: 3.0 };
+const orbit = { az: 0, pol: 1.0, r: 3.0 }; const orbit0 = { ...orbit };
 function applyOrbit() {
   const c = anchor.position.clone().add(new THREE.Vector3(0, 0.25 * anchor.scale.x, 0));
   camera.position.set(c.x + orbit.r * Math.sin(orbit.pol) * Math.sin(orbit.az), c.y + orbit.r * Math.cos(orbit.pol), c.z + orbit.r * Math.sin(orbit.pol) * Math.cos(orbit.az));
@@ -752,7 +753,7 @@ function showHome() {
 $('homeBtn').onclick = () => { if (xrOn) renderer.xr.getSession()?.end(); showHome(); };
 
 async function openHabitat(h) {
-  S.unlock(); enableOrientation();
+  S.unlock();
   mode = 'habitat'; $('home').hidden = true; $('game').hidden = true; $('lostHud').hidden = true; $('loader').hidden = false; $('loaderTxt').textContent = 'يجهّز ' + HABITATS[h].name + '…';
   clearWorld(); cur = h; setLight(h);
   const H = HABITATS[h];
@@ -760,7 +761,7 @@ async function openHabitat(h) {
   try { root = await buildHabitat(h); } catch (e) { console.error(e); toast('تعذّر تحميل الموطن، أعيدي المحاولة'); $('loader').hidden = true; return; }
   if (cur !== h) return;
   anchor.add(root); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); needCenter = true;
-  orbit.az = 0; orbit.pol = h === 'ocean' ? 0.95 : 1.0; orbit.r = (h === 'forest' ? 3.3 : 3.0) * fitK();
+  orbit.az = 0; orbit.pol = h === 'ocean' ? 0.95 : 1.0; orbit.r = (h === 'forest' ? 3.3 : 3.0) * fitK(); Object.assign(orbit0, orbit);
   $('loader').hidden = true; $('hud').hidden = false; $('homeBtn').hidden = false; $('sheet').hidden = true;
   $('chips').innerHTML = H.chips.map(c => `<span class="chip">${c}</span>`).join('');
   $('weatherBtn').classList.remove('on'); $('hint').style.opacity = 1;
@@ -776,7 +777,7 @@ let lost = null;
 const SPOT_ORDER = ['desert', 'grass', 'forest', 'lake', 'ocean'];
 const SPOT_COL = { desert: 0xe3b574, grass: 0x8cc04a, forest: 0x3f6a2a, lake: 0x4aa3c4, ocean: 0x2a7fd0 };
 async function openLost() {
-  S.unlock(); enableOrientation();
+  S.unlock();
   mode = 'lost'; $('home').hidden = true; $('game').hidden = true; $('hud').hidden = true; $('loader').hidden = false; $('loaderTxt').textContent = 'يجهّز اللعبة…';
   clearWorld(); cur = null; setLight('lost'); $('sky').style.background = 'linear-gradient(#cfeaff,#9fd0a0)';
   $('title').textContent = 'أعيدي الحيوان إلى موطنه'; $('subtitle').textContent = 'لعبة الواقع المعزز';
@@ -796,7 +797,7 @@ async function openLost() {
   });
   const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.06, 32), std(0xffffff, 0.5)); ped.position.y = 0.03; g.add(ped);
   await Promise.all(jobs);
-  root = g; anchor.add(g); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); needCenter = true; orbit.az = 0; orbit.pol = 0.85; orbit.r = 2.8 * fitK();
+  root = g; anchor.add(g); anchor.position.copy(PLACE); anchor.rotation.set(0, 0, 0); anchor.scale.setScalar(1); needCenter = true; orbit.az = 0; orbit.pol = 0.85; orbit.r = 2.8 * fitK(); Object.assign(orbit0, orbit);
   const pool = shuffle(Object.keys(ANIMALS).filter(k => !['stork', 'tang', 'stag'].includes(k))).slice(0, 10);
   lost = { spots, pool, i: 0, score: 0, a: null, busy: false };
   $('loader').hidden = true; $('lostHud').hidden = false; $('homeBtn').hidden = false;
@@ -865,6 +866,11 @@ document.addEventListener('pointerdown', () => S.unlock(), { once: true });
 // أزرار إضافية في شريط الموطن
 const recBtn = document.createElement('button'); recBtn.className = 'btn'; recBtn.textContent = '🎯 توسيط'; recBtn.onclick = recenter; $('hud').querySelector('.dock').prepend(recBtn);
 const lblBtn = document.createElement('button'); lblBtn.className = 'btn'; lblBtn.textContent = '🏷️ الأسماء'; lblBtn.onclick = () => { labelsOn = !labelsOn; lblBtn.classList.toggle('on', labelsOn); animals.forEach(a => labelsOn ? showLabel(a, 0) : (a.lbl && (a.lbl.visible = false))); }; $('hud').querySelector('.dock').prepend(lblBtn);
+const gyBtn = document.createElement('button'); gyBtn.className = 'btn'; gyBtn.textContent = '🧭 تتبّع الحركة';
+gyBtn.onclick = async () => { useGyro = !useGyro; gyBtn.classList.toggle('on', useGyro);
+  if (useGyro) { await enableOrientation(); needCenter = true; toast('حرّكي الجوال حولك، والموطن ثابت في مكانه'); }
+  else { recenter(); } };
+$('hud').querySelector('.dock').prepend(gyBtn);
 checkXR().then(ok => { $('xrBtn').hidden = !ok; });
 
 // ───────────────────────── حلقة العرض ─────────────────────────
