@@ -111,6 +111,11 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
 #env .prop.hole{width:9vmin;bottom:9%;inset-inline-end:30%;filter:none;opacity:.85}
 #env .prop.dunes{width:30vmin;bottom:40%;inset-inline-start:52%;opacity:.8;filter:none}
 #dust{position:absolute;inset:0;width:100%;height:100%}
+#tags3d{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.tag3d{position:absolute;left:0;top:0;white-space:nowrap;font-weight:800;font-size:clamp(15px,4vmin,24px);background:var(--white);color:var(--ink);padding:3px 14px;border-radius:999px;box-shadow:0 3px 0 rgba(0,0,0,.2);opacity:0;transition:opacity .3s}
+.tag3d.on{opacity:1}
+.halo .h3d{width:100%;height:100%;display:grid;place-items:center}
+.halo .h3d canvas{width:100%!important;height:100%!important}
 #envBtn.off{opacity:.5}
 @media (max-width:560px){.arbar.top h2{display:none}.arbar.top{justify-content:space-between}.arbar .iconbtn{width:42px;height:42px;font-size:19px}.arbar .logo{height:40px}}
 #ar:not(.live) #env .sunwrap,#ar:not(.live) #env .tint{display:none}
@@ -231,24 +236,11 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
   <div id="env" aria-hidden="true">
     <div class="tint"></div>
     <div class="sunwrap"><div class="bigsun"></div></div>
-    <div class="ground">
-      <svg viewBox="0 0 400 200" preserveAspectRatio="none">
-        <path d="M0 40 Q70 0 150 30 T300 25 T400 35 V200 H0Z" fill="#EBB86C"/>
-        <path d="M0 80 Q110 40 220 75 T400 70 V200 H0Z" fill="#E2A553"/>
-        <path d="M0 125 Q140 95 260 120 T400 118 V200 H0Z" fill="#D6913E"/>
-        <g stroke="#C47F30" stroke-width="1.4" fill="none" opacity=".55"><path d="M30 150 q20 -6 40 0 t40 0"/><path d="M200 165 q20 -6 40 0 t40 0"/><path d="M300 140 q15 -5 30 0 t30 0"/><path d="M90 185 q20 -6 40 0 t40 0"/><path d="M120 100 q15 -5 30 0 t30 0"/></g>
-      </svg>
-    </div>
-    <img class="prop palm2" src="assets/img/palm.svg" alt="">
-    <img class="prop palm" src="assets/img/palm.svg" alt="">
-    <img class="prop cac" src="assets/img/cactus.svg" alt="">
-    <img class="prop rock2" src="assets/img/rock.svg" alt="">
-    <img class="prop rock1" src="assets/img/rock.svg" alt="">
-    <img class="prop hole" src="assets/img/hole.svg" alt="">
     <canvas id="dust"></canvas>
   </div>
   <div class="glare"></div>
   <div id="stage"></div>
+  <div id="tags3d"></div>
   <div class="arbar top">
     <button class="iconbtn" id="arBack" aria-label="رجوع">→</button>
     <img class="logo" src="assets/moe-logo.png" alt="وزارة التعليم">
@@ -290,6 +282,8 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
 <div class="toast" id="toast"></div>
 <canvas id="confetti"></canvas>
 
+<script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/"}}</script>
+<script type="module" src="world3d.js"></script>
 <script>
 const MODE=/*MODE*/'lesson'; /* 'lesson' = الدرس كاملًا، 'ar' = الواقع المعزز وحده */
 const IMG=k=>`assets/img/${k}.svg`, I=(k,c='')=>`<img src="${IMG(k)}" alt="" class="${c}" draggable="false">`;
@@ -390,8 +384,9 @@ function renderCard(){
     $('#hear').onclick=()=>say(txt);$('.halo').onclick=()=>say(txt);
   }else if(c.a){
     const a=c.a;
-    card.innerHTML=`<div class="halo">${I(a.id)}</div><div class="ctext"><h3>${a.n}</h3><p>${a.t}</p><div class="row"><button class="btn sun" id="hear">استمع 🔊</button><button class="btn alt" id="snd">صوته ♪</button></div></div>`;
+    card.innerHTML=`<div class="halo"><div class="h3d">${I(a.id)}</div></div><div class="ctext"><h3>${a.n}</h3><p>${a.t}</p><div class="row"><button class="btn sun" id="hear">استمع 🔊</button><button class="btn alt" id="snd">صوته ♪</button></div></div>`;
     $('#hear').onclick=()=>animalVoice(a);$('#snd').onclick=()=>play(a.id);$('.halo').onclick=()=>animalVoice(a);
+    if(W3())requestAnimationFrame(()=>W3().card($('.h3d'),a.id));
   }else{
     const txt='تعلّمنا اليوم أن أصدقاء الشمس يتكيّفون مع الحر: بعضها يخزّن الماء، وبعضها يختبئ في الظل، وبعضها يخرج في الليل حين يبرد الجو.';
     card.innerHTML=`<div class="ctext" style="align-items:center;text-align:center;grid-column:1/-1;justify-self:center"><h3>تعلّمنا اليوم</h3><p>أصدقاء الشمس يتكيّفون مع الحر:</p>
@@ -410,10 +405,10 @@ $('#tray').innerHTML=ANIMALS.map(a=>`<button data-add="${a.id}" aria-label="${a.
   `<button class="wide" id="allBtn">الكل ✨</button><button class="wide gray" id="clearBtn">مسح</button>`+(MODE==='lesson'?`<button class="wide games" id="toGames">الألعاب</button>`:'');
 $('#tray').addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(b)spawn(byId[b.dataset.add])});
 $('#allBtn').onclick=()=>ANIMALS.forEach((a,i)=>setTimeout(()=>spawn(a,i>0),i*450));
-$('#clearBtn').onclick=()=>{sprites.forEach(s=>s.el.remove());sprites=[];$('#arHint').hidden=false};
+$('#clearBtn').onclick=()=>{sprites.forEach(s=>s.el.remove());sprites=[];W3()&&W3().clear();$('#arHint').hidden=false};
 if($('#toGames'))$('#toGames').onclick=()=>show('games');
 $('#ambBtn').onclick=()=>ambient(!ambOn);
-$('#envBtn').onclick=()=>{const off=arSec.classList.toggle('noenv');$('#envBtn').classList.toggle('off',off);
+$('#envBtn').onclick=()=>{const off=arSec.classList.toggle('noenv');W3()&&W3().setEnv(!off);$('#envBtn').classList.toggle('off',off);
   say(off?'أخفينا الصحراء':'جاءت الصحراء إلى فصلنا! رمال وشمس حارّة ونخيل.')};
 /* blowing sand */
 const dustCv=$('#dust'),dc=dustCv.getContext('2d');let grains=[];
@@ -456,12 +451,24 @@ async function startCam(){
     else camError('تعذّر فتح الكاميرا. جرّبي مرة أخرى، أو العبي بدون كاميرا.');
   }
 }
-function stopAR(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}arSec.classList.remove('live');cancelAnimationFrame(raf);raf=0;if(ambOn)ambient(false)}
-function startAR(){ac();startCam();say('جاءت الصحراء المشمسة إلى فصلنا! اضغط على صديق من الأسفل ليظهر.',900);if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}ambient(true)}
+function stopAR(){W3()&&W3().stop();if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}arSec.classList.remove('live');cancelAnimationFrame(raf);raf=0;if(ambOn)ambient(false)}
+function startAR(){ac();startCam();W3()&&W3().start();say('جاءت الصحراء المشمسة إلى فصلنا! اضغط على صديق من الأسفل ليظهر.',900);if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}ambient(true)}
 
 const rnd=(a,b)=>a+Math.random()*(b-a);
+const W3=()=>window.World&&window.World.ok?window.World:null;
+function initWorld(){
+  if(!window.World||window.World.ok)return;
+  if(window.World.init($('#stage'),$('#tags3d'))){
+    window.World.onTap=(id,a)=>{window.World.talk(a);animalVoice(byId[id])};
+    if(!$('#ar').hidden)window.World.start();
+    if(!$('#concept').hidden)renderCard();
+  }
+}
+addEventListener('world-ready',initWorld);if(window.World)initWorld();
 function spawn(a,quiet=false){
   $('#arHint').hidden=true;
+  const w=W3();
+  if(w){const o=w.spawn(a.id,a.n);if(!quiet)setTimeout(()=>{w.talk(o);animalVoice(a)},700);else setTimeout(()=>play(a.id),500);return}
   const W=stage.clientWidth,H=stage.clientHeight;
   const el=document.createElement('div');el.className='sprite pop'+(a.fly?' fly':'')+(a.still?' still':'');
   el.innerHTML=`<span class="shadow"></span><span class="jump"><span class="bod"><span class="inner">${I(a.id)}</span></span></span><span class="tag">${a.n}</span>`;
