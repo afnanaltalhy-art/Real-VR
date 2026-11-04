@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>أصدقاء الشمس</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Tajawal:wght@500;700&display=swap">
+<style>
+body{margin:0}
+
+/* Layout: one full-screen "app" at a time — start → concept cards → camera AR → games. Single bright sunny look for kindergarten. */
+:root{
+  --sky:#3EC1E6; --sky2:#9BE3F5; --sun:#FFB703; --flame:#F2662B;
+  --sand:#F4C77B; --dune:#DE9B45; --ink:#3B1E5C; --leaf:#239B5A;
+  --paper:#FFF9EE; --white:#FFFFFF; --bad:#E2394B;
+  --display:"Baloo Bhaijaan 2","Tajawal",system-ui,sans-serif;
+  --body:"Tajawal","Baloo Bhaijaan 2",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--sky);color:var(--ink);font-family:var(--body);overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+button{font-family:var(--display);cursor:pointer;border:0;color:inherit}
+button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ---------- shared sky / dunes ---------- */
+.desert{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 55%,var(--sand) 55%);overflow:hidden;z-index:0}
+.desert svg{position:absolute;bottom:0;left:0;width:100%;height:55%}
+.bigsun{position:absolute;top:6%;inset-inline-end:8%;width:26vmin;height:26vmin;border-radius:50%;
+  background:radial-gradient(circle,#FFE38A 0 40%,var(--sun) 41% 62%,transparent 63%);}
+.bigsun::before{content:"";position:absolute;inset:-30%;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(255,200,40,.55) 0 7deg,transparent 7deg 22deg);
+  -webkit-mask:radial-gradient(circle,transparent 42%,#000 43% 70%,transparent 71%);mask:radial-gradient(circle,transparent 42%,#000 43% 70%,transparent 71%);
+  animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.brand{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-block:10px;font-family:var(--display);font-weight:700;font-size:clamp(13px,3.4vmin,18px)}
+.pill{background:rgba(255,255,255,.85);padding:4px 14px;border-radius:999px}
+
+/* ---------- start ---------- */
+#start .center{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2vmin}
+#start h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(46px,13vmin,110px);line-height:1;color:var(--white);
+  text-shadow:0 4px 0 var(--flame),0 9px 0 rgba(59,30,92,.25);text-wrap:balance}
+#start p{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(18px,4.6vmin,30px);background:var(--paper);padding:6px 20px;border-radius:16px}
+.parade{font-size:clamp(34px,9vmin,70px);display:flex;gap:2vmin}
+.parade span{display:inline-block;animation:bob 1.4s ease-in-out infinite}
+.parade span:nth-child(2n){animation-delay:.3s}.parade span:nth-child(3n){animation-delay:.6s}
+@keyframes bob{50%{transform:translateY(-14%)}}
+.go{background:var(--flame);color:var(--white);font-weight:800;font-size:clamp(24px,6.5vmin,44px);padding:.25em 1.4em;border-radius:999px;box-shadow:0 7px 0 #A9401A;transition:transform .1s}
+.go:active{transform:translateY(5px);box-shadow:0 2px 0 #A9401A}
+.credit{position:relative;z-index:2;text-align:center;font-size:13px;padding-block:6px;color:var(--ink);font-weight:700}
+
+/* ---------- concept ---------- */
+#concept{background:var(--paper)}
+.topbar{display:flex;align-items:center;gap:10px;padding-block:10px;position:relative;z-index:3}
+.topbar h2{flex:1;margin:0;font-family:var(--display);font-size:clamp(18px,4.6vmin,28px);font-weight:800;text-align:center}
+.iconbtn{width:48px;height:48px;border-radius:50%;background:var(--white);font-size:24px;display:grid;place-items:center;box-shadow:0 3px 0 rgba(59,30,92,.2);flex:none}
+.stars{font-family:var(--display);font-weight:800;font-size:20px;background:var(--sun);padding:4px 14px;border-radius:999px;flex:none}
+.card{flex:1;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto 1fr;justify-items:center;align-content:center;gap:2vmin;text-align:center}
+@media (orientation:landscape){.card{grid-template-columns:auto 1fr;grid-template-rows:auto;text-align:start;justify-items:start;column-gap:5vw}}
+.halo{width:min(46vmin,300px);aspect-ratio:1;max-width:100%;border-radius:50%;display:grid;place-items:center;font-size:min(28vmin,180px);
+  background:radial-gradient(circle,#FFE9A8 0 55%,var(--sun) 56% 60%,transparent 61%);position:relative}
+.halo::before{content:"";position:absolute;inset:-4%;border-radius:50%;background:repeating-conic-gradient(rgba(255,183,3,.45) 0 6deg,transparent 6deg 18deg);z-index:-1;animation:spin 20s linear infinite}
+.halo span{animation:bob 1.6s ease-in-out infinite}
+.ctext{display:flex;flex-direction:column;gap:2vmin;max-width:34em;align-items:inherit}
+.ctext h3{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(34px,9vmin,64px);color:var(--flame);line-height:1}
+.ctext p{margin:0;font-size:clamp(18px,4.4vmin,28px);line-height:1.6;font-weight:700}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{font-weight:800;font-size:clamp(18px,4.4vmin,24px);padding:.35em 1.1em;border-radius:999px;background:var(--sky);color:var(--white);box-shadow:0 5px 0 #1C86A5}
+.btn.alt{background:var(--leaf);box-shadow:0 5px 0 #146B3B}
+.btn.sun{background:var(--flame);box-shadow:0 5px 0 #A9401A}
+.btn:active{transform:translateY(4px);box-shadow:none}
+.cnav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:12px}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.dots i{width:12px;height:12px;border-radius:50%;background:#E8D9BE}.dots i.on{background:var(--flame)}
+.adapt{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:640px}
+.adapt div{background:var(--white);border-radius:18px;padding:10px 6px;text-align:center;font-family:var(--display);font-weight:700;font-size:clamp(14px,3.6vmin,20px)}
+.adapt b{display:block;font-size:clamp(32px,8vmin,54px)}
+
+/* ---------- AR ---------- */
+#ar{padding:0;background:#000}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none}
+#ar.live #cam{display:block}
+#ar.live .desert{display:none}
+#ar.mirror #cam{transform:scaleX(-1)}
+.glare{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(circle at 88% 6%,rgba(255,236,150,.85) 0,rgba(255,200,60,.35) 14%,transparent 42%);mix-blend-mode:screen;animation:glow 4s ease-in-out infinite}
+@keyframes glow{50%{opacity:.7}}
+#stage{position:absolute;inset:0;z-index:2;touch-action:none;overflow:hidden}
+.sprite{position:absolute;left:0;top:0;will-change:transform;touch-action:none;cursor:grab}
+.sprite .shadow{position:absolute;left:50%;bottom:-2%;width:70%;height:12%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(0,0,0,.45),transparent 70%)}
+.sprite.fly .shadow{opacity:0}
+.sprite .jump{display:block}
+.sprite .bod{display:block;transition:transform .25s}
+.sprite .inner{display:block;font-size:20vmin;line-height:1;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35));animation:walk .5s ease-in-out infinite}
+.sprite.still .inner{animation:sway 3s ease-in-out infinite;transform-origin:50% 100%}
+.sprite.fly .inner{animation:flap 1.2s ease-in-out infinite}
+@keyframes walk{50%{transform:translateY(-6%) rotate(-3deg)}}
+@keyframes sway{50%{transform:rotate(4deg)}}
+@keyframes flap{50%{transform:translateY(-12%) rotate(4deg)}}
+.sprite.pop .jump{animation:pop .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:translateY(-60vh) scale(.3);opacity:0}60%{opacity:1}100%{transform:none}}
+.sprite.hop .jump{animation:hop .6s ease}
+@keyframes hop{30%{transform:translateY(-30%) scale(1.15)}60%{transform:translateY(0) scale(.95,1.05)}}
+.sprite .tag{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;font-family:var(--display);font-weight:800;font-size:4.2vmin;background:var(--white);color:var(--ink);padding:2px 12px;border-radius:999px;box-shadow:0 3px 0 rgba(0,0,0,.2);opacity:0;transition:opacity .3s}
+.sprite.talk .tag{opacity:1}
+.arbar{position:absolute;z-index:5;left:0;right:0;display:flex;align-items:center;gap:8px}
+.arbar.top{top:0;padding:calc(env(safe-area-inset-top,0px) + 10px) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+.arbar.top h2{flex:1;margin:0;text-align:center;color:var(--white);font-family:var(--display);font-weight:800;font-size:clamp(17px,4.4vmin,26px);text-shadow:0 2px 4px rgba(0,0,0,.6)}
+.tray{position:absolute;z-index:5;left:0;right:0;bottom:0;display:flex;gap:8px;overflow-x:auto;justify-content:safe center;
+  padding:10px max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(12px,env(safe-area-inset-left,0px));
+  background:linear-gradient(transparent,rgba(59,30,92,.55))}
+.tray button{flex:none;width:clamp(62px,15vmin,90px);aspect-ratio:1;border-radius:22px;background:rgba(255,255,255,.92);font-size:clamp(34px,8.5vmin,52px);display:grid;place-items:center;box-shadow:0 4px 0 rgba(0,0,0,.25);position:relative}
+.tray button small{position:absolute;bottom:-2px;left:0;right:0;font-size:11px;font-weight:800}
+.tray button.wide{width:auto;aspect-ratio:auto;padding:0 16px;font-size:clamp(15px,3.8vmin,20px);font-weight:800;background:var(--flame);color:var(--white)}
+.tray button.wide.games{background:var(--leaf)}
+#arHint{position:absolute;z-index:4;left:50%;top:22%;transform:translateX(-50%);background:rgba(255,255,255,.92);font-family:var(--display);font-weight:800;font-size:clamp(17px,4.6vmin,26px);padding:8px 20px;border-radius:20px;text-align:center;max-width:90%}
+#arNote{position:absolute;z-index:4;left:50%;top:calc(env(safe-area-inset-top,0px) + 66px);transform:translateX(-50%);background:var(--ink);color:var(--white);font-size:14px;font-weight:700;padding:6px 14px;border-radius:12px;max-width:92%;text-align:center}
+
+/* ---------- games ---------- */
+#games{background:linear-gradient(180deg,var(--sky2),var(--paper) 40%)}
+.gmenu{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px;align-content:center;max-width:900px;margin:0 auto;width:100%}
+.gcard{background:var(--white);border-radius:26px;padding:18px;text-align:center;box-shadow:0 7px 0 rgba(59,30,92,.15);display:flex;flex-direction:column;align-items:center;gap:6px}
+.gcard b{font-size:clamp(48px,12vmin,76px);line-height:1.1}
+.gcard span{font-family:var(--display);font-weight:800;font-size:clamp(20px,5vmin,28px)}
+.gcard em{font-style:normal;font-size:15px;font-weight:700;color:#6B5A80}
+.garea{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vmin;text-align:center}
+.q{font-family:var(--display);font-weight:800;font-size:clamp(22px,5.6vmin,34px);margin:0;text-wrap:balance}
+.choices{display:flex;gap:3vmin;flex-wrap:wrap;justify-content:center}
+.choice{width:clamp(96px,26vmin,170px);aspect-ratio:1;border-radius:30px;background:var(--white);font-size:clamp(56px,15vmin,100px);display:grid;place-items:center;box-shadow:0 6px 0 rgba(59,30,92,.18)}
+.choice.ok{background:#C9F3D9;animation:hop .6s}
+.choice.no{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:2.4vmin;width:min(100%,640px)}
+@media (max-width:420px){.grid8{grid-template-columns:repeat(3,1fr)}}
+.grid8 .choice{width:100%;font-size:clamp(44px,12vmin,84px);position:relative}
+.choice.found::after{content:"☀️";position:absolute;top:-8px;inset-inline-end:-6px;font-size:28px}
+.progress{font-family:var(--display);font-weight:800;font-size:20px}
+.shelter{display:flex;gap:3vmin;justify-content:center;flex-wrap:wrap}
+.home{width:clamp(100px,27vmin,170px);aspect-ratio:1;border-radius:30px;background:var(--sand);border:4px dashed var(--dune);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(46px,12vmin,80px);position:relative}
+.home small{font-size:clamp(13px,3.4vmin,17px);font-weight:800;font-family:var(--display)}
+.home.hover{background:#FFE08A}
+.home .placed{position:absolute;font-size:.75em;bottom:4px;inset-inline-start:6px}
+.pieces{display:flex;gap:3vmin;justify-content:center;min-height:clamp(96px,24vmin,150px)}
+.piece{width:clamp(88px,22vmin,140px);aspect-ratio:1;border-radius:26px;background:var(--white);font-size:clamp(50px,13vmin,86px);display:grid;place-items:center;box-shadow:0 6px 0 rgba(59,30,92,.18);touch-action:none;cursor:grab}
+.piece.dragging{position:fixed;z-index:50;pointer-events:none;transform:translate(-50%,-50%) scale(1.1);margin:0}
+.toast{position:fixed;z-index:60;left:50%;top:40%;transform:translate(-50%,-50%) scale(0);background:var(--white);border-radius:30px;padding:18px 34px;font-family:var(--display);font-weight:800;font-size:clamp(28px,8vmin,54px);box-shadow:0 10px 0 rgba(59,30,92,.2);transition:transform .25s cubic-bezier(.3,1.6,.5,1);pointer-events:none;text-align:center}
+.toast.show{transform:translate(-50%,-50%) scale(1)}
+#confetti{position:fixed;inset:0;z-index:55;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0s!important;animation-iteration-count:1!important}}
+</style>
+
+<!-- ============ START ============ -->
+<section class="screen" id="start">
+  <div class="desert"><div class="bigsun"></div>
+    <svg viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 Q90 10 190 60 T400 50 V200 H0Z" fill="#E7B062"/><path d="M0 120 Q120 60 230 110 T400 100 V200 H0Z" fill="#DE9B45"/><path d="M0 160 Q150 120 260 150 T400 150 V200 H0Z" fill="#C9822F"/></svg>
+  </div>
+  <div class="brand"><span class="pill">🌈 فصل المرح</span><span class="pill">المعلمة: أمل الحارثي</span></div>
+  <div class="center">
+    <div class="parade" aria-hidden="true"><span>🐪</span><span>🦎</span><span>🌵</span><span>🦊</span><span>🦅</span></div>
+    <h1>أصدقاء الشمس</h1>
+    <p>الكائنات التي تعيش في الأجواء المشمسة</p>
+    <button class="go" id="startBtn">هيا نبدأ ☀️</button>
+  </div>
+  <div class="credit">إعداد: أ. أفنان الطلحي</div>
+</section>
+
+<!-- ============ CONCEPT ============ -->
+<section class="screen" id="concept" hidden>
+  <div class="topbar">
+    <button class="iconbtn" data-goto="start" aria-label="الرئيسية">🏠</button>
+    <h2>نتعرّف على أصدقاء الشمس</h2>
+    <span class="stars" aria-label="النجوم">⭐ <b class="starN">0</b></span>
+  </div>
+  <div class="card" id="card"></div>
+  <div class="cnav">
+    <button class="btn" id="prev">→ السابق</button>
+    <div class="dots" id="dots"></div>
+    <button class="btn" id="next">التالي ←</button>
+  </div>
+</section>
+
+<!-- ============ AR ============ -->
+<section class="screen" id="ar" hidden>
+  <video id="cam" playsinline muted autoplay></video>
+  <div class="desert"><div class="bigsun"></div>
+    <svg viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 Q90 10 190 60 T400 50 V200 H0Z" fill="#E7B062"/><path d="M0 120 Q120 60 230 110 T400 100 V200 H0Z" fill="#DE9B45"/><path d="M0 160 Q150 120 260 150 T400 150 V200 H0Z" fill="#C9822F"/></svg>
+  </div>
+  <div class="glare"></div>
+  <div id="stage"></div>
+  <div class="arbar top">
+    <button class="iconbtn" data-goto="concept" aria-label="رجوع">→</button>
+    <h2>الواقع المعزز ☀️</h2>
+    <button class="iconbtn" id="ambBtn" aria-label="صوت الصحراء">🌬️</button>
+    <button class="iconbtn" id="flipBtn" aria-label="تبديل الكاميرا">🔄</button>
+  </div>
+  <div id="arNote" hidden></div>
+  <div id="arHint">اضغط على صديق من الأسفل ليظهر أمامك!</div>
+  <div class="tray" id="tray"></div>
+</section>
+
+<!-- ============ GAMES ============ -->
+<section class="screen" id="games" hidden>
+  <div class="topbar">
+    <button class="iconbtn" id="gBack" aria-label="رجوع">→</button>
+    <h2 id="gTitle">ألعاب أصدقاء الشمس</h2>
+    <span class="stars">⭐ <b class="starN">0</b></span>
+  </div>
+  <div class="gmenu" id="gmenu">
+    <button class="gcard" data-game="sound"><b>👂</b><span>من صاحب الصوت؟</span><em>اسمع الصوت واختر الحيوان</em></button>
+    <button class="gcard" data-game="sun"><b>☀️</b><span>من يعيش في الشمس؟</span><em>اختر أصدقاء الشمس فقط</em></button>
+    <button class="gcard" data-game="shade"><b>🪨</b><span>خبّئني من الحر</span><em>اسحب كل حيوان إلى مخبئه</em></button>
+  </div>
+  <div class="garea" id="garea" hidden></div>
+</section>
+
+<div class="toast" id="toast"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* ---------------- data ---------------- */
+const ANIMALS=[
+ {id:'camel',e:'🐪',n:'الجمل',t:'أنا الجمل، أعيش في الصحراء المشمسة. سَنامي يخزّن الغذاء، وأتحمّل العطش أيامًا طويلة.'},
+ {id:'lizard',e:'🦎',n:'الضب',t:'أنا الضب، أحب دفء الشمس، وأحفر جحري تحت الرمل لأختبئ من الحر الشديد.'},
+ {id:'fox',e:'🦊',n:'ثعلب الفنك',t:'أنا ثعلب الفنك، أذناي كبيرتان تُخرجان الحرارة من جسمي فأشعر بالبرودة.'},
+ {id:'snake',e:'🐍',n:'الأفعى',t:'أنا الأفعى، أزحف على الرمل الحار، وأرتاح في الظل وقت الظهيرة.'},
+ {id:'scorpion',e:'🦂',n:'العقرب',t:'أنا العقرب، أختبئ تحت الصخور في النهار، وأخرج في الليل حين يبرد الجو.'},
+ {id:'falcon',e:'🦅',n:'الصقر',t:'أنا الصقر، أطير عاليًا في السماء المشمسة، وعيناي قويتان أرى بهما من بعيد.',fly:true},
+ {id:'cactus',e:'🌵',n:'الصبّار',t:'أنا الصبّار، نبات صحراوي، أخزّن الماء في ساقي، وأشواكي تحميني.',still:true}
+];
+const byId=Object.fromEntries(ANIMALS.map(a=>[a.id,a]));
+const $=s=>document.querySelector(s);
+let stars=0;
+function addStar(){stars++;document.querySelectorAll('.starN').forEach(b=>b.textContent=stars)}
+
+/* ---------------- audio (all synthesized, no music) ---------------- */
+let ctx,master,nbuf;
+function ac(){
+  if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C();master=ctx.createGain();master.gain.value=.9;master.connect(ctx.destination);
+    nbuf=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+  if(ctx.state==='suspended')ctx.resume();return ctx;
+}
+function env(g,t,att,dur,peak){g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur)}
+function noise(t,dur,type,freq,q,peak,att=.01,f2){
+  const s=ctx.createBufferSource();s.buffer=nbuf;const f=ctx.createBiquadFilter();f.type=type;f.frequency.setValueAtTime(freq,t);f.Q.value=q;
+  if(f2){f.frequency.linearRampToValueAtTime(f2,t+dur/2);f.frequency.linearRampToValueAtTime(freq,t+dur)}
+  const g=ctx.createGain();env(g,t,att,dur,peak);s.connect(f);f.connect(g);g.connect(master);s.start(t,Math.random());s.stop(t+dur+.05);
+}
+function tone(t,dur,type,f0,f1,f2,peak,vibHz=0,vibDepth=0,lp=0){
+  const o=ctx.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.linearRampToValueAtTime(f1,t+dur*.5);o.frequency.linearRampToValueAtTime(f2,t+dur);
+  if(vibHz){const l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=vibHz;lg.gain.value=vibDepth;l.connect(lg);lg.connect(o.frequency);l.start(t);l.stop(t+dur+.05)}
+  const g=ctx.createGain();env(g,t,.04,dur,peak);let n=o;
+  if(lp){const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;o.connect(f);n=f}
+  n.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05);
+}
+const SND={
+  camel(t){[0,.95].forEach(d=>{tone(t+d,.85,'sawtooth',120,95,75,.35,16,14,650);noise(t+d,.85,'lowpass',450,1,.12,.1)});return 1.9},
+  lizard(t){for(let i=0;i<7;i++)noise(t+i*.14+Math.random()*.05,.1,'bandpass',1400+Math.random()*600,1.2,.35);return 1.1},
+  fox(t){[0,.32,.64].forEach(d=>tone(t+d,.22,'triangle',850,1450,900,.35));return 1},
+  snake(t){noise(t,1.6,'highpass',2600,.7,.35,.25);return 1.7},
+  scorpion(t){for(let i=0;i<8;i++)noise(t+i*.09,.035,'bandpass',3600,7,.7,.003);return .9},
+  falcon(t){[0,.36,.72].forEach(d=>tone(t+d,.3,'sine',2700,2300,1700,.28,28,70));return 1.1},
+  cactus(t){noise(t,2.4,'lowpass',300,1,.45,.9,1100);return 2.4},
+  penguin(t){[0,.4].forEach(d=>tone(t+d,.32,'sawtooth',500,700,450,.2,10,30,1600));return .8},
+  bear(t){tone(t,1,'sawtooth',90,70,60,.4,8,8,500);return 1.1},
+  seal(t){[0,.35].forEach(d=>tone(t+d,.28,'square',380,520,360,.18,0,0,1500));return .7},
+  yay(t){[523,659,784,1047].forEach((f,i)=>tone(t+i*.1,.25,'triangle',f,f,f,.25));return .6},
+  oops(t){tone(t,.35,'triangle',330,260,200,.25);return .4}
+};
+function play(id){const c=ac();if(!c||!SND[id])return 0;return SND[id](c.currentTime+.03)}
+
+/* ambient desert: wind + occasional birds */
+let ambOn=false,ambNodes=null,birdTimer=null;
+function ambient(on){
+  const c=ac();if(!c)return;ambOn=on;$('#ambBtn').style.opacity=on?1:.55;
+  if(on&&!ambNodes){
+    const s=c.createBufferSource();s.buffer=nbuf;s.loop=true;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=420;
+    const l=c.createOscillator(),lg=c.createGain();l.frequency.value=.12;lg.gain.value=260;l.connect(lg);lg.connect(f.frequency);
+    const g=c.createGain();g.gain.value=.16;s.connect(f);f.connect(g);g.connect(master);s.start();l.start();ambNodes={s,l};
+    birdTimer=setInterval(()=>{if(Math.random()<.55){const t=c.currentTime;const n=2+Math.floor(Math.random()*3);for(let i=0;i<n;i++)tone(t+i*.13,.09,'sine',3200,4300,3600,.07)}},2200);
+  }else if(!on&&ambNodes){ambNodes.s.stop();ambNodes.l.stop();ambNodes=null;clearInterval(birdTimer)}
+}
+
+/* speech */
+let arVoice=null;
+function loadVoices(){try{const v=speechSynthesis.getVoices();arVoice=v.find(x=>/^ar[-_]SA/i.test(x.lang))||v.find(x=>/^ar/i.test(x.lang))||null}catch(e){}}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+let sayTimer;
+function say(txt,delay=0){
+  if(!('speechSynthesis' in window))return;clearTimeout(sayTimer);
+  sayTimer=setTimeout(()=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='ar-SA';if(arVoice)u.voice=arVoice;u.rate=.85;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}},delay);
+}
+function animalVoice(a){const d=play(a.id);say(a.t,(d||0)*1000+150)}
+
+/* ---------------- navigation ---------------- */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.hidden=s.id!==id);
+  if(id==='ar')startAR();else stopCam();
+  if(id!=='ar'&&ambOn)ambient(false);
+  if(id==='concept')renderCard();
+  if(id==='games')gameMenu();
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-goto]');if(g)show(g.dataset.goto)});
+$('#startBtn').onclick=()=>{ac();play('yay');say('أهلًا بكم في فصل المرح! هيا نتعرّف على أصدقاء الشمس، الكائنات التي تعيش في الأجواء المشمسة.',500);show('concept')};
+
+/* ---------------- concept cards ---------------- */
+let ci=0;const CARDS=[{intro:true},...ANIMALS.map(a=>({a})),{summary:true}];
+function renderCard(){
+  const c=CARDS[ci],card=$('#card');
+  $('#dots').innerHTML=CARDS.map((_,i)=>`<i class="${i===ci?'on':''}"></i>`).join('');
+  $('#prev').style.visibility=ci?'visible':'hidden';$('#next').style.visibility=ci<CARDS.length-1?'visible':'hidden';
+  if(c.intro){
+    card.innerHTML=`<div class="halo"><span>☀️</span></div><div class="ctext"><h3>الأجواء المشمسة</h3><p>في الصحراء تكون الشمس قوية والجو حارًّا، والماء قليل. بعض الحيوانات والنباتات تعيش هناك بسعادة! هيا نتعرّف عليها.</p><div class="row"><button class="btn sun" id="hear">🔊 استمع</button></div></div>`;
+    const txt='في الصحراء تكون الشمس قوية والجو حارًّا، والماء قليل. بعض الحيوانات والنباتات تعيش هناك بسعادة! هيا نتعرّف عليها.';
+    $('#hear').onclick=()=>say(txt);
+  }else if(c.a){
+    const a=c.a;
+    card.innerHTML=`<div class="halo"><span>${a.e}</span></div><div class="ctext"><h3>${a.n}</h3><p>${a.t}</p><div class="row"><button class="btn sun" id="hear">🔊 استمع</button><button class="btn alt" id="snd">🎵 صوته</button></div></div>`;
+    $('#hear').onclick=()=>animalVoice(a);$('#snd').onclick=()=>play(a.id);
+    $('.halo').onclick=()=>animalVoice(a);
+  }else{
+    card.innerHTML=`<div class="ctext" style="align-items:center;text-align:center;grid-column:1/-1;justify-self:center"><h3>تعلّمنا اليوم</h3><p>أصدقاء الشمس يتكيّفون مع الحر:</p>
+      <div class="adapt"><div><b>💧</b>تخزّن الماء</div><div><b>🪨</b>تختبئ في الظل</div><div><b>🌙</b>تخرج في الليل</div></div>
+      <div class="row"><button class="btn sun" id="hear">🔊 استمع</button><button class="go" id="toAR">إلى الواقع المعزز 📷</button></div></div>`;
+    const txt='تعلّمنا اليوم أن أصدقاء الشمس يتكيّفون مع الحر: بعضها يخزّن الماء، وبعضها يختبئ في الظل، وبعضها يخرج في الليل حين يبرد الجو.';
+    $('#hear').onclick=()=>say(txt);$('#toAR').onclick=()=>{play('yay');show('ar')};
+  }
+}
+$('#next').onclick=()=>{if(ci<CARDS.length-1){ci++;renderCard();const a=CARDS[ci].a;if(a)animalVoice(a)}};
+$('#prev').onclick=()=>{if(ci>0){ci--;renderCard()}};
+
+/* ---------------- AR ---------------- */
+const stage=$('#stage'),arSec=$('#ar'),cam=$('#cam');let stream=null,facing='environment',sprites=[],raf=0,last=0;
+$('#tray').innerHTML=ANIMALS.map(a=>`<button data-add="${a.id}" aria-label="${a.n}">${a.e}<small>${a.n}</small></button>`).join('')+
+  `<button class="wide" id="allBtn">الكل ✨</button><button class="wide" id="clearBtn" style="background:#6B5A80">مسح</button><button class="wide games" id="toGames">الألعاب 🎮</button>`;
+$('#tray').addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(b)spawn(byId[b.dataset.add])});
+$('#allBtn').onclick=()=>ANIMALS.forEach((a,i)=>setTimeout(()=>spawn(a,i>0),i*450));
+$('#clearBtn').onclick=()=>{sprites.forEach(s=>s.el.remove());sprites=[];$('#arHint').hidden=false};
+$('#toGames').onclick=()=>show('games');
+$('#ambBtn').onclick=()=>ambient(!ambOn);
+$('#flipBtn').onclick=()=>{facing=facing==='environment'?'user':'environment';startCam()};
+
+function note(t){const n=$('#arNote');n.textContent=t;n.hidden=!t}
+async function startCam(){
+  stopCam(false);arSec.classList.toggle('mirror',facing==='user');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){arSec.classList.remove('live');note('هذا المتصفح لا يفتح الكاميرا — نلعب في مشهد الصحراء 🏜️');return}
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:1280},height:{ideal:720}},audio:false});
+    cam.srcObject=stream;await cam.play();arSec.classList.add('live');note('');
+  }catch(e){arSec.classList.remove('live');note('لم تُفتح الكاميرا هنا — نلعب في مشهد الصحراء 🏜️')}
+}
+function stopCam(full=true){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(full){cancelAnimationFrame(raf);raf=0}}
+function startAR(){startCam();if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}ambient(true)}
+
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function spawn(a,quiet=false){
+  $('#arHint').hidden=true;
+  const W=stage.clientWidth,H=stage.clientHeight;
+  const el=document.createElement('div');el.className='sprite pop'+(a.fly?' fly':'')+(a.still?' still':'');
+  el.innerHTML=`<span class="shadow"></span><span class="jump"><span class="bod"><span class="inner">${a.e}</span></span></span><span class="tag">${a.n}</span>`;
+  stage.append(el);
+  const sp={a,el,x:rnd(.15,.85)*W,y:a.fly?rnd(.2,.38)*H:rnd(.58,.82)*H,dir:Math.random()<.5?-1:1,speed:a.still?0:(a.fly?rnd(50,80):rnd(18,38)),drag:false};
+  sprites.push(sp);setTimeout(()=>el.classList.remove('pop'),750);
+  let sx,sy,moved=false,ox,oy;
+  el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);sx=e.clientX;sy=e.clientY;ox=sp.x;oy=sp.y;moved=false;sp.drag=true});
+  el.addEventListener('pointermove',e=>{if(!sp.drag)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)+Math.abs(dy)>8)moved=true;if(moved){sp.x=ox+dx;sp.y=oy+dy}});
+  const up=()=>{if(!sp.drag)return;sp.drag=false;if(!moved)talk(sp)};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',()=>sp.drag=false);
+  if(!quiet)setTimeout(()=>talk(sp),500);else play(a.id);
+}
+function talk(sp){
+  sprites.forEach(s=>s.el.classList.remove('talk'));
+  sp.el.classList.remove('hop');void sp.el.offsetWidth;sp.el.classList.add('hop','talk');
+  animalVoice(sp.a);clearTimeout(sp.tt);sp.tt=setTimeout(()=>sp.el.classList.remove('talk'),5000);
+}
+function loop(t){
+  const dt=Math.min(.05,(t-last)/1000);last=t;const W=stage.clientWidth,H=stage.clientHeight;
+  for(const s of sprites){
+    if(!s.drag&&s.speed){s.x+=s.dir*s.speed*dt;if(s.x<W*.08)s.dir=1;if(s.x>W*.92)s.dir=-1;if(!s.a.fly&&Math.random()<.002)s.dir*=-1}
+    s.y=Math.max(H*.12,Math.min(H*.9,s.y));
+    const sc=s.a.fly?.85:.5+.95*(s.y/H);
+    s.el.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-100%) scale(${sc.toFixed(3)})`;
+    s.el.style.zIndex=Math.round(s.y);
+    if(!s.a.still)s.el.querySelector('.bod').style.transform=`scaleX(${s.dir>0?-1:1})`;
+  }
+  raf=requestAnimationFrame(loop);
+}
+
+/* ---------------- games ---------------- */
+const garea=$('#garea'),gmenu=$('#gmenu');let inGame=false;
+function gameMenu(){inGame=false;gmenu.hidden=false;garea.hidden=true;$('#gTitle').textContent='ألعاب أصدقاء الشمس'}
+$('#gBack').onclick=()=>inGame?gameMenu():show('ar');
+gmenu.addEventListener('click',e=>{const b=e.target.closest('[data-game]');if(!b)return;inGame=true;gmenu.hidden=true;garea.hidden=false;({sound:gSound,sun:gSun,shade:gShade})[b.dataset.game]()});
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function toast(t,ms=1200){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),ms)}
+const PRAISE=['أحسنت! 🌟','رائع! ☀️','ممتاز! 👏','بطل! 🏆'];
+function good(){addStar();play('yay');const p=PRAISE[Math.floor(Math.random()*PRAISE.length)];toast(p);say(p.replace(/[^؀-ۿ ]/g,''),300)}
+function bad(){play('oops');toast('مرة أخرى 💪',900);say('هيا نجرّب مرة أخرى',200)}
+function finish(){confetti();say('أحسنتم يا أبطال فصل المرح! أنتم أصدقاء الشمس.',600);
+  garea.innerHTML=`<div class="parade"><span>🐪</span><span>🏆</span><span>🦊</span></div><p class="q">أحسنتم يا أبطال فصل المرح!</p><div class="row"><button class="btn sun" id="again">العب مرة أخرى</button><button class="btn" id="menuB">الألعاب</button><button class="btn alt" data-goto="ar">الواقع المعزز 📷</button></div>`;
+  $('#again').onclick=()=>({'من صاحب الصوت؟':gSound,'من يعيش في الشمس؟':gSun,'خبّئني من الحر':gShade})[$('#gTitle').textContent]();$('#menuB').onclick=gameMenu}
+
+/* Game 1: whose sound? */
+function gSound(){
+  $('#gTitle').textContent='من صاحب الصوت؟';const pool=ANIMALS.filter(a=>a.id!=='cactus');const rounds=shuffle(pool).slice(0,5);let r=0;
+  function round(){
+    if(r>=rounds.length)return finish();const a=rounds[r];
+    const opts=shuffle([a,...shuffle(pool.filter(x=>x!==a)).slice(0,2)]);
+    garea.innerHTML=`<span class="progress">${r+1} / ${rounds.length}</span><p class="q">اسمع الصوت… من صاحبه؟</p><button class="btn sun" id="rep">🔊 اسمع الصوت</button><div class="choices">${opts.map(o=>`<button class="choice" data-id="${o.id}" aria-label="${o.n}">${o.e}</button>`).join('')}</div>`;
+    $('#rep').onclick=()=>play(a.id);setTimeout(()=>play(a.id),400);let locked=false;
+    garea.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(locked)return;
+      if(b.dataset.id===a.id){locked=true;b.classList.add('ok');good();setTimeout(()=>say('هذا '+a.n),900);r++;setTimeout(round,2600)}
+      else{b.classList.remove('no');void b.offsetWidth;b.classList.add('no');bad()}});
+  }
+  say('اسمع الصوت جيدًا، ثم اختر الحيوان صاحب الصوت');round();
+}
+
+/* Game 2: who lives in the sun? */
+function gSun(){
+  $('#gTitle').textContent='من يعيش في الشمس؟';
+  const cold=[{id:'penguin',e:'🐧',n:'البطريق',t:'أنا البطريق، أعيش في الجليد البارد، لست من أصدقاء الشمس.'},{id:'bear',e:'🐻‍❄️',n:'الدب القطبي',t:'أنا الدب القطبي، أحب الثلج والبرد.'},{id:'seal',e:'🦭',n:'الفقمة',t:'أنا الفقمة، أعيش في البحار الباردة.'}];
+  const sunny=shuffle(ANIMALS.filter(a=>!a.fly)).slice(0,5);const items=shuffle([...sunny.map(a=>({...a,sun:1})),...cold]);let found=0;
+  garea.innerHTML=`<p class="q">اضغط على الذين يعيشون في الأجواء المشمسة ☀️</p><span class="progress" id="prog">0 / ${sunny.length}</span><div class="grid8">${items.map((o,i)=>`<button class="choice" data-i="${i}" aria-label="${o.n}">${o.e}</button>`).join('')}</div>`;
+  say('اضغط على الحيوانات والنباتات التي تعيش في الأجواء المشمسة');
+  garea.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{const o=items[b.dataset.i];
+    if(b.classList.contains('found'))return;
+    if(o.sun){b.classList.add('found','ok');found++;$('#prog').textContent=`${found} / ${sunny.length}`;addStar();play(o.id);say('نعم! '+o.n+' من أصدقاء الشمس',900);if(found===sunny.length)setTimeout(finish,2600)}
+    else{b.classList.remove('no');void b.offsetWidth;b.classList.add('no');play(o.id);say(o.t,700)}});
+}
+
+/* Game 3: drag to shelter */
+function gShade(){
+  $('#gTitle').textContent='خبّئني من الحر';
+  const pairs=[{a:'lizard',h:'🕳️',hn:'الجحر'},{a:'scorpion',h:'🪨',hn:'الصخرة'},{a:'camel',h:'🌴',hn:'ظل النخلة'}];
+  const homes=shuffle(pairs),pcs=shuffle(pairs);let done=0;
+  garea.innerHTML=`<p class="q">الشمس حارّة! اسحب كل حيوان إلى مخبئه</p><div class="shelter">${homes.map(p=>`<div class="home" data-a="${p.a}">${p.h}<small>${p.hn}</small></div>`).join('')}</div><div class="pieces">${pcs.map(p=>`<div class="piece" data-a="${p.a}" role="button" aria-label="${byId[p.a].n}">${byId[p.a].e}</div>`).join('')}</div>`;
+  say('الشمس حارّة! اسحب كل حيوان إلى مخبئه ليرتاح في الظل');
+  garea.querySelectorAll('.piece').forEach(pc=>{
+    let ph=null,hov=null;
+    pc.addEventListener('pointerdown',e=>{e.preventDefault();pc.setPointerCapture(e.pointerId);play(pc.dataset.a);
+      ph=document.createElement('div');ph.className='piece';ph.style.visibility='hidden';pc.after(ph);
+      pc.classList.add('dragging');pc.style.left=e.clientX+'px';pc.style.top=e.clientY+'px'});
+    pc.addEventListener('pointermove',e=>{if(!ph)return;pc.style.left=e.clientX+'px';pc.style.top=e.clientY+'px';
+      const h=document.elementFromPoint(e.clientX,e.clientY)?.closest('.home');if(hov&&hov!==h)hov.classList.remove('hover');hov=h;if(h)h.classList.add('hover')});
+    const drop=e=>{if(!ph)return;const h=document.elementFromPoint(e.clientX,e.clientY)?.closest('.home');if(hov)hov.classList.remove('hover');
+      pc.classList.remove('dragging');pc.style.left=pc.style.top='';ph.remove();ph=null;
+      if(h&&h.dataset.a===pc.dataset.a&&!h.querySelector('.placed')){h.insertAdjacentHTML('beforeend',`<span class="placed">${pc.textContent}</span>`);pc.remove();done++;good();
+        const a=byId[h.dataset.a];setTimeout(()=>say(a.n+' يرتاح في '+h.querySelector('small').textContent),1000);if(done===pairs.length)setTimeout(finish,2800)}
+      else if(h)bad()};
+    pc.addEventListener('pointerup',drop);pc.addEventListener('pointercancel',drop);
+  });
+}
+
+/* confetti */
+function confetti(){
+  const cv=$('#confetti'),c=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;
+  const cols=['#FFB703','#F2662B','#3EC1E6','#239B5A','#FFFFFF'];
+  const P=Array.from({length:140},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,v:2+Math.random()*4,r:Math.random()*6.28,s:6+Math.random()*8,c:cols[Math.floor(Math.random()*5)]}));
+  let f=0;(function d(){c.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin((f+p.r*30)/20)*1.5;p.r+=.1;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;c.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);c.restore()});
+    if(++f<220)requestAnimationFrame(d);else c.clearRect(0,0,cv.width,cv.height)})();
+}
+</script>
+
+</body>
+</html>
