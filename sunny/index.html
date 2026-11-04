@@ -93,6 +93,27 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
 .glare{position:absolute;inset:0;pointer-events:none;z-index:1;
   background:radial-gradient(circle at 88% 6%,rgba(255,236,150,.85) 0,rgba(255,200,60,.35) 14%,transparent 42%);mix-blend-mode:screen;animation:glow 4s ease-in-out infinite}
 @keyframes glow{50%{opacity:.7}}
+/* desert environment overlaid on the camera */
+#env{position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .6s}
+#ar.noenv #env{opacity:0}
+#env .tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,190,70,.28),rgba(255,160,40,.12) 45%,transparent 60%);mix-blend-mode:multiply}
+#env .sunwrap{position:absolute;top:calc(env(safe-area-inset-top,0px) + 64px);inset-inline-start:4%;width:20vmin;height:20vmin}
+#env .sunwrap .bigsun{top:0;inset-inline-start:0;width:100%;height:100%}
+#env .ground{position:absolute;left:0;right:0;bottom:0;height:52%;
+  -webkit-mask:linear-gradient(180deg,transparent 0,#000 16%);mask:linear-gradient(180deg,transparent 0,#000 16%)}
+#env .ground svg{position:absolute;inset:0;width:100%;height:100%}
+#env .prop{position:absolute;filter:drop-shadow(0 6px 4px rgba(90,50,10,.35))}
+#env .prop.palm{width:24vmin;bottom:34%;inset-inline-end:3%}
+#env .prop.palm2{width:16vmin;bottom:38%;inset-inline-end:20%;opacity:.9}
+#env .prop.rock1{width:11vmin;bottom:16%;inset-inline-start:6%}
+#env .prop.rock2{width:7vmin;bottom:30%;inset-inline-start:38%;opacity:.95}
+#env .prop.cac{width:10vmin;bottom:35%;inset-inline-start:22%}
+#env .prop.hole{width:9vmin;bottom:9%;inset-inline-end:30%;filter:none;opacity:.85}
+#env .prop.dunes{width:30vmin;bottom:40%;inset-inline-start:52%;opacity:.8;filter:none}
+#dust{position:absolute;inset:0;width:100%;height:100%}
+#envBtn.off{opacity:.5}
+@media (max-width:560px){.arbar.top h2{display:none}.arbar.top{justify-content:space-between}.arbar .iconbtn{width:42px;height:42px;font-size:19px}.arbar .logo{height:40px}}
+#ar:not(.live) #env .sunwrap,#ar:not(.live) #env .tint{display:none}
 #stage{position:absolute;inset:0;z-index:2;touch-action:none;overflow:hidden}
 .sprite{position:absolute;left:0;top:0;will-change:transform;touch-action:none;cursor:grab}
 .sprite .shadow{position:absolute;left:50%;bottom:-3%;width:75%;height:12%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(0,0,0,.5),transparent 70%)}
@@ -207,17 +228,37 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
   <div class="desert"><div class="bigsun"></div>
     <svg viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 Q90 10 190 60 T400 50 V200 H0Z" fill="#E7B062"/><path d="M0 120 Q120 60 230 110 T400 100 V200 H0Z" fill="#DE9B45"/><path d="M0 160 Q150 120 260 150 T400 150 V200 H0Z" fill="#C9822F"/></svg>
   </div>
+  <div id="env" aria-hidden="true">
+    <div class="tint"></div>
+    <div class="sunwrap"><div class="bigsun"></div></div>
+    <div class="ground">
+      <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+        <path d="M0 40 Q70 0 150 30 T300 25 T400 35 V200 H0Z" fill="#EBB86C"/>
+        <path d="M0 80 Q110 40 220 75 T400 70 V200 H0Z" fill="#E2A553"/>
+        <path d="M0 125 Q140 95 260 120 T400 118 V200 H0Z" fill="#D6913E"/>
+        <g stroke="#C47F30" stroke-width="1.4" fill="none" opacity=".55"><path d="M30 150 q20 -6 40 0 t40 0"/><path d="M200 165 q20 -6 40 0 t40 0"/><path d="M300 140 q15 -5 30 0 t30 0"/><path d="M90 185 q20 -6 40 0 t40 0"/><path d="M120 100 q15 -5 30 0 t30 0"/></g>
+      </svg>
+    </div>
+    <img class="prop palm2" src="assets/img/palm.svg" alt="">
+    <img class="prop palm" src="assets/img/palm.svg" alt="">
+    <img class="prop cac" src="assets/img/cactus.svg" alt="">
+    <img class="prop rock2" src="assets/img/rock.svg" alt="">
+    <img class="prop rock1" src="assets/img/rock.svg" alt="">
+    <img class="prop hole" src="assets/img/hole.svg" alt="">
+    <canvas id="dust"></canvas>
+  </div>
   <div class="glare"></div>
   <div id="stage"></div>
   <div class="arbar top">
     <button class="iconbtn" id="arBack" aria-label="رجوع">→</button>
     <img class="logo" src="assets/moe-logo.png" alt="وزارة التعليم">
     <h2>الواقع المعزز</h2>
+    <button class="iconbtn" id="envBtn" aria-label="البيئة الصحراوية" title="البيئة الصحراوية"><img class="ico" src="assets/img/desert.svg" alt=""></button>
     <button class="iconbtn" id="ambBtn" aria-label="صوت الصحراء" title="صوت الصحراء">♪</button>
     <button class="iconbtn" id="flipBtn" aria-label="تبديل الكاميرا" title="تبديل الكاميرا">⟲</button>
     <button class="iconbtn" id="camBtn" aria-label="الكاميرا" title="الكاميرا"><img class="ico" src="assets/img/camera.svg" alt=""></button>
   </div>
-  <div id="arHint">اضغط على صديق من الأسفل ليظهر أمامك!</div>
+  <div id="arHint">جاءت الصحراء إلى فصلنا! اضغط على صديق من الأسفل</div>
   <div id="camGate" hidden>
     <div class="box">
       <img class="big" src="assets/img/camera.svg" alt="">
@@ -372,6 +413,17 @@ $('#allBtn').onclick=()=>ANIMALS.forEach((a,i)=>setTimeout(()=>spawn(a,i>0),i*45
 $('#clearBtn').onclick=()=>{sprites.forEach(s=>s.el.remove());sprites=[];$('#arHint').hidden=false};
 if($('#toGames'))$('#toGames').onclick=()=>show('games');
 $('#ambBtn').onclick=()=>ambient(!ambOn);
+$('#envBtn').onclick=()=>{const off=arSec.classList.toggle('noenv');$('#envBtn').classList.toggle('off',off);
+  say(off?'أخفينا الصحراء':'جاءت الصحراء إلى فصلنا! رمال وشمس حارّة ونخيل.')};
+/* blowing sand */
+const dustCv=$('#dust'),dc=dustCv.getContext('2d');let grains=[];
+function dustStep(){
+  const w=dustCv.clientWidth,h=dustCv.clientHeight;if(dustCv.width!==w||dustCv.height!==h){dustCv.width=w;dustCv.height=h;grains=[]}
+  if(!grains.length)grains=Array.from({length:90},()=>({x:Math.random()*w,y:h*(.45+Math.random()*.55),v:.6+Math.random()*2.2,r:.8+Math.random()*2,a:.25+Math.random()*.45}));
+  dc.clearRect(0,0,w,h);
+  for(const g of grains){g.x-=g.v;g.y+=Math.sin((g.x+g.y)/40)*.3;if(g.x<-5){g.x=w+5;g.y=h*(.45+Math.random()*.55)}
+    dc.fillStyle=`rgba(214,160,80,${g.a})`;dc.beginPath();dc.arc(g.x,g.y,g.r,0,6.3);dc.fill()}
+}
 $('#flipBtn').onclick=()=>{facing=facing==='environment'?'user':'environment';startCam()};
 $('#camBtn').onclick=()=>{camDeclined=false;startCam()};
 $('#openCam').onclick=()=>startCam();
@@ -405,7 +457,7 @@ async function startCam(){
   }
 }
 function stopAR(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}arSec.classList.remove('live');cancelAnimationFrame(raf);raf=0;if(ambOn)ambient(false)}
-function startAR(){ac();startCam();if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}ambient(true)}
+function startAR(){ac();startCam();say('جاءت الصحراء المشمسة إلى فصلنا! اضغط على صديق من الأسفل ليظهر.',900);if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}ambient(true)}
 
 const rnd=(a,b)=>a+Math.random()*(b-a);
 function spawn(a,quiet=false){
@@ -438,6 +490,7 @@ function loop(t){
     s.el.style.zIndex=Math.round(s.y);
     if(!s.a.still)s.el.querySelector('.bod').style.transform=`scaleX(${s.dir>0?-1:1})`;
   }
+  if(!arSec.classList.contains('noenv'))dustStep();
   raf=requestAnimationFrame(loop);
 }
 
