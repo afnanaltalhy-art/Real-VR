@@ -78,6 +78,8 @@ button{font-family:'Almarai',sans-serif;cursor:pointer}
 #startBtn{border:0;border-radius:22px;background:linear-gradient(135deg,#F7C531,#E9A800);color:#2E2A6B;font-weight:800;font-size:clamp(17px,4.8vw,21px);padding:18px 22px;max-width:420px;width:100%;line-height:1.6;box-shadow:0 10px 30px rgba(233,168,0,.45),0 0 0 6px rgba(255,255,255,.12)}
 #start .chips{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
 #start .chip{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;font-size:13px}
+#ordB{position:absolute;left:calc(env(safe-area-inset-left,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);border:0;border-radius:10px;background:rgba(255,255,255,.18);color:#fff;font-family:inherit;font-size:10.5px;font-weight:800;padding:4px 9px;z-index:2}
+#ordT{position:absolute;left:calc(env(safe-area-inset-left,0px) + 10px);bottom:calc(env(safe-area-inset-bottom,0px) + 38px);background:rgba(255,255,255,.95);color:#2E2A6B;border-radius:10px;padding:6px 10px;font-size:12px;font-weight:800;z-index:2}
 #start .by{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 12px);font-size:13px;opacity:.85}
 
 #placeMsg{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);width:min(88vw,380px);background:rgba(46,42,107,.88);color:#fff;border-radius:18px;padding:14px 16px;text-align:center;font-size:15px;line-height:1.8;font-weight:800}
@@ -143,6 +145,8 @@ button{font-family:'Almarai',sans-serif;cursor:pointer}
     <button id="startBtn">📷 افتحي الكاميرا وضعي المختبر على طاولتك</button>
     <div class="chips"><span class="chip">🧶 ادلكي</span><span class="chip">🎗️ الشريطان</span><span class="chip">⚪ الكرتان</span><span class="chip">🔌 موصل أم عازل؟</span><span class="chip">⚡ الشرارة</span></div>
     <div class="by">الفيزياء • أ. مضحية الشهري</div>
+    <button id="ordB" type="button" onclick="var t=document.getElementById('ordT');t.hidden=!t.hidden">للطلب</button>
+    <div id="ordT" hidden>د. أفنان الطلحي : <span dir="ltr">0533340810</span></div>
   </div>
 
   <div id="toast"></div>
