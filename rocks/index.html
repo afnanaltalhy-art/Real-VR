@@ -12,7 +12,7 @@
 html,body{height:100%;overflow:hidden;font-family:Almarai,sans-serif;color:var(--t);background:linear-gradient(160deg,#efe6fb,#dff3ea 55%,#fff6e3)}
 button{font-family:Almarai,sans-serif}
 #cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none}
-#gl{position:fixed;inset:0;z-index:1;touch-action:none}
+#gl{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:1;touch-action:none}
 .bar{position:fixed;top:0;left:0;right:0;z-index:5;background:rgba(14,77,69,.92);color:#fff;font-size:13px;text-align:center;padding:7px 8px;font-weight:700}
 .tabs{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:6px;background:rgba(255,255,255,.85);padding:5px;border-radius:30px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
 .tabs button{border:none;border-radius:24px;padding:8px 14px;font-weight:700;font-size:14px;white-space:nowrap;background:transparent;color:var(--t)}
@@ -82,7 +82,7 @@ svg text{font-family:Almarai,sans-serif}
 #cycSvg.play .cl{animation:fadeIn .5s ease forwards}
 #cycSvg.play .s1{animation-delay:.2s}#cycSvg.play .s2{animation-delay:1.2s}#cycSvg.play .s3{animation-delay:2.2s}#cycSvg.play .s4{animation-delay:3.2s}
 @keyframes draw{to{stroke-dashoffset:0}}@keyframes fadeIn{to{opacity:1}}
-canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
+canvas#cf{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:40}
 </style>
 </head>
 <body>
@@ -332,7 +332,7 @@ window.setScene=function(s){current=s;document.getElementById('t-rocks').classLi
  talk(!welcomed?(welcomed=true,'أهلًا يا مستكشفة! أنا جُمانة، المسي أي صخرة لنكتشفها معًا 🔍'):s==='rocks'?GROUPS[group].say:'هذه بلورات المعادن… المسي أي بلورة لتعرفي خاصيتها 💎');
  history.replaceState(null,'','?scene='+s)};
 
-function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;
+function resize(){const w=canvas.clientWidth||innerWidth,h=canvas.clientHeight||innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;
  cam.position.z=w<h?11:8;cam.position.y=w<h?.2:1.2;cam.lookAt(0,w<h?-1.2:0,0);cam.updateProjectionMatrix();if(Object.keys(models).length)layout()}
 addEventListener('resize',resize);resize();
 
@@ -349,7 +349,7 @@ canvas.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const 
  rotY+=dx*.01;rotX=Math.max(-.8,Math.min(.9,rotX+dy*.006))});
 canvas.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!moved&&pts.size===0)tap(e)});
 canvas.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
-function tap(e){ptr.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ptr,cam);
+function tap(e){const rc=canvas.getBoundingClientRect();ptr.set((e.clientX-rc.left)/rc.width*2-1,-((e.clientY-rc.top)/rc.height)*2+1);ray.setFromCamera(ptr,cam);
  const hits=ray.intersectObjects(world.children,true);if(!hits.length)return;let o=hits[0].object;while(o.parent&&o.parent!==world)o=o.parent;if(o.userData.lbl){setGroup(o.userData.lbl);return}if(o.userData.id)select(o.userData.id)}
 let curText='';
 function select(id,speak=true){const d=DATA[current].find(x=>x.id===id);if(!d)return;if(!models[id]&&current==='rocks')setGroup(d.g,false);selected=id;glowT=0;sfx.tap();document.getElementById('c-tag').style.background=GCOL[d.g]||'#5B3A8E';
