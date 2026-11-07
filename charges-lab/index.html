@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B2560">
+<title>مختبر الشحنات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one-column lavender "lab" app — home map of 6 stations, each station = picture + hands-on activity + questions; final challenge + certificate */
+@font-face{font-family:"AlmaraiLocal";src:url(fonts/almarai.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:"AlmaraiLocal";src:url(fonts/almarai-bold.ttf) format("truetype");font-weight:700 800;font-display:swap}
+:root{
+ --ink:#2A2350;--ink2:#5A5385;--bg:#F1ECFB;--card:#FFFFFF;--line:#DCD3F3;
+ --violet:#6B4FD8;--violet-d:#4A33A8;--spark:#FFC93C;--spark-d:#C9900A;
+ --pos:#E5484D;--neg:#2F7BEA;--ok:#25A26B;--ok-bg:#E3F6EC;--no-bg:#FDE8E8;
+ --f:"Almarai","AlmaraiLocal",Tahoma,sans-serif;
+ color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--f);background:var(--bg);color:var(--ink);direction:rtl;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+.bgfull{position:fixed;inset:0;z-index:0;background:#2B2560 url(img/storm.webp) center/cover no-repeat}
+.bgfull::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,37,96,0) 0%,rgba(43,37,96,.1) 55%,rgba(43,37,96,.45))}
+@media (orientation:portrait){.bgfull{background-position:64% center}}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding-block:12px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+[hidden]{display:none!important}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px;background:rgba(255,255,255,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:6px 10px}
+.top{display:grid!important;grid-template-columns:1fr auto 1fr}
+.top img{height:42px;width:auto;justify-self:end}
+.top .sub{font-size:12px;color:var(--ink2);text-align:right;line-height:1.5;min-width:0}
+.tname{text-align:center;font-weight:800;font-size:15px;line-height:1.3;white-space:nowrap}
+.tname small{display:block;font-size:11px;color:var(--ink2)}
+.snd{position:fixed;z-index:40;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 4px 12px rgba(42,35,80,.2)}
+.top .sub b{color:var(--ink);display:block;font-size:13.5px}
+.iconbtn{border:none;background:var(--card);border-radius:50%;width:42px;height:42px;font-size:19px;box-shadow:0 2px 0 var(--line);flex:none}
+
+/* home */
+.hero{min-height:calc(100dvh - 90px);display:flex;align-items:flex-start;padding-top:2vh}
+.hero .txt{display:flex;flex-direction:column;max-width:440px;padding:16px 18px;border-radius:24px;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(42,35,80,.12)}
+@media (orientation:portrait){.hero{min-height:calc(100dvh - 90px);align-items:flex-end;padding-bottom:3vh}.hero .txt{max-width:none;width:100%}}
+@media (orientation:landscape){.hero{justify-content:flex-end;min-height:min(calc(100dvh - 90px),520px)}.hero .txt{max-width:50%}}
+.hero .go{border:none;margin-top:12px;align-self:flex-start;background:var(--violet);color:#fff;font-weight:800;font-size:16px;border-radius:18px;padding:11px 20px;box-shadow:0 4px 0 var(--violet-d)}
+.hero h1{margin:0;font-size:clamp(24px,6.4vw,46px);font-weight:800;line-height:1.15;text-wrap:balance}
+.hero h1 .z{color:var(--violet)}
+.hero p{margin:6px 0 0;font-size:clamp(12px,2.6vw,16px);font-weight:700;color:var(--ink2);line-height:1.6}
+.unit{display:inline-block;background:var(--ink);color:#fff;font-size:12px;font-weight:700;border-radius:20px;padding:4px 12px;margin-bottom:8px;align-self:flex-start}
+.panel{background:rgba(241,236,251,.9);border-radius:24px;padding:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.namebox{margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.namebox label{font-weight:800;font-size:15px}
+.namebox input{flex:1;min-width:0;font-family:inherit;font-size:16px;padding:11px 14px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.h2{font-size:19px;font-weight:800;margin:20px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.h2 small{font-size:13px;color:var(--ink2);font-weight:700}
+.prog{height:12px;background:#E2DAF6;border-radius:10px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--spark),#FFA94D);border-radius:10px;transition:width .6s}
+.map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media (min-width:620px){.map{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.st{border:none;background:var(--card);border-radius:20px;padding:0;overflow:hidden;text-align:right;box-shadow:0 4px 0 var(--line);position:relative;transition:transform .15s}
+.st:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.st img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
+.st .lab{padding:9px 12px 11px;display:flex;flex-direction:column;gap:3px}
+.st .n{font-size:11.5px;color:var(--violet);font-weight:800}
+.st .t{font-size:15px;font-weight:800;line-height:1.35}
+.st .stars{font-size:14px;letter-spacing:1px;color:var(--spark-d)}
+.st .done{position:absolute;top:8px;left:8px;background:var(--ok);color:#fff;border-radius:14px;font-size:12px;font-weight:800;padding:3px 10px}
+.big{display:block;width:100%;border:none;border-radius:22px;padding:16px;font-size:18px;font-weight:800;color:#fff;background:var(--violet);box-shadow:0 5px 0 var(--violet-d);margin-top:14px}
+.big.y{background:var(--spark);color:var(--ink);box-shadow:0 5px 0 var(--spark-d)}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 var(--violet-d)}
+.big[disabled]{opacity:.5}
+.orderbox{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:18px}
+.order{border:none;background:#25D366;color:#073B1E;border-radius:14px;padding:6px 16px;font-weight:800;font-size:12.5px;box-shadow:0 3px 0 #179247}
+.who2{font-size:11px;font-weight:700;color:var(--ink2);text-decoration:none}
+.credit{text-align:center;margin-top:12px;font-size:16px;font-weight:800}
+.credit small{display:block;font-size:12.5px;color:var(--ink2);font-weight:700;margin-bottom:2px}
+
+/* station */
+.back{border:none;background:var(--card);border-radius:18px;padding:9px 14px;font-weight:800;font-size:14px;box-shadow:0 2px 0 var(--line)}
+.scene{position:relative;border-radius:22px;overflow:hidden;margin-top:10px}
+.scene img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.scene .tag{position:absolute;top:10px;right:10px;background:rgba(42,35,80,.88);color:#fff;font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:14px}
+.bubble{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:2.5px solid var(--spark);border-radius:20px 20px 20px 6px;padding:11px 14px;margin-top:-26px;position:relative;z-index:2;margin-inline:10px;box-shadow:0 6px 16px rgba(42,35,80,.12)}
+.bubble .who{flex:none;width:38px;height:38px;border-radius:50%;background:var(--spark);display:grid;place-items:center;font-size:20px}
+.bubble p{margin:0;font-size:15px;line-height:1.75;font-weight:700;flex:1;min-width:0}
+.bubble button{flex:none;border:none;background:#F4EFFF;border-radius:50%;width:36px;height:36px;font-size:16px}
+.sec{background:var(--card);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 3px 0 var(--line)}
+.sec h3{margin:0 0 4px;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+.sec h3 .pill{font-size:11.5px;background:#F0EBFF;color:var(--violet);border-radius:10px;padding:3px 9px}
+.sec .hint{margin:0 0 12px;font-size:13.5px;color:var(--ink2);line-height:1.7}
+.note{margin-top:12px;font-size:14px;line-height:1.8;background:#FFF7DE;border-radius:14px;padding:10px 12px;font-weight:700}
+.note.okn{background:var(--ok-bg)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#FAF8FF;border-radius:16px;padding:9px 13px;font-weight:800;font-size:14px}
+.chip.on{background:var(--violet);border-color:var(--violet);color:#fff}
+
+/* questions */
+.q{margin-top:14px;padding-top:14px;border-top:2px dashed var(--line)}
+.q:first-of-type{border-top:none;padding-top:0}
+.q .qt{font-size:16px;font-weight:800;line-height:1.7;margin-bottom:10px}
+.q .qt b{color:var(--violet)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:2.5px solid var(--line);background:#FAF8FF;border-radius:16px;padding:12px 10px;font-size:15px;font-weight:800;line-height:1.5;text-align:center}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.no{background:var(--no-bg);border-color:var(--pos);color:var(--pos);animation:shake .4s}
+.why{margin-top:10px;font-size:14px;line-height:1.8;border-radius:14px;padding:10px 12px;background:var(--ok-bg);font-weight:700}
+.why.bad{background:var(--no-bg)}
+@keyframes shake{25%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
+
+/* activity 1: ruler & paper */
+.lab1{position:relative;height:290px;border-radius:18px;background:linear-gradient(#F7F3FF,#EFE8FF 70%,#E3D6C5 70%,#D9C9B2);overflow:hidden;touch-action:none}
+.ruler{position:absolute;right:12%;left:12%;height:26px;border-radius:8px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1px,transparent 1px 12px),linear-gradient(#F78FC4,#E2559E);box-shadow:0 4px 8px rgba(0,0,0,.15);transition:top .12s;display:flex;align-items:center;justify-content:space-around;color:#fff;font-weight:800;font-size:16px}
+.ruler .m{color:var(--neg);background:#fff;border-radius:50%;width:16px;height:16px;line-height:15px;text-align:center;font-size:14px;opacity:0;transition:opacity .3s}
+.paper{position:absolute;width:16px;height:12px;border-radius:2px;transition:top .45s cubic-bezier(.3,1.4,.6,1),transform .45s;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.ctrl{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+@media (min-width:560px){.ctrl{grid-template-columns:1fr 1fr}}
+.wool{border:none;border-radius:18px;padding:14px;font-weight:800;font-size:15px;background:repeating-linear-gradient(45deg,#B79CEB 0 6px,#A486E2 6px 12px);color:#fff;touch-action:none;user-select:none;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.meter{height:14px;background:#E8E1F7;border-radius:10px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;width:0;background:var(--neg);transition:width .2s}
+.lbl{font-size:13px;font-weight:800;color:var(--ink2)}
+input[type=range]{width:100%;accent-color:var(--violet);height:30px}
+
+/* svg labs */
+.svgbox{background:#F7F3FF;border-radius:18px;overflow:hidden}
+.svgbox svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--f);font-weight:800}
+.strip{transition:transform .7s cubic-bezier(.3,1.5,.5,1)}
+
+/* tribo */
+.series{display:flex;gap:12px;align-items:stretch}
+.arrow{flex:none;width:30px;border-radius:14px;background:linear-gradient(var(--pos),#F2A33A 30%,#F2DB3A 50%,#56C27E 70%,var(--neg));display:flex;flex-direction:column;justify-content:space-between;align-items:center;color:#fff;font-weight:800;padding:6px 0;font-size:18px}
+.mats{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.mat{border:2px solid var(--line);background:#FAF8FF;border-radius:12px;padding:6px 10px;font-weight:800;font-size:13.5px;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.mat.on{border-color:var(--violet);background:#EFE9FF}
+.mat .sg{font-size:16px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.res{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-top:12px}
+.res .bx{border-radius:16px;padding:10px;text-align:center;font-weight:800;font-size:14px;line-height:1.6;color:#fff}
+.res .bx.p{background:var(--pos)}.res .bx.n{background:var(--neg)}
+.res .fly{font-size:13px;color:var(--neg);font-weight:800;text-align:center;animation:fly 1.2s ease-in-out infinite}
+@keyframes fly{0%{transform:translateX(20px);opacity:0}50%{opacity:1}100%{transform:translateX(-20px);opacity:0}}
+
+/* atom */
+.counts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-weight:800;font-size:14px}
+.counts span{background:#F4EFFF;border-radius:12px;padding:6px 10px}
+.counts .tot{color:#fff}
+.orbit{transform-origin:150px 110px;animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* sort */
+.card1{text-align:center;padding:16px;border-radius:20px;background:#F7F3FF;border:2.5px dashed var(--line)}
+.card1 .em{font-size:52px;line-height:1.2}
+.card1 .nm{font-size:19px;font-weight:800;margin-top:4px}
+.trays{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.tray{border:none;border-radius:18px;padding:14px 8px;font-size:17px;font-weight:800;color:#fff}
+.tray.c{background:#C9822E;box-shadow:0 4px 0 #8F5A1A}
+.tray.i{background:#7A6BC2;box-shadow:0 4px 0 #4F4291}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:13px;font-weight:700}
+.bins div{background:#FAF8FF;border-radius:14px;padding:8px 10px;min-height:44px;line-height:1.8}
+
+/* spark */
+.lab6{position:relative;height:240px;border-radius:18px;overflow:hidden;background:linear-gradient(#EAF0FF,#DCE4FA 72%,#5B6CA8 72%);}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:fl .5s}
+@keyframes fl{10%{opacity:.9}100%{opacity:0}}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btnrow button{flex:1;min-width:140px;border:none;border-radius:18px;padding:13px 10px;font-weight:800;font-size:15px;color:#fff;background:var(--violet);box-shadow:0 4px 0 var(--violet-d)}
+.btnrow button.y{background:var(--spark);color:var(--ink);box-shadow:0 4px 0 var(--spark-d)}
+
+/* final / cert */
+.cert{background:var(--card);border-radius:26px;padding:22px 18px;text-align:center;border:4px double var(--spark);position:relative;overflow:hidden}
+.cert img.l{height:46px;width:auto}
+.cert h2{margin:8px 0 4px;font-size:24px;font-weight:800}
+.cert .nm{font-size:28px;font-weight:800;color:var(--violet);margin:10px 0;text-wrap:balance}
+.cert p{margin:4px 0;font-size:15px;line-height:1.8;font-weight:700}
+.cert .medal{font-size:60px}
+.cert .sig{display:flex;justify-content:space-between;margin-top:14px;font-size:13px;font-weight:800;color:var(--ink2);gap:10px;flex-wrap:wrap}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-weight:800;font-size:15px;padding:11px 18px;border-radius:20px;z-index:60;box-shadow:0 8px 20px rgba(0,0,0,.25);animation:pop .3s;max-width:90%;text-align:center}
+@keyframes pop{from{transform:translate(-50%,20px);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="bgfull" aria-hidden="true"></div>
+<canvas id="cf"></canvas>
+<button class="iconbtn snd" id="sndBtn" aria-label="الصوت" title="الصوت">🔊</button>
+<div class="wrap">
+ <div class="top">
+  <div class="sub"><b>الفيزياء • الفصل 8</b>الكهرباء الساكنة • 8-1 الشحنة الكهربائية</div>
+  <div class="tname"><small>المعلمة</small>أ. سامية المالكي</div>
+  <img src="img/moe.png" alt="وزارة التعليم">
+ </div>
+
+ <!-- HOME -->
+ <section id="home">
+  <div class="hero">
+   <div class="txt">
+    <span class="unit">لعبة تفاعلية ⚡</span>
+    <h1>مختبر <span class="z">الشحنات</span></h1>
+    <p>ستّ محطات مع سَنا: ادلكي، قرّبي، صنّفي… واكتشفي سرّ الشرارة والبرق!</p>
+    <button class="go" id="goBtn">ابدئي المغامرة ↓</button>
+   </div>
+  </div>
+  <div class="panel" id="panel">
+  <div class="namebox">
+   <label for="studentName">اسمكِ:</label>
+   <input id="studentName" placeholder="اكتبي اسمكِ ليظهر في الشهادة" autocomplete="off">
+  </div>
+  <div class="h2">محطات المغامرة <small id="sumStars">⭐ 0</small></div>
+  <div class="prog"><i id="progBar"></i></div>
+  <div class="map" id="map"></div>
+  <button class="big y" id="finalBtn">🏆 التحدّي النهائي</button>
+  <div class="orderbox"><button class="order" id="orderBtn" aria-expanded="false">للطلب</button>
+  <a class="who2" id="who2" hidden href="https://wa.me/966533340810" target="_blank" rel="noopener">د. أفنان الطلحي • <span dir="ltr">0533340810</span></a></div>
+  </div>
+ </section>
+
+ <!-- STATION -->
+ <section id="station" hidden>
+  <button class="back" id="backBtn">→ المحطات</button>
+  <div class="scene"><img id="sImg" alt=""><span class="tag" id="sTag"></span></div>
+  <div class="bubble"><div class="who">⚡</div><p id="sBubble"></p><button id="sayBtn" aria-label="استمعي">🔈</button></div>
+  <div class="sec" id="sAct"></div>
+  <div class="sec" id="sQs"></div>
+  <button class="big" id="nextBtn" hidden>المحطة التالية ←</button>
+ </section>
+
+ <!-- FINAL -->
+ <section id="final" hidden>
+  <button class="back" data-home>→ المحطات</button>
+  <div class="scene"><img src="img/storm.webp" alt=""><span class="tag">🏆 التحدّي النهائي</span></div>
+  <div class="bubble"><div class="who">⚡</div><p id="fBubble">عشرة أسئلة من الدرس كله… أجيبي من أول محاولة لتجمعي النجوم!</p><button class="say2" aria-label="استمعي">🔈</button></div>
+  <div class="sec" id="fBox"></div>
+ </section>
+
+ <!-- CERT -->
+ <section id="certS" hidden>
+  <button class="back" data-home>→ المحطات</button>
+  <div class="cert" id="cert" style="margin-top:12px">
+   <img class="l" src="img/moe.png" alt="وزارة التعليم">
+   <div class="medal">🏅</div>
+   <h2>شهادة مستكشفة الشحنات</h2>
+   <p>تشهد المعلمة أ. سامية المالكي بأن الطالبة</p>
+   <div class="nm" id="cName">مستكشفة الشحنات</div>
+   <p id="cText"></p>
+   <p style="color:var(--violet)">الفيزياء • الكهرباء الساكنة • 8-1 الشحنة الكهربائية</p>
+   <div class="sig"><span>المعلمة: أ. سامية المالكي</span><span id="cDate"></span></div>
+  </div>
+  <button class="big" data-home>العودة إلى المحطات</button>
+ </section>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const ST=[
+{id:'s1',img:'img/ruler.webp',n:'المحطة 1',t:'المسطرة والقصاصات',tag:'تجربة استهلالية: أيّ القوى تؤثر عن بُعد؟',
+ say:'ادلكي المسطرة البلاستيكية بقطعة الصوف، ثم قرّبيها من قصاصات الورق… ماذا تلاحظين؟',
+ q:[
+ {q:'ارتفعت القصاصات نحو المسطرة المدلوكة رغم الجاذبية الأرضية. ماذا نستنتج؟',o:['قوة الجذب الكهربائية أكبر من قوة الجاذبية الأرضية','الجاذبية الأرضية اختفت','القصاصات أخف من الهواء','المسطرة مغناطيس'],a:0,w:'تسارعت القصاصات إلى أعلى، أي أن القوة الكهربائية الناتجة عن المسطرة المشحونة أكبر من قوة الجاذبية الأرضية.'},
+ {q:'قبل دلك المسطرة بالصوف لم تنجذب القصاصات. ماذا يعني ذلك؟',o:['المسطرة اكتسبت خاصية الجذب بعد الدلك فقط','القصاصات كانت مبللة','المسطرة ثقيلة','الصوف يجذب الورق'],a:0,w:'خاصية الجذب تحتاج إلى أن تتولّد بالدلك، ثم تفقدها المسطرة بعد فترة، بخلاف الجاذبية الأرضية التي لا تحتاج إلى ذلك.'},
+ {q:'يُسمّى العلم الذي يدرس الشحنات المتجمعة والمحتجزة في مكان ما:',o:['الكهرباء الساكنة (الكهروسكونية)','الكهرباء التيارية','المغناطيسية','البصريات'],a:0,w:'الكهرباء الساكنة (الكهروسكونية) تدرس الشحنات الكهربائية التي تتجمع وتُحتجز في مكان ما.'}
+ ]},
+{id:'s2',img:'img/tapes.webp',n:'المحطة 2',t:'الشريطان B و T',tag:'الشحنات المتماثلة والمختلفة',
+ say:'ألصقنا الشريط B على الطاولة والشريط T فوقه ثم سحبناهما. جرّبي تقريب الأشرطة من بعضها!',
+ q:[
+ {q:'سحبتِ شريطين لاصقين من الطاولة بالطريقة نفسها ثم قرّبتِ أحدهما من الآخر، فإنهما:',o:['يتنافران','يتجاذبان','لا يتأثران','يلتصقان'],a:0,w:'أُعدّا بالطريقة نفسها فلهما النوع نفسه من الشحنة، والشحنات المتماثلة تتنافر.'},
+ {q:'فصلتِ الشريط T عن الشريط B ثم قرّبتِهما. ماذا يحدث ولماذا؟',o:['يتجاذبان لأن شحنتيهما مختلفتان','يتنافران لأن شحنتيهما متماثلتان','لا يحدث شيء لأنهما متعادلان','يتنافران لأنهما من المادة نفسها'],a:0,w:'عند فصل الشريطين تنفصل الشحنات، فيحمل كل منهما نوعًا مختلفًا، والشحنات المختلفة تتجاذب.'},
+ {q:'إصبعكِ يجذب الشريط B ويجذب الشريط T أيضًا. ماذا نستنتج؟',o:['إصبعكِ متعادل، والجسم المشحون يجذب الأجسام المتعادلة','إصبعكِ موجب الشحنة','إصبعكِ سالب الشحنة','الشريطان غير مشحونين'],a:0,w:'لن تجدي جسمًا يتنافر مع الشريطين معًا، لكن بعض الأجسام المتعادلة مثل إصبعك تجذب كليهما. لذلك التنافر هو الدليل المؤكد على الشحنة.'}
+ ]},
+{id:'s3',img:'img/rub.webp',n:'المحطة 3',t:'سلسلة الدلك الكهربائي',tag:'أنواع الشحنات',
+ say:'اختاري مادتين من سلسلة الدلك… المادة الأعلى تفقد الإلكترونات فتصبح موجبة، والأدنى تكتسبها فتصبح سالبة.',
+ q:[
+ {q:'دلكت سَنا قضيب مطاط بقطعة صوف. ما شحنة كلٍّ منهما؟',o:['المطاط سالب والصوف موجب','المطاط موجب والصوف سالب','كلاهما موجب','كلاهما سالب'],a:0,w:'الصوف أعلى في السلسلة فيفقد إلكترونات (موجب)، والمطاط يكتسبها (سالب).'},
+ {q:'وفق تسمية فرانكلين، الزجاج المدلوك بالحرير شحنته عادةً:',o:['موجبة','سالبة','متعادلة','متغيرة دائمًا'],a:0,w:'المطاط والبلاستيك يُشحنان عادة بشحنة سالبة، أما الزجاج والصوف فيُشحنان عادة بشحنة موجبة.'},
+ {q:'كم نوعًا من الشحنات الكهربائية يوجد؟',o:['نوعان: موجبة وسالبة','نوع واحد','ثلاثة أنواع','عدد لا نهائي'],a:0,w:'التجارب تُظهر قائمتين فقط من الأجسام، لذا يوجد نوعان فقط من الشحنات أسماهما فرانكلين الموجبة والسالبة.'}
+ ]},
+{id:'s4',img:'img/balloon.webp',n:'المحطة 4',t:'النظرة المجهرية للشحنة',tag:'الذرّة والإلكترونات',
+ say:'هذه ذرّة متعادلة: عدد البروتونات يساوي عدد الإلكترونات. انزعي إلكترونًا أو أضيفيه وراقبي الشحنة!',
+ q:[
+ {q:'عند دلك المطاط بالصوف، ما الذي ينتقل بين الجسمين؟',o:['الإلكترونات','البروتونات','النوى','النيوترونات'],a:0,w:'تنتقل الإلكترونات من ذرات الصوف إلى ذرات المطاط؛ فالنوى ثابتة ولا تنتقل.'},
+ {q:'الشحنة الكلية للمطاط والصوف معًا بعد الدلك:',o:['تبقى كما هي (صفرًا) لأن الشحنة محفوظة','تصبح سالبة','تصبح موجبة','تتضاعف'],a:0,w:'الشحنة لا تفنى ولا تُستحدث، بل تنفصل الشحنات الموجبة والسالبة بانتقال الإلكترونات.'},
+ {q:'العالِم الذي اكتشف عام 1897م أن المواد تحتوي على جسيمات صغيرة سالبة (الإلكترونات):',o:['طومسون','رذرفورد','فرانكلين','كولوم'],a:0,w:'اكتشف ج. ج. طومسون الإلكترون عام 1897م، واكتشف رذرفورد النواة الموجبة بين عامي 1909 و1911م.'},
+ {q:'ذرّة فقدت إلكترونًا من مداراتها الخارجية، فأصبحت:',o:['موجبة الشحنة','سالبة الشحنة','متعادلة','بلا نواة'],a:0,w:'صار عدد البروتونات الموجبة أكبر من عدد الإلكترونات، فأصبحت الذرة موجبة الشحنة.'}
+ ]},
+{id:'s5',img:'img/trays.webp',n:'المحطة 5',t:'الموصلات والعوازل',tag:'صواني سَنا',
+ say:'ساعديني في ترتيب المواد: الموصلات في صينية، والعوازل في الصينية الأخرى!',
+ q:[
+ {q:'لماذا تعد الفلزات موصلات جيدة؟',o:['لأن في كل ذرة إلكترونًا واحدًا على الأقل يتحرك بحرية','لأنها ثقيلة','لأنها لامعة','لأن نواتها تتحرك'],a:0,w:'الإلكترونات الحرة تتحرك خلال الفلز كأنها تابعة لذراته جميعها وليس لذرة معينة.'},
+ {q:'وضعتِ شحنة على كرة فلزية وأخرى على كرة بلاستيكية. أين تتوزع الشحنة؟',o:['على كامل سطح الفلز، وتبقى في مكانها على البلاستيك','تبقى في مكانها على الاثنين','تنتشر في الاثنين','تختفي من الفلز'],a:0,w:'الشحنات تتوزع على كامل السطح الخارجي للموصل، بينما تبقى على العازل في المكان الذي توضع فيه.'},
+ {q:'الكربون عازل في الألماس وموصل في الجرافيت، والسبب:',o:['اختلاف ترتيب الروابط؛ ففي الجرافيت إلكترونات حرة الحركة','الجرافيت أثقل','الألماس فلز','لون الجرافيت أسود'],a:0,w:'ذرات الكربون في الألماس ترتبط بأربع ذرات بقوة، أما في الجرافيت فترتبط بثلاث وتبقى إلكترونات حرة الحركة.'}
+ ]},
+{id:'s6',img:'img/spark.webp',n:'المحطة 6',t:'الشرارة والبرق',tag:'عندما يصبح الهواء موصلًا',
+ say:'امشي على السجاد لتتجمع الشحنات… ثم المسي مقبض الباب الفلزي. انتبهي للشرارة!',
+ q:[
+ {q:'لماذا تحدث شرارة بين إصبعكِ ومقبض الباب الفلزي بعد المشي على السجاد؟',o:['لتفريغ الشحنات الزائدة التي تجمعت على جسمكِ','لأن المقبض ساخن','لأن السجاد مغناطيس','لأن الهواء موصل دائمًا'],a:0,w:'تُفرّغ الشحنات الزائدة من جسمك عند اقترابك من المقبض، فيصبح جسمك متعادلًا.'},
+ {q:'الهواء عادةً عازل، فمتى يصبح موصلًا؟',o:['عندما تكون الشحنات كبيرة بما يكفي لفصل الإلكترونات عن جزيئات الهواء','عندما يكون الجو جافًا وباردًا','عندما يتحرك الهواء','لا يصبح موصلًا أبدًا'],a:0,w:'تتكوّن البلازما من إلكترونات وذرات موجبة حرة الحركة، فيصبح الهواء موصلًا للحظات.'},
+ {q:'تفريغ الشحنات بين الأرض والسحب الرعدية يُسمّى:',o:['البرق','الرعد','الشرارة الصغيرة','التيار'],a:0,w:'البرق شرر لامع يتولد من تفريغ الشحنات بين الأرض والسحب الرعدية عبر البلازما.'},
+ {q:'في السحابة الرعدية تنفصل الشحنات بحيث يكون:',o:['أسفلها سالبًا وأعلاها موجبًا','أسفلها موجبًا وأعلاها سالبًا','كلها موجبة','كلها سالبة'],a:0,w:'العمليات داخل السحب الرعدية تجعل أسفل السحابة سالب الشحنة وأعلاها موجب الشحنة.'}
+ ]}
+];
+const FINAL=[
+ {q:'مشط من الصوف (مدلوك) يجذب قصاصات الورق، لكنه يفقد هذه القدرة بعد دقائق. لماذا؟',o:['لأن شحنته تُفرَّغ تدريجيًا إلى ما حوله فيعود متعادلًا','لأن القصاصات أصبحت أثقل','لأن الجاذبية زادت','لأن المشط انصهر'],a:0},
+ {q:'كيف تعرفين أيّ الشريطين B أو T موجب الشحنة؟',o:['أقرّب إليه جسمًا معروف الشحنة كالزجاج المدلوك بالحرير؛ فإن تنافرا فهو موجب','أقيس طوله','أنظر إلى لونه','ألمسه بإصبعي'],a:0},
+ {q:'كرة بيلسان معلقة بخيط عازل. ما الاختبار الذي يؤكد أنها مشحونة؟',o:['أن تتنافر مع جسم مشحون','أن تنجذب إلى جسم مشحون','أن تتحرك مع الهواء','أن تلمع'],a:0},
+ {q:'شُحن قضيب مطاط بشحنة سالبة بدلكه بالصوف. ماذا يحدث لشحنة الصوف؟',o:['يُشحن بشحنة موجبة مساوية في المقدار','يبقى متعادلًا','يُشحن بشحنة سالبة','تختفي شحنته'],a:0},
+ {q:'قضيب فلزي معلّق بخيوط حرير ولامسه قضيب زجاجي مشحون (موجب). ماذا يحدث للقضيب الفلزي؟',o:['يُشحن بشحنة موجبة تتوزع على سطحه كله','يُشحن بشحنة سالبة في طرف واحد','يبقى متعادلًا','يصبح عازلًا'],a:0},
+ {q:'دلكتِ قضيب نحاس بالصوف وأنتِ تمسكينه بيدكِ. لماذا لا يبقى مشحونًا؟',o:['لأن النحاس موصل فتنتقل الشحنة عبره إلى يدكِ','لأن النحاس عازل','لأن الصوف لا يشحن الفلزات','لأن النحاس ثقيل'],a:0},
+ {q:'أيّ مجموعة كلها مواد عازلة؟',o:['الزجاج، الخشب الجاف، البلاستيك','النحاس، الألومنيوم، الجرافيت','الفضة، الزجاج، الذهب','البلازما، النحاس، الخشب'],a:0},
+ {q:'عند ذرة فقدت إلكترونات أصبحت موجبة، والإلكترونات المفقودة:',o:['تبقى حرة أو ترتبط بذرات أخرى فتصبح سالبة','تفنى','تتحول إلى بروتونات','تعود للنواة'],a:0},
+ {q:'وفق دلالة الألوان في الكتاب، تُوضَّح الشحنات الموجبة باللون:',o:['الأحمر','الأزرق','الأخضر','الأسود'],a:0},
+ {q:'الشرارة الصغيرة والبرق:',o:['متماثلان في طبيعتهما ويختلفان كثيرًا في المقدار','مختلفان تمامًا في طبيعتهما','متساويان في المقدار','لا علاقة بينهما بالشحنات'],a:0}
+];
+
+/* ================= STATE ================= */
+let S={stars:{},done:{},name:'',final:null};
+try{const s=JSON.parse(localStorage.getItem('chargeLab')||'null');if(s)S=Object.assign(S,s)}catch(e){}
+function save(){try{localStorage.setItem('chargeLab',JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id);
+
+/* ================= SOUND & VOICE ================= */
+let SOUND=true,AC;
+function tone(f,d,type='sine',v=.13,delay=0){if(!SOUND)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(AC.destination);const t=AC.currentTime+delay;o.start(t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.stop(t+d)}catch(e){}}
+function zap(){if(!SOUND)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const n=AC.sampleRate*.35,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);const s=AC.createBufferSource(),g=AC.createGain();g.gain.value=.35;s.buffer=b;s.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+const sfx={tap:()=>tone(880,.1,'triangle',.08),ok:()=>{tone(660,.14);tone(990,.2,'sine',.13,.11)},no:()=>tone(190,.25,'square',.06),rub:()=>tone(300+Math.random()*200,.05,'sawtooth',.03),pop:()=>tone(1200+Math.random()*500,.07,'sine',.06),win:()=>[523,659,784,1046,1318].forEach((f,i)=>tone(f,.35,'triangle',.12,i*.12))};
+let VOICE=null;
+function pickVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^ar/i.test(v.lang));if(vs.length)VOICE=vs.find(v=>/female|zeina|hoda|salma|laila|mariam|amira|google/i.test(v.name))||vs[0]}catch(e){}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(t){if(!SOUND)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[⚡⭐🔍]/g,'،'));u.lang='ar-SA';if(VOICE)u.voice=VOICE;u.rate=1.05;speechSynthesis.speak(u)}catch(e){}}
+$('sndBtn').onclick=()=>{SOUND=!SOUND;$('sndBtn').textContent=SOUND?'🔊':'🔇';if(!SOUND)try{speechSynthesis.cancel()}catch(e){}};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function bubble(t,speak=false){$('sBubble').textContent=t;if(speak)say(t)}
+$('sayBtn').onclick=()=>say($('sBubble').textContent);
+document.querySelector('.say2').onclick=()=>say($('fBubble').textContent);
+
+/* ================= NAV ================= */
+function show(id){['home','station','final','certS'].forEach(s=>$(s).hidden=s!==id);window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>{renderHome();show('home')});
+$('backBtn').onclick=()=>{cleanup();renderHome();show('home')};
+$('studentName').value=S.name||'';
+$('studentName').oninput=e=>{S.name=e.target.value.trim();save()};
+
+function renderHome(){
+ const m=$('map');m.innerHTML='';let tot=0,max=0,done=0;
+ ST.forEach((s,i)=>{const st=S.stars[s.id]||0;tot+=st;max+=s.q.length;if(S.done[s.id])done++;
+  const b=document.createElement('button');b.className='st';
+  b.innerHTML=`<img src="${s.img}" alt=""><div class="lab"><span class="n">${s.n}</span><span class="t">${s.t}</span><span class="stars">${'★'.repeat(st)}${'☆'.repeat(s.q.length-st)}</span></div>${S.done[s.id]?'<span class="done">✓ أُنجزت</span>':''}`;
+  b.onclick=()=>{sfx.tap();openStation(i)};m.appendChild(b)});
+ if(S.final!=null)tot+=S.final;
+ $('sumStars').textContent='⭐ '+tot;
+ $('progBar').style.width=(done/ST.length*100)+'%';
+}
+$('orderBtn').onclick=()=>{const w=$('who2');w.hidden=!w.hidden;$('orderBtn').setAttribute('aria-expanded',String(!w.hidden))};
+$('goBtn').onclick=()=>{sfx.tap();$('panel').scrollIntoView({behavior:'smooth'})};
+$('finalBtn').onclick=()=>{sfx.tap();openFinal()};
+
+/* ================= QUESTIONS ================= */
+function shuffleOpts(q){const idx=q.o.map((_,i)=>i).sort(()=>Math.random()-.5);return{q:q.q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a),w:q.w}}
+function renderQs(box,qs,onDone,head){
+ box.innerHTML=head||'';let left=qs.length,first=0;
+ qs.map(shuffleOpts).forEach((Q,k)=>{
+  const d=document.createElement('div');d.className='q';
+  const long=Q.o.some(o=>o.length>26);
+  d.innerHTML=`<div class="qt"><b>${k+1}.</b> ${Q.q}</div><div class="opts ${long?'one':''}">${Q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('')}</div><div class="whyb"></div>`;
+  let miss=false,solved=false;
+  d.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+   if(solved)return;const i=+b.dataset.i;
+   if(i===Q.a){solved=true;b.classList.remove('no');b.classList.add('ok');sfx.ok();if(!miss)first++;
+    d.querySelector('.whyb').innerHTML=Q.w?`<div class="why">✔ ${Q.w}</div>`:'';
+    if(--left===0)onDone(first,qs.length);
+   }else{if(b.classList.contains('no'))return;miss=true;b.classList.add('no');sfx.no();
+    d.querySelector('.whyb').innerHTML='<div class="why bad">حاولي مرة أخرى… فكّري فيما جرّبتِه في النشاط 💭</div>'}
+  });
+  box.appendChild(d)});
+}
+
+/* ================= STATION ================= */
+let cur=0,timers=[],raf=null;
+function cleanup(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimationFrame(raf);raf=null;try{speechSynthesis.cancel()}catch(e){}}
+function later(f,ms){timers.push(setTimeout(f,ms))}
+function openStation(i){
+ cleanup();cur=i;const s=ST[i];
+ $('sImg').src=s.img;$('sTag').textContent=s.tag;bubble(s.say,true);
+ $('nextBtn').hidden=true;
+ ACT[s.id]($('sAct'));
+ renderQs($('sQs'),s.q,(f,n)=>{
+  S.stars[s.id]=Math.max(S.stars[s.id]||0,f);S.done[s.id]=true;save();sfx.win();confetti(70);
+  bubble(`أحسنتِ! جمعتِ ${f} من ${n} نجوم في هذه المحطة ⭐`,true);
+  $('nextBtn').hidden=false;
+  $('nextBtn').textContent=i<ST.length-1?'المحطة التالية ←':'🏆 إلى التحدّي النهائي';
+ },'<h3>أسئلة المحطة <span class="pill">⭐ نجمة لكل إجابة من أول محاولة</span></h3>');
+ show('station');
+}
+$('nextBtn').onclick=()=>{if(cur<ST.length-1)openStation(cur+1);else openFinal()};
+
+/* ================= ACTIVITIES ================= */
+const ACT={};
+
+/* 1: ruler & paper */
+ACT.s1=box=>{
+ box.innerHTML=`<h3>النشاط <span class="pill">ادلكي ثم قرّبي</span></h3><p class="hint">مرّري إصبعكِ ذهابًا وإيابًا على قطعة الصوف لشحن المسطرة، ثم حرّكي المنزلق لتقريبها من القصاصات.</p>
+ <div class="lab1" id="lab1"><div class="ruler" id="rl">${'<span class="m">−</span>'.repeat(6)}</div></div>
+ <div class="ctrl"><div><button class="wool" id="wool" style="width:100%">🧶 قطعة الصوف — ادلكي هنا</button><div class="lbl" style="margin-top:8px">شحنة المسطرة</div><div class="meter"><i id="chg"></i></div></div>
+ <div><label class="lbl" for="dist">قرّبي المسطرة من القصاصات ↓</label><input type="range" id="dist" min="0" max="100" value="0"></div></div>
+ <div class="note" id="n1">المسطرة غير مشحونة بعد.</div>`;
+ const lab=$('lab1'),rl=$('rl'),cols=['#FFD84D','#9ED8FF','#FF9EC8','#B9F0A6','#CDB8FF'];
+ let charge=0,papers=[],lifted=false,W=lab.clientWidth;
+ for(let k=0;k<16;k++){const p=document.createElement('div');p.className='paper';p.style.background=cols[k%5];
+  const x=12+Math.random()*76,y=232+Math.random()*40;p.style.left=x+'%';p.style.top=y+'px';p.style.transform=`rotate(${Math.random()*60-30}deg)`;p._y=y;p._x=x;lab.appendChild(p);papers.push(p)}
+ const setRuler=()=>{const v=+$('dist').value,top=16+v*1.75;rl.style.top=top+'px';return top};
+ setRuler();
+ const upd=()=>{$('chg').style.width=charge+'%';rl.querySelectorAll('.m').forEach((m,i)=>m.style.opacity=charge>(i+1)*14?1:0);check()};
+ function check(){const top=setRuler(),gap=232-(top+26);
+  if(charge>=55&&gap<85&&!lifted){lifted=true;
+   papers.forEach((p,k)=>{if(p._x<15||p._x>85)return;later(()=>{p.style.top=(top+24)+'px';p.style.transform=`rotate(${Math.random()*40-20}deg)`;sfx.pop()},k*45)});
+   // some fall back (they acquire the same charge)
+   later(()=>{papers.forEach((p,k)=>{if(k%4===0){p.style.top=p._y+'px'}})},2200);
+   $('n1').className='note okn';$('n1').textContent='رائع! القصاصات قفزت نحو المسطرة المشحونة… وبعضها سقط بعد أن لامسها. لاحظي أن القوة أثّرت عن بُعد قبل التلامس.';
+   bubble('لاحظي! القصاصات ارتفعت إلى أعلى… أي أن القوة الكهربائية أكبر من قوة الجاذبية الأرضية!',true);
+  }else if(charge<55&&gap<85&&!lifted){$('n1').textContent='المسطرة قريبة لكن لا شيء يحدث… لأنها غير مشحونة بما يكفي. ادلكيها أكثر!'}
+  else if(!lifted&&charge>=55){$('n1').textContent='المسطرة مشحونة الآن ⚡ قرّبيها أكثر من القصاصات.'}
+  if(lifted&&gap>110){lifted=false;papers.forEach(p=>{p.style.top=p._y+'px'})}
+ }
+ $('dist').oninput=check;
+ let last=null;const w=$('wool');
+ w.addEventListener('pointerdown',e=>{last=e.clientX;w.setPointerCapture(e.pointerId)});
+ w.addEventListener('pointermove',e=>{if(last==null)return;const dx=Math.abs(e.clientX-last);if(dx>6){last=e.clientX;charge=Math.min(100,charge+2.2);sfx.rub();upd()}});
+ w.addEventListener('pointerup',()=>{last=null});
+ w.addEventListener('click',()=>{charge=Math.min(100,charge+6);sfx.rub();upd()});
+};
+
+/* 2: tapes */
+ACT.s2=box=>{
+ box.innerHTML=`<h3>النشاط <span class="pill">قرّبي الأشرطة</span></h3><p class="hint">اختاري زوجًا وراقبي: هل يتجاذبان أم يتنافران؟</p>
+ <div class="svgbox"><svg viewBox="0 0 300 210" role="img" aria-label="شريطان معلقان">
+  <rect x="40" y="22" width="220" height="8" rx="4" fill="#A7A9B8"/><rect x="34" y="16" width="12" height="194" rx="5" fill="#BFC1CC"/><rect x="254" y="16" width="12" height="194" rx="5" fill="#BFC1CC"/>
+  <g id="L" class="strip" style="transform-origin:120px 30px"><rect x="111" y="30" width="18" height="140" rx="3" fill="#FFE45C" stroke="#E2C02B"/><text id="Lt" x="120" y="110" text-anchor="middle" font-size="16" fill="#6B5B00">T</text></g>
+  <g id="R" class="strip" style="transform-origin:180px 30px"><rect x="171" y="30" width="18" height="140" rx="3" fill="#FFE45C" stroke="#E2C02B"/><text id="Rt" x="180" y="110" text-anchor="middle" font-size="16" fill="#6B5B00">T</text></g>
+  <text id="fing" x="210" y="120" font-size="40" opacity="0">👆</text>
+ </svg></div>
+ <div class="chips" style="margin-top:12px" id="pairs">
+  <button class="chip" data-p="TT">T مع T</button><button class="chip" data-p="BB">B مع B</button><button class="chip" data-p="BT">B مع T</button><button class="chip" data-p="F">إصبعكِ مع الشريط</button></div>
+ <div class="note" id="n2">اختاري زوجًا من الأزرار.</div>`;
+ const L=$('L'),R=$('R'),seen=new Set();
+ const pos=(a,b)=>{L.style.transform=`rotate(${a}deg)`;R.style.transform=`rotate(${b}deg)`};
+ $('pairs').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  $('pairs').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));
+  const p=c.dataset.p;seen.add(p);pos(0,0);$('fing').setAttribute('opacity',0);R.style.opacity=1;
+  later(()=>{
+   if(p==='F'){R.style.opacity=0;$('Lt').textContent='B';$('fing').setAttribute('opacity',1);pos(-14,0);sfx.ok();
+    $('n2').textContent='الشريط ينجذب إلى إصبعكِ المتعادل… وسينجذب T أيضًا! الانجذاب وحده ليس دليلًا كافيًا على الشحنة.';return}
+   $('Lt').textContent=p[0];$('Rt').textContent=p[1];
+   if(p==='BT'){pos(-11,11);sfx.ok();$('n2').textContent='تجاذبا! الشريطان B و T يحملان شحنتين مختلفتين، والشحنات المختلفة تتجاذب.'}
+   else{pos(18,-18);sfx.no();$('n2').textContent='تنافرا! الشريطان أُعدّا بالطريقة نفسها فلهما الشحنة نفسها، والشحنات المتماثلة تتنافر.'}
+   if(seen.size>=3)bubble('ممتاز! الشحنات المتماثلة تتنافر، والمختلفة تتجاذب. والجسم المتعادل ينجذب للمشحون.')
+  },250);
+ });
+};
+
+/* 3: triboelectric series */
+const SERIES=['يد الإنسان','زجاج','شعر الإنسان','نايلون','صوف','فراء الحيوانات','حرير','ألومنيوم','ورق','قطن','خشب','عنبر','مطاط البالونات','مطاط صلب (إبونايت)','نيكل، نحاس، فضة، ذهب','بوليستر','بولي إيثيلين','تيفلون'];
+ACT.s3=box=>{
+ box.innerHTML=`<h3>النشاط <span class="pill">اختاري مادتين للدلك</span></h3><p class="hint">الشكل 8-3: المواد في أعلى السهم أكثر فقدًا للإلكترونات، وفي أسفله أكثر اكتسابًا لها. (الأحمر = موجب، الأزرق = سالب)</p>
+ <div class="series"><div class="arrow"><span>+</span><span>−</span></div><div class="mats" id="mats"></div></div>
+ <div id="res3"></div><div class="note" id="n3">اختاري المادة الأولى.</div>`;
+ const mats=$('mats');let pick=[];
+ SERIES.forEach((m,i)=>{const b=document.createElement('button');b.className='mat';b.innerHTML=`<span>${m}</span><span class="sg"></span>`;b.onclick=()=>{
+  sfx.tap();if(pick.length===2){pick=[];mats.querySelectorAll('.mat').forEach(x=>{x.classList.remove('on');x.querySelector('.sg').textContent='';x.querySelector('.sg').style.background=''});$('res3').innerHTML=''}
+  if(pick.includes(i))return;pick.push(i);b.classList.add('on');
+  if(pick.length===1){$('n3').textContent='اختاري المادة الثانية التي ستدلكينها بها.';return}
+  const [a,c]=pick,hi=Math.min(a,c),lo=Math.max(a,c);
+  const sp=mats.children[hi].querySelector('.sg'),sn=mats.children[lo].querySelector('.sg');sp.textContent='+';sp.style.background='var(--pos)';sn.textContent='−';sn.style.background='var(--neg)';
+  $('res3').innerHTML=`<div class="res"><div class="bx p">${SERIES[hi]}<br>تفقد إلكترونات<br>موجبة +</div><div class="fly">e⁻ e⁻ ←</div><div class="bx n">${SERIES[lo]}<br>تكتسب إلكترونات<br>سالبة −</div></div>`;
+  sfx.ok();$('n3').textContent=`عند دلك ${SERIES[hi]} مع ${SERIES[lo]} تنتقل الإلكترونات إلى ${SERIES[lo]}. جرّبي الصوف مع مطاط البالونات، أو الزجاج مع الحرير!`;
+ };mats.appendChild(b)});
+};
+
+/* 4: atom */
+ACT.s4=box=>{
+ box.innerHTML=`<h3>النشاط <span class="pill">ابني الذرّة</span></h3><p class="hint">النواة موجبة (بروتونات حمراء +) والإلكترونات السالبة (زرقاء −) تدور حولها.</p>
+ <div class="svgbox"><svg viewBox="0 0 300 220" id="atom"></svg></div>
+ <div class="btnrow"><button id="rem">➖ انزعي إلكترونًا</button><button id="add" class="y">➕ أضيفي إلكترونًا</button></div>
+ <div class="counts" id="cnt"></div><div class="note" id="n4">الذرّة متعادلة الآن.</div>`;
+ const P=4;let e=4,seen=new Set();
+ function draw(){
+  let s=`<ellipse cx="150" cy="110" rx="105" ry="80" fill="none" stroke="#CFC4F0" stroke-width="2" stroke-dasharray="5 5"/>`;
+  [[-9,-9],[9,-9],[-9,9],[9,9]].forEach(([x,y])=>s+=`<circle cx="${150+x}" cy="${110+y}" r="11" fill="#E5484D"/><text x="${150+x}" y="${115+y}" text-anchor="middle" fill="#fff" font-size="15">+</text>`);
+  s+='<g class="orbit">';for(let k=0;k<e;k++){const a=k/e*Math.PI*2,x=150+105*Math.cos(a),y=110+80*Math.sin(a);s+=`<circle cx="${x}" cy="${y}" r="11" fill="#2F7BEA"/><text x="${x}" y="${y+5}" text-anchor="middle" fill="#fff" font-size="16">−</text>`}s+='</g>';
+  $('atom').innerHTML=s;const net=P-e;
+  const col=net>0?'var(--pos)':net<0?'var(--neg)':'var(--ok)';
+  $('cnt').innerHTML=`<span>البروتونات: ${P}</span><span>الإلكترونات: ${e}</span><span class="tot" style="background:${col}">الشحنة الكلية: ${net>0?'+'+net:net}</span>`;
+  $('n4').textContent=net===0?'الذرّة متعادلة: الشحنة الموجبة في النواة تساوي الشحنة السالبة للإلكترونات.':net>0?'فقدت الذرّة إلكترونًا ← أصبحت موجبة الشحنة. لاحظي: النواة لم تتغير، الإلكترون فقط هو الذي انتقل.':'اكتسبت الذرّة إلكترونًا إضافيًا ← أصبحت سالبة الشحنة.';
+  seen.add(Math.sign(net));if(seen.size===3)bubble('أحسنتِ! اكتساب الشحنة وفقدانها ما هو إلا انتقال للإلكترونات، والشحنة الكلية محفوظة.');
+ }
+ $('rem').onclick=()=>{if(e>2){e--;sfx.pop();draw()}};$('add').onclick=()=>{if(e<6){e++;sfx.pop();draw()}};draw();
+};
+
+/* 5: conductors / insulators */
+const ITEMS=[['🧵','سلك نحاس','c'],['🥄','ملعقة فلزية','c'],['🪩','كرة ألومنيوم','c'],['✏️','جرافيت (رصاص القلم)','c'],['⚡','البلازما','c'],['🪟','قضيب زجاج','i'],['⚫','قضيب مطاط','i'],['📏','مسطرة بلاستيكية','i'],['🪵','خشب جاف','i'],['🌬️','هواء جاف','i'],['👕','ملابس','i'],['💎','ألماس','i']];
+ACT.s5=box=>{
+ const deck=[...ITEMS].sort(()=>Math.random()-.5);let k=0,right=0;const bins={c:[],i:[]};
+ box.innerHTML=`<h3>النشاط <span class="pill">صنّفي المواد</span></h3><p class="hint">الموصل تنتقل الشحنات خلاله بسهولة، والعازل لا تنتقل خلاله الشحنات بسهولة.</p>
+ <div class="card1"><div class="em" id="em"></div><div class="nm" id="nm"></div></div>
+ <div class="trays"><button class="tray c" data-t="c">صينية الموصلات</button><button class="tray i" data-t="i">صينية العوازل</button></div>
+ <div class="bins"><div id="bc"><b>الموصلات:</b> </div><div id="bi"><b>العوازل:</b> </div></div>
+ <div class="note" id="n5">${k+1} من ${deck.length}</div>
+ <div id="dist5" hidden style="margin-top:14px"><h3>الشكل 8-5 <span class="pill">أين تذهب الشحنة؟</span></h3>
+  <div class="svgbox"><svg viewBox="0 0 300 150" id="sph"></svg></div>
+  <div class="btnrow"><button id="put">ضعي شحنة على الكرتين</button></div></div>`;
+ function showItem(){const it=deck[k];$('em').textContent=it[0];$('nm').textContent=it[1];$('n5').textContent=`المادة ${k+1} من ${deck.length}`}
+ showItem();
+ box.querySelectorAll('.tray').forEach(t=>t.onclick=()=>{
+  if(k>=deck.length)return;const it=deck[k];
+  if(t.dataset.t===it[2]){sfx.ok();right++;bins[it[2]].push(it[1]);$('b'+it[2]).innerHTML=`<b>${it[2]==='c'?'الموصلات':'العوازل'}:</b> `+bins[it[2]].join('، ');k++;
+   if(k<deck.length)showItem();else{$('em').textContent='🎉';$('nm').textContent='اكتمل التصنيف!';$('n5').className='note okn';$('n5').textContent='أحسنتِ! الفلزات والجرافيت والبلازما موصلات، والزجاج والخشب الجاف والبلاستيك والهواء الجاف عوازل.';$('dist5').hidden=false;drawSph(false);bubble('والآن شاهدي كيف تتوزع الشحنة على الموصل والعازل!',true)}}
+  else{sfx.no();$('n5').textContent=`ليس تمامًا… فكّري: هل تتحرك الشحنات بسهولة خلال «${it[1]}»؟`}
+ });
+ function drawSph(on){
+  let s=`<circle cx="80" cy="72" r="52" fill="#C9CED8"/><circle cx="220" cy="72" r="52" fill="#E8A98A"/><text x="80" y="143" text-anchor="middle" font-size="13" fill="#2A2350">موصل (فلز)</text><text x="220" y="143" text-anchor="middle" font-size="13" fill="#2A2350">عازل</text>`;
+  if(on){for(let k=0;k<10;k++){const a=k/10*Math.PI*2;s+=`<text x="${80+44*Math.cos(a)}" y="${77+44*Math.sin(a)}" text-anchor="middle" font-size="16" fill="#E5484D"><animate attributeName="x" from="40" to="${80+44*Math.cos(a)}" dur=".8s"/><animate attributeName="y" from="77" to="${77+44*Math.sin(a)}" dur=".8s"/>+</text>`}
+   [[178,60],[184,76],[176,88],[190,68],[186,92],[180,52]].forEach(([x,y])=>s+=`<text x="${x}" y="${y}" font-size="16" fill="#E5484D">+</text>`)}
+  $('sph').innerHTML=s}
+ box.addEventListener('click',e=>{if(e.target.id==='put'){drawSph(true);sfx.ok();$('n5').textContent='على الموصل انتشرت الشحنة على السطح الخارجي كله، وعلى العازل بقيت في المكان الذي وُضعت فيه.'}});
+};
+
+/* 6: spark & lightning */
+ACT.s6=box=>{
+ box.innerHTML=`<h3>النشاط <span class="pill">اشحني ثم فرّغي</span></h3><p class="hint">كل خطوة على السجاد تجمع شحنات على جسمكِ. عندما تكفي الشحنة، المسي المقبض.</p>
+ <div class="lab6"><svg viewBox="0 0 300 240" style="width:100%;height:100%;display:block">
+   <rect x="232" y="20" width="60" height="155" rx="6" fill="#B07A4A"/><circle cx="240" cy="105" r="11" fill="#C9CED8" stroke="#8D93A3" stroke-width="2"/>
+   <text id="kid" x="70" y="170" font-size="70" text-anchor="middle">🧍‍♀️</text><g id="kc"></g>
+   <polyline id="bolt" points="" fill="none" stroke="#7FB2FF" stroke-width="4" stroke-linejoin="round"/>
+ </svg><div class="flash" id="fl6"></div></div>
+ <div class="lbl" style="margin-top:10px">الشحنة المتجمعة على جسمكِ</div><div class="meter"><i id="m6"></i></div>
+ <div class="btnrow"><button id="walk">👣 امشي على السجاد</button><button id="touch" class="y">✋ المسي المقبض</button></div>
+ <div class="note" id="n6">ابدئي بالمشي على السجاد.</div>
+ <h3 style="margin-top:18px">البرق <span class="pill">السحابة الرعدية</span></h3>
+ <div class="lab6" style="background:linear-gradient(#2B2560,#4A3E8F 75%,#2E2A44 75%)"><svg viewBox="0 0 300 240" style="width:100%;height:100%;display:block" id="cloud"></svg><div class="flash" id="fl7"></div></div>
+ <div class="lbl" style="margin-top:10px">الشحنات في السحابة</div><div class="meter"><i id="m7" style="background:var(--spark)"></i></div>
+ <div class="btnrow"><button id="storm">🌩️ زيدي فصل الشحنات</button></div>
+ <div class="note" id="n7">داخل السحابة تنفصل الشحنات: أسفلها سالب وأعلاها موجب.</div>`;
+ let q=0,c=0;
+ const kc=$('kc');
+ function drawKid(){let s='';for(let k=0;k<Math.round(q/12);k++){s+=`<text x="${40+(k%4)*20}" y="${120+Math.floor(k/4)*22}" font-size="16" fill="#2F7BEA">−</text>`}kc.innerHTML=s;$('m6').style.width=q+'%'}
+ $('walk').onclick=()=>{q=Math.min(100,q+17);tone(220,.08,'triangle',.05);drawKid();$('n6').textContent=q<60?'تتجمع الشحنات… استمري بالمشي.':'جسمكِ مشحون الآن ⚡ المسي المقبض!'};
+ $('touch').onclick=()=>{
+  if(q<60){sfx.no();$('n6').textContent='لا شرارة! الشحنة على جسمكِ قليلة. امشي على السجاد أكثر.';return}
+  $('bolt').setAttribute('points','110,108 150,98 165,112 195,100 210,110 229,105');zap();$('fl6').classList.remove('go');void $('fl6').offsetWidth;$('fl6').classList.add('go');
+  q=0;later(()=>{$('bolt').setAttribute('points','');drawKid()},350);
+  $('n6').className='note okn';$('n6').textContent='طق! شرارة كهربائية: تفرّغت الشحنات الزائدة من جسمكِ عبر الهواء الذي أصبح موصلًا للحظة، فعاد جسمكِ متعادلًا.';
+  bubble('شعرتِ بها؟ هذه شرارة كهربائية صغيرة… والبرق شرارة عملاقة لها الطبيعة نفسها!',true)};
+ function drawCloud(bolt){let s=`<g fill="#CFC8EC"><circle cx="110" cy="75" r="40"/><circle cx="160" cy="60" r="50"/><circle cx="210" cy="80" r="38"/><rect x="80" y="75" width="160" height="45" rx="20"/></g>`;
+  const n=Math.round(c/14);for(let k=0;k<n;k++){s+=`<text x="${105+k*18}" y="58" font-size="16" fill="#E5484D">+</text><text x="${105+k*18}" y="115" font-size="18" fill="#2F7BEA">−</text>`;if(c>40)s+=`<text x="${105+k*18}" y="222" font-size="16" fill="#FF8C8C">+</text>`}
+  s+='<rect x="0" y="180" width="300" height="60" fill="#2E2A44"/><text x="150" y="205" text-anchor="middle" font-size="12" fill="#CFC8EC">الأرض</text>';
+  if(bolt)s+='<polyline points="150,120 135,150 160,155 140,185 165,190 150,215" fill="none" stroke="#FFF3A8" stroke-width="5" stroke-linejoin="round"/>';
+  $('cloud').innerHTML=s;$('m7').style.width=c+'%'}
+ drawCloud(false);
+ $('storm').onclick=()=>{c=Math.min(100,c+20);tone(110,.2,'sine',.08);drawCloud(false);
+  if(c>=100){drawCloud(true);zap();later(()=>tone(60,1.2,'sawtooth',.12),300);$('fl7').classList.remove('go');void $('fl7').offsetWidth;$('fl7').classList.add('go');
+   $('n7').className='note okn';$('n7').textContent='البرق! الشحنات أصبحت كبيرة بما يكفي لفصل الإلكترونات عن جزيئات الهواء، فتكوّنت البلازما الموصلة وتفرّغت الشحنات بين السحابة والأرض.';
+   later(()=>{c=0;drawCloud(false)},1500)}
+  else $('n7').textContent='تزداد الشحنات: السالبة أسفل السحابة، والموجبة أعلاها، وتتجمع شحنات موجبة على الأرض تحتها.'};
+};
+
+/* ================= FINAL ================= */
+function openFinal(){
+ cleanup();show('final');say($('fBubble').textContent);
+ const qs=[...FINAL].sort(()=>Math.random()-.5);
+ renderQs($('fBox'),qs,(f,n)=>{S.final=Math.max(S.final||0,f);save();sfx.win();confetti(160);
+  $('fBubble').textContent=`أنهيتِ التحدّي! ${f} من ${n} من أول محاولة.`;
+  const b=document.createElement('button');b.className='big y';b.textContent='🏅 استلمي شهادتكِ';b.onclick=openCert;$('fBox').appendChild(b);
+ },'<h3>التحدّي النهائي <span class="pill">مراجعة 8-1</span></h3>');
+}
+function openCert(){
+ let tot=S.final||0,max=FINAL.length;ST.forEach(s=>{tot+=S.stars[s.id]||0;max+=s.q.length});
+ const done=ST.filter(s=>S.done[s.id]).length;
+ $('cName').textContent=S.name||'مستكشفة الشحنات';
+ $('cText').textContent=`أتمّت ${done} من ${ST.length} محطات في مختبر الشحنات، وجمعت ${tot} من ${max} نجمة ⭐`;
+ try{$('cDate').textContent=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(new Date())}catch(e){$('cDate').textContent=''}
+ show('certS');sfx.win();confetti(200);say('مبارك! أنتِ مستكشفة الشحنات');
+}
+
+/* ================= CONFETTI ================= */
+const cv=$('cf'),cx=cv.getContext('2d');let P=[],cfOn=false;
+function confetti(n){cv.width=innerWidth;cv.height=innerHeight;const C=['#6B4FD8','#FFC93C','#E5484D','#2F7BEA','#25A26B','#F78FC4'];
+ for(let i=0;i<n;i++)P.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.4,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,r:4+Math.random()*5,c:C[i%6],a:Math.random()*6,z:Math.random()<.2});if(!cfOn){cfOn=true;cl()}}
+function cl(){cx.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);if(p.z){cx.font=(p.r*3)+'px serif';cx.fillText('⚡',0,0)}else{cx.fillStyle=p.c;cx.fillRect(-p.r,-p.r/2,p.r*2,p.r)}cx.restore()});P=P.filter(p=>p.y<cv.height+30);if(P.length)requestAnimationFrame(cl);else{cfOn=false;cx.clearRect(0,0,cv.width,cv.height)}}
+
+renderHome();
+</script>
+
+</body>
+</html>
