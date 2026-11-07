@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>مختبر عالمة الأحياء: الإسفنج أمامكِ!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--tq:#1FA3B1;--deep:#0E5E6F;--yel:#D99A0B;--vio:#8A68BD;--cor:#DF5F57;--pearl:#F7F4EE;--dock:150px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Almarai',sans-serif;color:var(--deep);background:var(--pearl);-webkit-user-select:none;user-select:none}
+body.sea{background:linear-gradient(180deg,#d6f1f3 0%,#8fd3d9 35%,#1FA3B1 68%,#0E5E6F 100%)}
+body.cam{background:#000}
+body.xr,body.xr #ui{background:transparent}
+button{font-family:'Almarai',sans-serif;cursor:pointer}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+body.cam #cam{display:block}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+#ui{position:fixed;inset:0;z-index:5;pointer-events:none}
+#ui>*{pointer-events:auto}
+#touch{position:absolute;inset:0;touch-action:none}
+#bar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:8px;
+ padding:calc(env(safe-area-inset-top) + 7px) 12px 7px;background:rgba(14,94,111,.9);color:#fff;font-size:13px;font-weight:700}
+#mute{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:50%;width:34px;height:34px;font-size:17px;flex:none}
+#dock{position:absolute;left:0;right:0;bottom:0;padding:10px 10px calc(env(safe-area-inset-bottom) + 8px);
+ background:rgba(247,244,238,.93);border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(14,94,111,.18)}
+.row{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+.row button{border:0;color:#fff;font-weight:700;font-size:14px;padding:10px 14px;border-radius:999px;box-shadow:0 3px 0 rgba(0,0,0,.15);transition:transform .1s}
+.row button:active{transform:translateY(2px)}
+.row button.on{outline:3px solid #fff;box-shadow:0 0 0 5px rgba(14,94,111,.35)}
+.b-cut{background:var(--tq)}.b-jr{background:var(--deep)}.b-touch{background:var(--yel)}.b-rep{background:var(--vio)}.b-quiz{background:var(--cor)}.b-re{background:#6b7f86}
+#subRepro{margin-bottom:8px}
+#subRepro button{background:#fff;color:var(--vio);border:2px solid var(--vio);box-shadow:none}
+#hint{margin:8px 0 0;text-align:center;font-size:12px;color:var(--deep);opacity:.85}
+#card{position:absolute;top:calc(env(safe-area-inset-top) + 56px);left:12px;right:12px;margin:auto;max-width:440px;background:#fff;
+ border-radius:18px;padding:14px 16px 12px;box-shadow:0 8px 26px rgba(14,94,111,.25);border-right:7px solid var(--cor)}
+#card h3{margin:0 0 6px;display:flex;align-items:center;gap:8px;font-size:18px}
+#card .num{background:var(--cor);color:#fff;border-radius:50%;width:30px;height:30px;display:inline-grid;place-items:center;font-size:16px;flex:none}
+#card p{margin:0;font-size:15.5px;line-height:1.75;color:#24424a}
+#card .acts{display:flex;gap:8px;justify-content:flex-start;margin-top:10px}
+#card .acts button{border:0;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+#cSay{background:var(--tq);color:#fff}#cClose{background:#eee;color:var(--deep)}
+#quiz{position:absolute;top:calc(env(safe-area-inset-top) + 56px);left:12px;right:12px;margin:auto;max-width:440px;background:#fff;
+ border-radius:18px;padding:12px 16px;box-shadow:0 8px 26px rgba(14,94,111,.25);border-top:6px solid var(--cor)}
+#quiz .top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--cor)}
+#qClose{border:0;background:#eee;border-radius:50%;width:28px;height:28px;color:var(--deep)}
+#qText{margin:8px 0;font-size:17px;font-weight:700;line-height:1.6}
+#pearls{display:flex;gap:7px;align-items:center;font-size:12px}
+.pearl{width:20px;height:20px;border-radius:50%;background:#e9e4da;box-shadow:inset 0 0 0 2px #d8d0c2}
+.pearl.on{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#f3eadb 40%,#d9c7a8 100%);box-shadow:0 0 8px rgba(217,154,11,.6)}
+#qAgain{margin-top:8px;border:0;border-radius:999px;background:var(--cor);color:#fff;padding:8px 16px;font-weight:700}
+#caption{position:absolute;left:14px;right:14px;bottom:calc(var(--dock) + 10px);margin:auto;max-width:520px;text-align:center;pointer-events:none;
+ background:rgba(14,94,111,.86);color:#fff;border-radius:14px;padding:9px 12px;font-size:14.5px;line-height:1.7}
+#xrMsg{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 24px);text-align:center;pointer-events:none;
+ background:rgba(14,94,111,.88);color:#fff;border-radius:16px;padding:12px;font-size:15px;font-weight:700}
+#start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;text-align:center;
+ background:radial-gradient(ellipse at 50% 20%,#fff 0%,#F7F4EE 45%,#d9f0f2 100%)}
+#start .tag{font-size:14px;color:var(--tq);font-weight:700}
+#start h1{margin:0;font-size:clamp(26px,7vw,40px);line-height:1.5;color:var(--deep)}
+#start h1 span{color:var(--yel)}
+#start .pearls{display:flex;gap:8px}#start .pearls i{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#e2d6c0)}
+#go{border:0;border-radius:22px;padding:20px 24px;font-size:clamp(17px,4.8vw,21px);font-weight:700;color:#fff;max-width:420px;line-height:1.6;
+ background:linear-gradient(135deg,var(--tq),var(--deep));box-shadow:0 10px 28px rgba(14,94,111,.35),0 4px 0 #0a4652;animation:pulse 2s infinite}
+@keyframes pulse{50%{transform:scale(1.04)}}
+</style>
+</head>
+<body>
+<video id="cam" playsinline muted autoplay></video>
+<canvas id="gl"></canvas>
+<div id="ui">
+  <div id="touch"></div>
+  <header id="bar"><span>أحياء أول ثانوي • الإسفنجيات • أ. هنادي العتيبي</span><button id="mute" aria-label="كتم الصوت">🔊</button></header>
+  <div id="card" hidden>
+    <h3><span class="num" id="cNum">1</span><span id="cName"></span></h3>
+    <p id="cFunc"></p>
+    <div class="acts"><button id="cSay">🔊 استمعي</button><button id="cClose">إغلاق</button></div>
+  </div>
+  <div id="quiz" hidden>
+    <div class="top"><span id="qProg">السؤال 1 من 5</span><button id="qClose" aria-label="إنهاء">✕</button></div>
+    <div id="qText"></div>
+    <div id="pearls"><span>عدّاد اللؤلؤ:</span></div>
+    <button id="qAgain" hidden>أعيدي الاختبار</button>
+  </div>
+  <div id="caption" hidden></div>
+  <div id="xrMsg" hidden></div>
+  <div id="dock" hidden>
+    <div id="subRepro" class="row" hidden>
+      <button data-a="bud">🌱 التبرعم</button><button data-a="larva">🫧 اليرقة الهدبية</button>
+    </div>
+    <div class="row">
+      <button class="b-cut" data-a="cut" id="bCut">اكشفي المقطع</button>
+      <button class="b-jr" data-a="journey">رحلة قطرة الماء</button>
+      <button class="b-touch" data-a="touch">المسي الإسفنج</button>
+      <button class="b-rep" data-a="repro" id="bRep">التكاثر</button>
+      <button class="b-quiz" data-a="quiz">اختبريني</button>
+      <button class="b-re" data-a="replace" id="bRe" hidden>أعيدي وضعه</button>
+    </div>
+    <p id="hint">حرّكي الإسفنج بإصبعك • كبّريه بإصبعين • اضغطي الأرقام</p>
+  </div>
+  <div id="start">
+    <div class="tag">أحياء أول ثانوي • الإسفنجيات</div>
+    <h1>مختبر عالمة الأحياء:<br><span>الإسفنج أمامكِ!</span></h1>
+    <div class="pearls"><i></i><i></i><i></i><i></i><i></i></div>
+    <button id="go">📷 افتحي الكاميرا وضعي الإسفنج على طاولتك</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const TAU=Math.PI*2, PI=Math.PI;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const sstep=(a,b,x)=>{x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x);};
+
+/* ================= المحتوى (مطابق للكتاب) ================= */
+const S=[null,
+ {n:'الثقب',f:'فتحة صغيرة في الجدار يدخل منها الماء إلى الإسفنج.'},
+ {n:'الخلية الطلائية',f:'تغطي الإسفنج من الخارج وتحميه.'},
+ {n:'الخلية المطوّقة',f:'تبطّن التجويف؛ تحرّك أسواطها فتدفع الماء وتلتقط الغذاء وتهضمه داخلها.'},
+ {n:'الطبقة الهلامية',f:'تقع بين طبقتي الخلايا، وتتحرك فيها الخلايا شبه الأميبية.'},
+ {n:'الخلية شبه الأميبية',f:'تنقل الغذاء المهضوم، وتنتج الأمشاج والشويكات.'},
+ {n:'الشويكة',f:'تركيب إبري من كربونات الكالسيوم أو السيليكا يدعم الجسم ويحميه.'},
+ {n:'الفتحة الزفيرية',f:'فتحة كبيرة في الأعلى يخرج منها الماء والفضلات.'}];
+const QZ=[
+ {q:'أين يخرج الماء؟',a:7},
+ {q:'من أين يدخل الماء إلى الإسفنج؟',a:1},
+ {q:'أيّ خلية تحرّك أسواطها فتدفع الماء وتلتقط الغذاء؟',a:3},
+ {q:'أين التركيب الإبري الذي يدعم الجسم ويحميه؟',a:6},
+ {q:'أيّ خلية تنقل الغذاء المهضوم؟',a:5}];
+
+/* ================= الأصوات الطبيعية (WebAudio) ================= */
+const A={ctx:null,master:null,muted:false,flowG:null,white:null,
+ init(){
+  if(this.ctx){if(this.ctx.state!=='running')this.ctx.resume();return;}
+  const C=window.AudioContext||window.webkitAudioContext; if(!C)return;
+  const ctx=this.ctx=new C(); ctx.resume();
+  this.master=ctx.createGain(); this.master.gain.value=this.muted?0:1; this.master.connect(ctx.destination);
+  const len=ctx.sampleRate*3;
+  const w=ctx.createBuffer(1,len,ctx.sampleRate), wd=w.getChannelData(0);
+  const b=ctx.createBuffer(1,len,ctx.sampleRate), bd=b.getChannelData(0);
+  let last=0; for(let i=0;i<len;i++){const r=Math.random()*2-1; wd[i]=r; last=(last+0.02*r)/1.02; bd[i]=last*3.5;}
+  this.white=w;
+  const loop=buf=>{const s=ctx.createBufferSource(); s.buffer=buf; s.loop=true; s.start(); return s;};
+  // أمواج البحر
+  const wv=loop(b), lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420;
+  const wg=ctx.createGain(); wg.gain.value=0.2;
+  const lfo=ctx.createOscillator(); lfo.frequency.value=0.11; const lg=ctx.createGain(); lg.gain.value=0.15; lfo.connect(lg); lg.connect(wg.gain); lfo.start();
+  wv.connect(lp); lp.connect(wg); wg.connect(this.master);
+  // تيار الماء
+  const cu=loop(w), bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=260; bp.Q.value=0.6;
+  const cg=ctx.createGain(); cg.gain.value=0.022; cu.connect(bp); bp.connect(cg); cg.connect(this.master);
+  // جريان الماء (لرحلة القطرة)
+  const fl=loop(w), fb=ctx.createBiquadFilter(); fb.type='bandpass'; fb.frequency.value=1100; fb.Q.value=0.9;
+  const fg=this.flowG=ctx.createGain(); fg.gain.value=0;
+  const l2o=ctx.createOscillator(); l2o.frequency.value=0.7; const l2=ctx.createGain(); l2.gain.value=300; l2o.connect(l2); l2.connect(fb.frequency); l2o.start();
+  fl.connect(fb); fb.connect(fg); fg.connect(this.master);
+ },
+ flow(on){if(this.ctx)this.flowG.gain.setTargetAtTime(on?0.09:0,this.ctx.currentTime,0.5);},
+ bubble(n=3,vol=0.18){
+  if(!this.ctx)return; const ctx=this.ctx;
+  for(let i=0;i<n;i++){
+   const t=ctx.currentTime+i*0.075+Math.random()*0.05, o=ctx.createOscillator(), g=ctx.createGain(), f=330+Math.random()*520;
+   o.type='sine'; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*2.6,t+0.09);
+   g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+0.11);
+   o.connect(g); g.connect(this.master); o.start(t); o.stop(t+0.14);
+  }
+ },
+ splash(){
+  if(!this.ctx)return; const ctx=this.ctx, t=ctx.currentTime;
+  const s=ctx.createBufferSource(); s.buffer=this.white;
+  const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(2600,t); f.frequency.exponentialRampToValueAtTime(260,t+0.45);
+  const g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.32,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.5);
+  s.connect(f); f.connect(g); g.connect(this.master); s.start(t); s.stop(t+0.55);
+  const o=ctx.createOscillator(), og=ctx.createGain(); o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(55,t+0.25);
+  og.gain.setValueAtTime(0.25,t); og.gain.exponentialRampToValueAtTime(0.0001,t+0.3); o.connect(og); og.connect(this.master); o.start(t); o.stop(t+0.32);
+ },
+ toggle(){this.muted=!this.muted; if(this.master)this.master.gain.setTargetAtTime(this.muted?0:1,this.ctx.currentTime,0.05);
+  if(this.muted)hush(); $('#mute').textContent=this.muted?'🔇':'🔊';}
+};
+
+/* ================= النطق (صوت أنثوي عربي) ================= */
+let voice=null, sayTok=0, capTimer=0;
+const hasTTS='speechSynthesis' in window;
+function pickVoice(){
+ const vs=speechSynthesis.getVoices().filter(v=>/^ar/i.test(v.lang));
+ const fem=/female|hoda|zariyah|salma|laila|layla|mariam|maryam|amira|nora|noura|reem|sara|zeina|fatima|hala|aisha|lana|rana/i;
+ voice=vs.find(v=>fem.test(v.name)&&/SA/i.test(v.lang))||vs.find(v=>fem.test(v.name))||vs.find(v=>/SA/i.test(v.lang))||vs[0]||null;
+}
+if(hasTTS){pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;}
+function showCaption(t){clearTimeout(capTimer); const c=$('#caption'); c.textContent=t; c.hidden=false;}
+function say(text,cb){
+ const tok=++sayTok; showCaption(text); let done=false;
+ const fin=()=>{ if(done)return; done=true; if(tok!==sayTok)return; capTimer=setTimeout(()=>$('#caption').hidden=true,1600); cb&&cb(); };
+ const est=Math.max(1800,text.length*72);
+ if(A.muted||!hasTTS){setTimeout(fin,est);return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text); u.lang='ar-SA'; if(voice)u.voice=voice; u.rate=1.25; u.pitch=1.05;
+ u.onend=fin; u.onerror=fin; speechSynthesis.speak(u); setTimeout(fin,est+4500);
+}
+function hush(){sayTok++; if(hasTTS)speechSynthesis.cancel();}
+
+/* ================= three.js ================= */
+const canvas=$('#gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,0.01,60);
+scene.add(new THREE.HemisphereLight(0xffffff,0x6a5a40,0.95));
+const dl=new THREE.DirectionalLight(0xffffff,0.75); dl.position.set(1.5,3,2.5); scene.add(dl);
+
+const place=new THREE.Group(); scene.add(place);
+const spin=new THREE.Group(); spin.position.y=0.75; place.add(spin);
+const root=new THREE.Group(); root.position.y=-0.75; spin.add(root);
+const body=new THREE.Group(); root.add(body);
+
+// ---- مقطع الإسفنج (مزهرية أنبوبية)
+const H=1.6, Y0=0.2, E=0.026, WALL=0.17, N=44;
+const ro=y=>{const t=y/H; return 0.30+0.20*Math.sin(PI*t*0.9)+0.035*sstep(0.9,1,t);};
+const ri=y=>ro(y)-WALL;
+const xm=y=>(ro(y)+ri(y))/2;
+const yr=(a,b,n=N)=>{const o=[];for(let i=0;i<=n;i++)o.push(a+(b-a)*i/n);return o;};
+const V2=([x,y])=>new THREE.Vector2(x,y);
+const outerPts=[[0,0],...yr(0,H).map(y=>[ro(y),y])].map(V2);
+const innerPts=[[0.001,Y0],...yr(Y0,H).map(y=>[ri(y),y])].map(V2);
+const rimPts=[[ri(H),H],[ro(H),H]].map(V2);
+
+// نسيج السطح بالثقوب
+const texC=document.createElement('canvas'); texC.width=1024; texC.height=512;
+const tctx=texC.getContext('2d');
+const tex=new THREE.CanvasTexture(texC); tex.wrapS=THREE.RepeatWrapping;
+let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const poresData=[]; for(let i=0;i<560;i++){const v=0.05+rnd()*0.88; poresData.push([rnd(),v,0.6+rnd()*0.7]);}
+function drawTex(k){
+ const g=tctx.createLinearGradient(0,512,0,0);
+ g.addColorStop(0,'#B5670A'); g.addColorStop(0.45,'#D99A0B'); g.addColorStop(1,'#EFBB36');
+ tctx.fillStyle=g; tctx.fillRect(0,0,1024,512);
+ for(const [u,v,s] of poresData){
+  const x=u*1024, y=(1-v)*512, r=7*s*k;
+  tctx.fillStyle='rgba(255,226,140,.35)'; tctx.beginPath(); tctx.arc(x-1,y-1,7*s+2.5,0,TAU); tctx.fill();
+  if(r>0.7){tctx.fillStyle='#4a2603'; tctx.beginPath(); tctx.arc(x,y,r,0,TAU); tctx.fill();}
+ }
+ tex.needsUpdate=true;
+}
+drawTex(1);
+const lam=(c,o={})=>new THREE.MeshLambertMaterial(Object.assign({color:c,side:THREE.DoubleSide},o));
+const spongeMat=lam(0xffffff,{map:tex});
+const innerMat=lam(0x8fd3d9), rimMat=lam(0xE9B234);
+let outerM,innerM,rimM, isCut=false;
+const cutGroup=new THREE.Group(); root.add(cutGroup);
+function buildBody(cut){
+ [outerM,innerM,rimM].forEach(m=>{if(m){m.geometry.dispose();body.remove(m);}});
+ const ps=cut?PI/2:0, pl=cut?PI:TAU;
+ outerM=new THREE.Mesh(new THREE.LatheGeometry(outerPts,72,ps,pl),spongeMat);
+ innerM=new THREE.Mesh(new THREE.LatheGeometry(innerPts,72,ps,pl),innerMat);
+ rimM=new THREE.Mesh(new THREE.LatheGeometry(rimPts,72,ps,pl),rimMat);
+ body.add(outerM,innerM,rimM); tex.repeat.set(cut?0.5:1,1); cutGroup.visible=cut;
+}
+
+// ---- وجه المقطع: الطبقة الخارجية + الهلامية + المبطّنة
+const outerBand=[[0,0],...yr(0,H).map(y=>[ro(y),y]),...yr(H,E).map(y=>[ro(y)-E,y]),[0,E]];
+const jellyBand=[[0,E],...yr(E,H).map(y=>[ro(y)-E,y]),...yr(H,Y0-E).map(y=>[ri(y)+E,y]),[0,Y0-E]];
+const innerBand=[[0,Y0],...yr(Y0,H).map(y=>[ri(y),y]),...yr(H,Y0-E).map(y=>[ri(y)+E,y]),[0,Y0-E]];
+const bandMats=[lam(0xF2C14E),lam(0xDCCBF2),lam(0x1FA3B1)];
+[outerBand,jellyBand,innerBand].forEach((b,i)=>{
+ const g=new THREE.ShapeGeometry(new THREE.Shape(b.map(V2)));
+ [1,-1].forEach(sd=>{const m=new THREE.Mesh(g,bandMats[i]); m.scale.x=sd; cutGroup.add(m);});
+});
+
+// ---- الخلايا المطوّقة وأسواطها
+const choGeo=new THREE.SphereGeometry(0.018,10,8), choMat=lam(0x1FA3B1);
+const flag=[];
+function addCho(pos,dir,parent){
+ const m=new THREE.Mesh(choGeo,choMat); m.position.copy(pos); m.scale.set(1,1.3,1); parent.add(m);
+ flag.push({b:pos.clone().addScaledVector(dir,0.014),d:dir.clone(),ph:Math.random()*TAU});
+}
+for(let r=0;r<8;r++){const y=Y0+0.07+r*(H-Y0-0.16)/7;
+ for(let k=0;k<5;k++){const ph=PI/2+0.3+k*(PI-0.6)/4, rr=ri(y)-0.016;
+  addCho(new THREE.Vector3(Math.sin(ph)*rr,y,Math.cos(ph)*rr),new THREE.Vector3(-Math.sin(ph),0,-Math.cos(ph)),body);}}
+for(let y=Y0+0.05;y<H-0.04;y+=0.09){[1,-1].forEach(sd=>{
+ addCho(new THREE.Vector3(sd*(ri(y)-0.016),y,0.02),new THREE.Vector3(-sd,0,0),cutGroup);});}
+const FK=7, flagPos=new Float32Array(flag.length*FK*6);
+const flagGeo=new THREE.BufferGeometry(); flagGeo.setAttribute('position',new THREE.BufferAttribute(flagPos,3));
+const flagLines=new THREE.LineSegments(flagGeo,new THREE.LineBasicMaterial({color:0x0E5E6F}));
+flagLines.frustumCulled=false; root.add(flagLines);
+function updFlag(t){
+ let o=0; const L=0.075, Am=0.013;
+ for(const f of flag){
+  let px=f.b.x,py=f.b.y,pz=f.b.z;
+  for(let k=1;k<=FK;k++){
+   const s=k/FK, w=Am*Math.sin(k*1.1-t*9+f.ph)*s;
+   const x=f.b.x+f.d.x*L*s, y=f.b.y+w, z=f.b.z+f.d.z*L*s;
+   flagPos[o++]=px;flagPos[o++]=py;flagPos[o++]=pz;flagPos[o++]=x;flagPos[o++]=y;flagPos[o++]=z;
+   px=x;py=y;pz=z;
+  }
+ }
+ flagGeo.attributes.position.needsUpdate=true;
+}
+
+// ---- الخلايا شبه الأميبية
+const amoGeo=new THREE.SphereGeometry(0.026,12,9);
+{const p=amoGeo.attributes.position,v=new THREE.Vector3();
+ for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);const n=v.clone().normalize();
+  const k=1+0.32*Math.sin(3*n.x+1)*Math.cos(2.2*n.y)+0.22*Math.sin(4*n.z+n.x*2);v.multiplyScalar(k);p.setXYZ(i,v.x,v.y,v.z);}
+ amoGeo.computeVertexNormals();}
+const amoMat=lam(0x8A68BD), amos=[];
+[[1,0.8,true],[1,1.36],[-1,0.55],[-1,0.97],[-1,1.38],[1,0.1,0,0.14],[-1,0.1,0,0.16]].forEach(([sd,y,main,bx])=>{
+ const m=new THREE.Mesh(amoGeo,amoMat); m.scale.z=0.5;
+ const x=bx!==undefined?sd*bx:sd*xm(y); m.position.set(x,y,0.016); cutGroup.add(m);
+ amos.push({m,x,y,main:!!main,ph:Math.random()*TAU});
+});
+
+// ---- الشويكات
+const spMat=lam(0xFBF6E9);
+const spGeo=new THREE.CylinderGeometry(0.0035,0.0035,0.07,5), spGeoS=new THREE.CylinderGeometry(0.003,0.003,0.04,5);
+function addSpicule(x,y,rot,tri,big){
+ if(tri){const g=new THREE.Group(); for(let i=0;i<3;i++){const c=new THREE.Mesh(spGeoS,spMat); c.position.y=0.02; const p=new THREE.Group(); p.rotation.z=i*TAU/3; p.add(c); g.add(p);} g.position.set(x,y,0.012); g.rotation.z=rot; cutGroup.add(g); return;}
+ const c=new THREE.Mesh(spGeo,spMat); c.position.set(x,y,0.012); c.rotation.z=rot; if(big)c.scale.set(1.4,1.25,1.4); cutGroup.add(c);
+}
+seed=29;
+[1,-1].forEach(sd=>{for(let i=0;i<13;i++){const y=0.26+rnd()*1.25; addSpicule(sd*(xm(y)+(rnd()-0.5)*0.05),y,rnd()*PI,rnd()<0.35);}});
+for(let i=0;i<6;i++)addSpicule((rnd()-0.5)*0.5,0.06+rnd()*0.09,rnd()*PI,rnd()<0.4);
+addSpicule(xm(0.42),0.42,0.6,false,true);
+
+// ---- الثقب المميّز (رقم 1)
+const PH1=3*PI/2-0.45, Y1=0.42;
+const pore1=new THREE.Mesh(new THREE.CircleGeometry(0.034,20),new THREE.MeshBasicMaterial({color:0x3a1d02,side:THREE.DoubleSide}));
+{const r=ro(Y1)+0.004; pore1.position.set(Math.sin(PH1)*r,Y1,Math.cos(PH1)*r); pore1.lookAt(pore1.position.clone().multiplyScalar(2).setY(Y1)); root.add(pore1);}
+
+// ---- الصخرة
+const rockGeo=new THREE.SphereGeometry(1,34,20);
+{const p=rockGeo.attributes.position,v=new THREE.Vector3();
+ for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);const k=1+0.05*(Math.sin(5*v.x)*Math.cos(4*v.z)+Math.sin(7*v.y+v.x));v.multiplyScalar(k);p.setXYZ(i,v.x,v.y,v.z);}
+ rockGeo.computeVertexNormals();}
+const rock=new THREE.Mesh(rockGeo,new THREE.MeshStandardMaterial({color:0x8b8378,roughness:1,flatShading:true}));
+rock.scale.set(0.85,0.3,0.7); rock.position.y=-0.27; root.add(rock);
+const rockTop=(x,z)=>-0.27+0.3*Math.sqrt(Math.max(0,1-(x/0.85)**2-(z/0.7)**2));
+
+// ---- النقاط التفاعلية السبع
+const HP={1:[Math.sin(PH1)*(ro(Y1)+0.05),Y1,Math.cos(PH1)*(ro(Y1)+0.05)],
+ 2:[-(ro(1.15)-E/2),1.15,0.05],3:[ri(1.15)-0.016,1.15,0.05],4:[-xm(0.7),0.7,0.05],
+ 5:[xm(0.8),0.8,0.05],6:[xm(0.42),0.42,0.05],7:[0,H+0.13,0]};
+const hots=[];
+function drawHot(h,col){
+ const x=h.ctx; x.clearRect(0,0,128,128); x.beginPath(); x.arc(64,64,52,0,TAU); x.fillStyle=col; x.fill();
+ x.lineWidth=10; x.strokeStyle='#fff'; x.stroke(); x.fillStyle='#fff'; x.font='bold 66px Almarai, sans-serif';
+ x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(h.id),64,70); h.tex.needsUpdate=true;
+}
+for(let id=1;id<=7;id++){
+ const c=document.createElement('canvas'); c.width=c.height=128;
+ const tx=new THREE.CanvasTexture(c);
+ const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false,transparent:true}));
+ sp.renderOrder=20; sp.position.set(...HP[id]); root.add(sp);
+ const h={id,sp,tex:tx,ctx:c.getContext('2d'),col:'#DF5F57'}; drawHot(h,h.col); hots.push(h);
+}
+const COLOR_HOT='#DF5F57';
+function flashHot(id,col,ms){const h=hots[id-1]; drawHot(h,col); clearTimeout(h.tm); h.tm=setTimeout(()=>drawHot(h,COLOR_HOT),ms);}
+if(document.fonts)document.fonts.ready.then(()=>hots.forEach(h=>drawHot(h,COLOR_HOT)));
+
+// ---- فقاعات الفتحة الزفيرية
+const bubGeo=new THREE.SphereGeometry(0.024,10,8);
+const bubMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.1,transparent:true,opacity:0.55});
+const bubs=[]; for(let i=0;i<14;i++){const m=new THREE.Mesh(bubGeo,bubMat); m.visible=false; root.add(m); bubs.push({m,life:0});}
+let nextBurst=4;
+
+// ---- قطرات الماء وحبيبات الغذاء
+const dropGeo=new THREE.SphereGeometry(0.019,8,6), foodGeo=new THREE.SphereGeometry(0.013,6,5);
+const dropMat=new THREE.MeshStandardMaterial({color:0x2f8fe0,roughness:0.2}), foodMat=lam(0x7a4a1e);
+const parts=[]; seed=5;
+for(let i=0;i<54;i++){const food=i>=40; const m=new THREE.Mesh(food?foodGeo:dropGeo,food?foodMat:dropMat); m.visible=false; root.add(m);
+ parts.push({m,food,phi:PI/2+0.35+rnd()*(PI-0.7),y:Y0+0.12+rnd()*(H-Y0-0.35),off:rnd()});}
+const J={on:false,t0:0,end:Infinity,P:6.5};
+const tmpA=new THREE.Vector3(), tmpB=new THREE.Vector3();
+function updParts(t){
+ if(!J.on)return;
+ if(t>J.end+J.P){J.on=false; parts.forEach(p=>p.m.visible=false); return;}
+ for(const p of parts){
+  const lt=t-J.t0-p.off*J.P; if(lt<0||lt-(lt%J.P)>=J.end-J.t0){p.m.visible=false;continue;}
+  const q=(lt%J.P)/J.P, s=Math.sin(p.phi), c=Math.cos(p.phi), r0=ro(p.y)+0.35, r1=ri(p.y)-0.02;
+  let sc=1; p.m.visible=true;
+  if(q<0.28){const r=lerp(r0,r1,q/0.28); p.m.position.set(s*r,p.y,c*r);}
+  else if(p.food){ if(q<0.45){p.m.position.set(s*(r1-0.01),p.y,c*(r1-0.01)); sc=1-(q-0.28)/0.17;} else p.m.visible=false; }
+  else if(q<0.72){const k=(q-0.28)/0.44, kr=Math.pow(k,0.55), r=lerp(r1,0.06,kr); p.m.position.set(s*r,lerp(p.y,H,k),c*r);}
+  else {const k=(q-0.72)/0.28; p.m.position.set(s*0.06*(1+k*2),H+k*0.75,c*0.06*(1+k*2)); sc=1-k*0.8;}
+  p.m.scale.setScalar(Math.max(0.01,sc));
+ }
+}
+
+// ---- التكاثر: إسفنجات صغيرة، برعم، يرقة
+const miniGeo=new THREE.LatheGeometry(outerPts,28);
+const miniMat=lam(0xE0A21C);
+const R={type:null,t0:0,phase:0,objs:[],tA:0};
+function clearRepro(){R.objs.forEach(o=>o.parent&&o.parent.remove(o)); R.objs=[]; R.type=null;}
+function makeLarva(){
+ const g=new THREE.Group();
+ const b=new THREE.Mesh(new THREE.SphereGeometry(0.045,14,10),lam(0xF3E3B0)); b.scale.set(1.35,0.9,0.9); g.add(b);
+ const pts=[]; for(let i=0;i<22;i++){const a=i/22*TAU; const x=Math.cos(a)*0.061,y=Math.sin(a)*0.041; pts.push(x,y,0, x*1.35,y*1.45,0);}
+ const cg=new THREE.BufferGeometry(); cg.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+ const cil=new THREE.LineSegments(cg,new THREE.LineBasicMaterial({color:0x8A68BD})); g.add(cil); g.userData.cil=cil;
+ return g;
+}
+
+// ---- مؤشر سطح الطاولة (WebXR)
+const reticle=new THREE.Group();
+reticle.add(new THREE.Mesh(new THREE.RingGeometry(0.06,0.08,36).rotateX(-PI/2),new THREE.MeshBasicMaterial({color:0x1FA3B1})));
+reticle.add(new THREE.Mesh(new THREE.CircleGeometry(0.012,16).rotateX(-PI/2),new THREE.MeshBasicMaterial({color:0xffffff})));
+reticle.matrixAutoUpdate=false; reticle.visible=false; scene.add(reticle);
+
+buildBody(false);
+
+/* ================= الحالة العامة ================= */
+let mode=null, xrOK=false, hitSource=null, placed=false;
+let rotX=0.08, rotY=0, uScale=1, poreK=1, poreTarget=1, poreDrawn=1, squish=0, actTok=0;
+const XRS=0.13;
+if(navigator.xr&&navigator.xr.isSessionSupported)navigator.xr.isSessionSupported('immersive-ar').then(v=>xrOK=v).catch(()=>{});
+
+function fitCamera(){
+ if(renderer.xr.isPresenting)return;
+ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false);
+ camera.aspect=w/h; const vf=camera.fov*PI/180, hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
+ const d=Math.max(2.5/2/Math.tan(vf/2),1.95/2/Math.tan(hf/2));
+ camera.position.set(0,0.62+d*0.1,d); camera.lookAt(0,0.5,0); camera.updateProjectionMatrix();
+ const dk=$('#dock'); document.documentElement.style.setProperty('--dock',(dk.hidden?20:dk.offsetHeight)+'px');
+}
+addEventListener('resize',fitCamera); fitCamera();
+
+/* ================= الأوامر ================= */
+function setActive(a){document.querySelectorAll('.row button').forEach(b=>b.classList.toggle('on',b.dataset.a===a));}
+function setCut(on,silent){
+ isCut=on; buildBody(on); $('#bCut').textContent=on?'أغلقي المقطع':'اكشفي المقطع';
+ if(on&&!silent)say('المقطع الطولي: يظهر التجويف المركزي، والجدار من طبقتين بينهما طبقة هلامية.');
+}
+function stopAll(){
+ hush(); actTok++; $('#card').hidden=true;
+ if(J.on){J.end=Math.min(J.end,now());} A.flow(false);
+ clearRepro(); poreTarget=1; setActive(null);
+}
+function startJourney(){
+ stopAll(); if(!isCut)setCut(true,true); setActive('journey');
+ J.on=true; J.t0=now(); J.end=Infinity; A.flow(true);
+ const steps=[['الدخول','يدخل الماء إلى الإسفنج من الثقوب.'],
+  ['الدفع','تحرّك الخلايا المطوّقة أسواطها فتدفع الماء في التجويف المركزي.'],
+  ['الالتقاط','تلتقط الخلايا المطوّقة حبيبات الغذاء وتهضمها داخلها.'],
+  ['الخروج','يخرج الماء والفضلات من الفتحة الزفيرية في الأعلى.']];
+ let i=0; const tok=actTok;
+ const next=()=>{ if(tok!==actTok)return;
+  if(i>=steps.length){J.end=now(); setTimeout(()=>{if(tok===actTok){A.flow(false);setActive(null);}},J.P*1000); return;}
+  const [h,tx]=steps[i++]; say(`${i}. ${h}: ${tx}`,()=>setTimeout(next,900)); };
+ setTimeout(next,500);
+}
+function touchSponge(){
+ stopAll(); if(isCut)setCut(false,true); setActive('touch');
+ poreTarget=0.1; squish=1; A.bubble(2,0.1);
+ const tok=actTok;
+ say('عند لمس الإسفنج تُغلق ثقوبه تدريجيًّا. ليس للإسفنج جهاز عصبي، لكن خلاياه تستجيب للمس.',()=>{});
+ setTimeout(()=>{if(tok===actTok){poreTarget=1;setActive(null);}},8000);
+}
+function startBud(){
+ stopAll(); $('#subRepro').hidden=true; setActive('repro');
+ const ph=PI/2+0.3, y=0.32, r=ro(y)-0.02;
+ const pivot=new THREE.Group(); pivot.position.set(Math.sin(ph)*r,y,Math.cos(ph)*r); pivot.rotation.y=ph;
+ const bud=new THREE.Mesh(miniGeo,miniMat); bud.rotation.x=1.15; bud.scale.setScalar(0.001); pivot.add(bud); root.add(pivot);
+ R.objs=[pivot]; R.type='bud'; R.t0=now(); R.phase=0; R.pivot=pivot; R.bud=bud;
+ R.start=pivot.position.clone(); R.end=new THREE.Vector3(0.6,rockTop(0.6,-0.12)+0.01,-0.12);
+ const tok=actTok;
+ say('التبرعم: ينمو برعم على جسم الإسفنج…',()=>{
+  if(tok!==actTok)return;
+  setTimeout(()=>{ if(tok!==actTok)return; R.phase=1; R.tA=now(); A.bubble(3,0.12); say('ثم ينفصل البرعم عن الإسفنج.',()=>setActive(null)); },Math.max(0,3200-(now()-R.t0)*1000));
+ });
+}
+function startLarva(){
+ stopAll(); $('#subRepro').hidden=true; setActive('repro');
+ const lv=makeLarva(); root.add(lv);
+ const sp=new THREE.Mesh(miniGeo,miniMat); sp.visible=false; root.add(sp);
+ R.objs=[lv,sp]; R.type='larva'; R.t0=now(); R.phase=0; R.lv=lv; R.sp=sp;
+ R.a=new THREE.Vector3(-0.95,1.35,0.35); R.b=new THREE.Vector3(-0.56,rockTop(-0.56,0.2)+0.035,0.2);
+ const tok=actTok;
+ say('اليرقة الهدبية: تسبح في الماء…',()=>{
+  if(tok!==actTok)return;
+  const wait=Math.max(0,5000-(now()-R.t0)*1000);
+  setTimeout(()=>{ if(tok!==actTok)return; R.phase=1; R.tA=now(); say('ثم تلتصق بالصخرة وتنمو.',()=>setActive(null)); },wait);
+ });
+}
+function updRepro(t,dt){
+ if(R.type==='bud'){
+  if(R.phase===0){const k=sstep(0,1,(t-R.t0)/3); R.bud.scale.setScalar(0.001+0.16*k);}
+  else{const k=sstep(0,1,(t-R.tA)/2.4); R.pivot.position.lerpVectors(R.start,R.end,k); R.pivot.position.y+=Math.sin(k*PI)*0.15; R.bud.rotation.x=1.15*(1-k); R.bud.scale.setScalar(0.16);}
+ } else if(R.type==='larva'){
+  if(R.phase===0){
+   const k=clamp((t-R.t0)/5,0,1); const p=tmpA.lerpVectors(R.a,R.b,sstep(0,1,k));
+   p.y+=Math.sin(k*TAU*2.2)*0.12*(1-k); p.x+=Math.sin(k*TAU*1.3)*0.08*(1-k);
+   R.lv.position.copy(p); R.lv.rotation.z=Math.sin(t*6)*0.25; R.lv.userData.cil.rotation.z=Math.sin(t*20)*0.08;
+  } else {
+   const k=clamp((t-R.tA)/3.2,0,1);
+   R.lv.position.copy(R.b); R.lv.rotation.z=PI/2; R.lv.userData.cil.visible=false;
+   R.lv.scale.setScalar(Math.max(0.001,1-k*1.4));
+   if(k>0.25){R.sp.visible=true; R.sp.position.set(R.b.x,R.b.y-0.03,R.b.z); R.sp.scale.setScalar(0.001+0.13*sstep(0.25,1,k));}
+  }
+ }
+}
+
+/* ---- البطاقة */
+let cardId=0;
+function showCard(id){
+ cardId=id; const s=S[id];
+ $('#cNum').textContent=id; $('#cName').textContent=s.n; $('#cFunc').textContent=s.f; $('#card').hidden=false;
+ hots.forEach(h=>drawHot(h,COLOR_HOT)); flashHot(id,'#D99A0B',4000);
+ if(id>=2&&id<=6&&!isCut)setCut(true,true);
+ A.bubble(1,0.1); say(`${s.n}. ${s.f}`);
+}
+
+/* ---- الاختبار */
+const Q={on:false,i:0,pearls:0,tries:0,lock:false};
+const pearlBox=$('#pearls');
+for(let i=0;i<5;i++){const d=document.createElement('i'); d.className='pearl'; pearlBox.appendChild(d);}
+function drawPearls(){pearlBox.querySelectorAll('.pearl').forEach((p,i)=>p.classList.toggle('on',i<Q.pearls));}
+function startQuiz(){
+ stopAll(); if(!isCut)setCut(true,true); setActive('quiz');
+ Object.assign(Q,{on:true,i:0,pearls:0,tries:0,lock:false}); $('#quiz').hidden=false; $('#qAgain').hidden=true; drawPearls(); askQ();
+}
+function askQ(){
+ const q=QZ[Q.i]; Q.tries=0; Q.lock=false;
+ $('#qProg').textContent=`السؤال ${Q.i+1} من ${QZ.length}`; $('#qText').textContent=q.q;
+ say(q.q+' اضغطي الرقم الصحيح.');
+}
+function answer(id){
+ if(Q.lock)return; const q=QZ[Q.i];
+ if(id===q.a){
+  Q.lock=true; if(Q.tries===0)Q.pearls++; drawPearls(); A.bubble(5,0.22); flashHot(id,'#2BAE66',1600);
+  say(`أحسنتِ! ${S[id].n}.`,()=>{
+   Q.i++; if(Q.i<QZ.length)askQ();
+   else{ $('#qProg').textContent='انتهى الاختبار'; $('#qText').textContent=`جمعتِ ${Q.pearls} من ${QZ.length} لآلئ`; $('#qAgain').hidden=false;
+     A.bubble(8,0.2); say(`انتهى الاختبار. جمعتِ ${Q.pearls} من ${QZ.length} لآلئ.`); Q.lock=true; }
+  });
+ } else { Q.tries++; A.splash(); flashHot(id,'#8a8a8a',900); say('حاولي مرة أخرى.'); }
+}
+function endQuiz(){Q.on=false; $('#quiz').hidden=true; setActive(null); hush();}
+
+/* ---- الأزرار */
+$('#dock').addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b)return; A.init(); const a=b.dataset.a;
+ if(a!=='repro')$('#subRepro').hidden=true;
+ if(Q.on&&a!=='cut')endQuiz();
+ if(a==='cut'){ $('#card').hidden=true; if(J.on&&isCut)return; setCut(!isCut,false); }
+ else if(a==='journey')startJourney();
+ else if(a==='touch')touchSponge();
+ else if(a==='repro'){ $('#subRepro').hidden=!$('#subRepro').hidden; fitCamera(); if(!$('#subRepro').hidden)say('اختاري: التبرعم، أو اليرقة الهدبية.'); }
+ else if(a==='bud')startBud();
+ else if(a==='larva')startLarva();
+ else if(a==='quiz')startQuiz();
+ else if(a==='replace'){stopAll(); placed=false; place.visible=false; $('#dock').hidden=true; $('#xrMsg').hidden=false; $('#xrMsg').textContent='وجّهي الكاميرا إلى الطاولة، ثم المسي الشاشة عند ظهور الدائرة الفيروزية';}
+ fitCamera();
+});
+$('#cSay').onclick=()=>{if(cardId)say(`${S[cardId].n}. ${S[cardId].f}`);};
+$('#cClose').onclick=()=>{$('#card').hidden=true; hush();};
+$('#qClose').onclick=endQuiz;
+$('#qAgain').onclick=startQuiz;
+$('#mute').onclick=()=>{A.init(); A.toggle();};
+$('#ui').addEventListener('beforexrselect',e=>e.preventDefault());
+
+/* ================= اللمس: تدوير وتكبير واختيار ================= */
+const ptrs=new Map(); let down=null, pinch0=0, scale0=1;
+const touchEl=$('#touch');
+const pdist=()=>{const a=[...ptrs.values()]; return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);};
+touchEl.addEventListener('pointerdown',e=>{
+ A.init(); try{touchEl.setPointerCapture(e.pointerId);}catch(_){}
+ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(ptrs.size===1)down={x:e.clientX,y:e.clientY,t:performance.now(),mv:0}; else{down=null; pinch0=pdist(); scale0=uScale;}
+});
+touchEl.addEventListener('pointermove',e=>{
+ const p=ptrs.get(e.pointerId); if(!p)return; const dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY;
+ if(ptrs.size===1){ if(mode==='xr'&&!placed)return; rotY+=dx*0.011; rotX=clamp(rotX+dy*0.006,-0.7,0.7); if(down)down.mv+=Math.abs(dx)+Math.abs(dy); }
+ else if(ptrs.size===2&&pinch0){ uScale=clamp(scale0*pdist()/pinch0,0.45,2.8); }
+});
+const pup=e=>{
+ if(!ptrs.has(e.pointerId))return;
+ if(down&&ptrs.size===1&&down.mv<12&&performance.now()-down.t<500)tap(e.clientX,e.clientY);
+ ptrs.delete(e.pointerId); if(ptrs.size<2)pinch0=0; if(ptrs.size>0)down=null;
+};
+touchEl.addEventListener('pointerup',pup); touchEl.addEventListener('pointercancel',pup);
+
+const vP=new THREE.Vector3();
+function viewCam(){
+ if(!renderer.xr.isPresenting)return camera;
+ const c=renderer.xr.getCamera(camera); const c0=(c.cameras&&c.cameras[0])||c;
+ c0.matrixWorldInverse.copy(c0.matrixWorld).invert(); return c0;
+}
+function tap(x,y){
+ if(mode==='xr'&&!placed){ if(reticle.visible)placeSponge(); return; }
+ const cam=viewCam(), W=innerWidth, Hh=innerHeight; let best=0, bd=40;
+ for(const h of hots){
+  h.sp.getWorldPosition(vP); vP.project(cam); if(vP.z>1)continue;
+  const sx=(vP.x+1)/2*W, sy=(1-vP.y)/2*Hh, d=Math.hypot(sx-x,sy-y);
+  if(d<bd){bd=d;best=h.id;}
+ }
+ if(!best)return;
+ if(Q.on)answer(best); else{ if(J.on||R.type){stopAll();} showCard(best); }
+}
+
+/* ================= البدء: WebXR ← الكاميرا ← الخلفية البحرية ================= */
+function unlockSpeech(){ if(hasTTS){const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);} }
+$('#go').addEventListener('click',async()=>{
+ A.init(); unlockSpeech();
+ if(xrOK){ try{ await startXR(); return; }catch(err){ console.warn(err); } }
+ startFlat();
+});
+async function startXR(){
+ const s=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['hit-test','dom-overlay'],domOverlay:{root:$('#ui')}});
+ renderer.xr.enabled=true; renderer.xr.setReferenceSpaceType('local');
+ await renderer.xr.setSession(s);
+ const vs=await s.requestReferenceSpace('viewer'); hitSource=await s.requestHitTestSource({space:vs});
+ mode='xr'; document.body.className='xr'; $('#start').hidden=true;
+ place.visible=false; placed=false; place.scale.setScalar(XRS); uScale=1; rotY=0; rotX=0;
+ $('#bRe').hidden=false; $('#hint').textContent='حرّكي الإسفنج بإصبعك • كبّريه بإصبعين • اضغطي الأرقام';
+ $('#xrMsg').hidden=false; $('#xrMsg').textContent='وجّهي الكاميرا إلى الطاولة، ثم المسي الشاشة عند ظهور الدائرة الفيروزية';
+ say('وجّهي الكاميرا إلى سطح الطاولة، ثم المسي الشاشة عند ظهور الدائرة.');
+ s.addEventListener('end',()=>{ hitSource=null; reticle.visible=false; renderer.xr.enabled=false; $('#xrMsg').hidden=true; $('#bRe').hidden=true; startFlat(); });
+}
+function placeSponge(){
+ place.position.setFromMatrixPosition(reticle.matrix); place.position.y+=0.5*XRS;
+ const c=renderer.xr.getCamera(camera), cp=new THREE.Vector3().setFromMatrixPosition(c.matrixWorld);
+ place.rotation.set(0,Math.atan2(cp.x-place.position.x,cp.z-place.position.z),0);
+ place.visible=true; placed=true; reticle.visible=false; $('#xrMsg').hidden=true; $('#dock').hidden=false; fitCamera();
+ A.bubble(4,0.18); say('ها هو الإسفنج على طاولتك! اضغطي الأرقام لتتعرّفي على تراكيبه.');
+}
+async function startFlat(){
+ mode='flat'; $('#start').hidden=true; place.position.set(0,0,0); place.rotation.set(0,0,0); place.scale.setScalar(1); place.visible=true;
+ let camOK=false;
+ try{
+  const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+  const v=$('#cam'); v.srcObject=st; await v.play(); camOK=true;
+ }catch(e){}
+ document.body.className=camOK?'cam':'sea';
+ $('#dock').hidden=false; fitCamera();
+ say(camOK?'مرحبًا بكِ في مختبر عالمة الأحياء! اضغطي الأرقام لتتعرّفي على تراكيب الإسفنج.'
+          :'تعذّر فتح الكاميرا، فإليكِ الإسفنج في بيئته البحرية. اضغطي الأرقام لتتعرّفي على تراكيبه.');
+}
+
+/* ================= حلقة الرسم ================= */
+const t0=performance.now(); const now=()=>(performance.now()-t0)/1000;
+let lastT=0, lastPoreDraw=0;
+renderer.setAnimationLoop((ms,frame)=>{
+ const t=now(), dt=Math.min(0.05,t-lastT); lastT=t;
+ if(frame&&hitSource&&!placed){
+  const res=frame.getHitTestResults(hitSource);
+  if(res.length){const pose=res[0].getPose(renderer.xr.getReferenceSpace()); reticle.visible=true; reticle.matrix.fromArray(pose.transform.matrix);}
+  else reticle.visible=false;
+ }
+ spin.rotation.set(rotX,rotY,0); spin.scale.setScalar(uScale);
+ squish=Math.max(0,squish-dt*0.8); root.scale.set(1+0.02*squish,1-0.035*squish,1+0.02*squish);
+ updFlag(t);
+ // الثقوب
+ if(Math.abs(poreK-poreTarget)>0.005){poreK+=(poreTarget-poreK)*Math.min(1,dt*1.4);}
+ if(Math.abs(poreK-poreDrawn)>0.03&&t-lastPoreDraw>0.08){drawTex(poreK); poreDrawn=poreK; lastPoreDraw=t;}
+ pore1.scale.setScalar(Math.max(0.05,poreK));
+ // الخلايا شبه الأميبية
+ for(const a of amos){const w=Math.sin(t*1.6+a.ph); a.m.scale.set(1+0.18*w,1-0.14*w,0.5);
+  if(!a.main){a.m.position.y=a.y+0.03*Math.sin(t*0.5+a.ph);} a.m.rotation.z=0.3*Math.sin(t*0.7+a.ph);}
+ // نبض النقاط
+ for(const h of hots)h.sp.scale.setScalar(0.115*(1+0.08*Math.sin(t*3+h.id)));
+ // فقاعات الفتحة الزفيرية
+ if(A.ctx&&t>nextBurst&&mode){nextBurst=t+4+Math.random()*5; const n=3+Math.floor(Math.random()*3); let k=0;
+  for(const b of bubs){if(b.life<=0&&k<n){b.life=2.4+Math.random()*0.6; b.x=(Math.random()-0.5)*0.16; b.z=-Math.random()*0.12; b.y=H-0.05-k*0.05; b.v=0.3+Math.random()*0.15; b.ph=Math.random()*TAU; b.m.visible=true; k++;}}
+  A.bubble(n,0.07);}
+ for(const b of bubs){if(b.life>0){b.life-=dt; b.y+=b.v*dt; b.m.position.set(b.x+0.02*Math.sin(t*5+b.ph),b.y,b.z); b.m.scale.setScalar(0.7+0.4*Math.min(1,(b.y-H)/0.6+0.3)); if(b.life<=0)b.m.visible=false;}}
+ updParts(t); updRepro(t,dt);
+ renderer.render(scene,camera);
+});
+})();
+</script>
+</body>
+</html>
