@@ -17,7 +17,7 @@ button{font-family:Almarai,sans-serif}
 .tabs{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:6px;background:rgba(255,255,255,.85);padding:5px;border-radius:30px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
 .tabs button{border:none;border-radius:24px;padding:8px 14px;font-weight:700;font-size:14px;white-space:nowrap;background:transparent;color:var(--t)}
 .tabs button.on{background:var(--g);color:#fff}
-.tools{position:fixed;top:92px;left:10px;z-index:5;display:flex;flex-direction:column;gap:8px}
+.tools{position:fixed;bottom:108px;left:10px;z-index:5;display:flex;flex-direction:column;gap:8px}
 .tools button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.9);font-size:20px;box-shadow:0 3px 10px rgba(0,0,0,.18)}
 .actions{position:fixed;bottom:44px;left:10px;right:10px;z-index:5;display:flex;gap:8px;justify-content:center;flex-wrap:nowrap;pointer-events:none}
 .actions button{pointer-events:auto;border:none;border-radius:26px;padding:11px 14px;font-weight:800;font-size:14px;color:#fff;background:var(--p);box-shadow:0 4px 0 #3d2563}
@@ -32,6 +32,8 @@ button{font-family:Almarai,sans-serif}
 @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1}}
 #gWrap{position:fixed;right:-4px;bottom:30px;height:32vh;max-height:300px;z-index:4;pointer-events:none;animation:slide .8s ease both}
 #gWrap.hide{display:none}
+body.allmode #gWrap{height:25vh}
+body.allmode #bubble{bottom:calc(30px + min(25vh,300px));font-size:12.5px;max-width:210px}
 #guide{height:100%;display:block;animation:breathe 3s ease-in-out infinite;transform-origin:bottom center}
 #guide.jump{animation:jump .6s ease}
 #guide.nod{animation:nod .6s ease}
@@ -42,7 +44,10 @@ button{font-family:Almarai,sans-serif}
 #bubble{position:fixed;right:12px;bottom:calc(30px + min(32vh,300px));z-index:4;max-width:230px;background:#fff;border:2.5px solid var(--y);border-radius:18px 18px 4px 18px;padding:9px 12px;font-size:13.5px;font-weight:700;line-height:1.6;box-shadow:0 5px 14px rgba(0,0,0,.15)}
 #bubble.hide{display:none}
 .foot{position:fixed;bottom:0;left:0;right:0;z-index:5;text-align:center;font-size:11.5px;background:rgba(255,255,255,.85);padding:6px}
-.gBtn{position:fixed;left:10px;top:196px;z-index:6;border:none;border-radius:16px;padding:5px 10px;font-size:12px;font-weight:700;background:rgba(255,255,255,.92);color:var(--t);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.gBtn{position:fixed;left:10px;bottom:262px;z-index:6;border:none;border-radius:16px;padding:5px 10px;font-size:12px;font-weight:700;background:rgba(255,255,255,.92);color:var(--t);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.chips{position:fixed;top:86px;left:50%;transform:translateX(-50%);z-index:5;display:none;gap:5px;flex-wrap:nowrap}
+.chips button{border:none;border-radius:18px;padding:6px 11px;font-weight:700;font-size:13px;white-space:nowrap;background:rgba(255,255,255,.9);color:var(--t);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.chips button.on{color:#fff}
 .camBtn{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7;border:none;border-radius:40px;padding:18px 30px;font-size:20px;font-weight:800;color:#fff;background:var(--t);box-shadow:0 6px 0 #062b26;display:none}
 /* start */
 #start{position:fixed;inset:0;z-index:20;background:url(cave-bg.jpg) center/cover;display:flex;align-items:center;justify-content:center;padding:18px}
@@ -87,6 +92,9 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
 
 <div class="bar">العلوم • أول متوسط • مختبر الصخور 🪨💎</div>
 <div class="tabs"><button id="t-rocks" onclick="setScene('rocks')">أنواع الصخور</button><button id="t-minerals" onclick="setScene('minerals')">بلورات المعادن</button></div>
+<div class="chips" id="chips">
+ <button data-g="all" onclick="setGroup('all')">الكل</button><button data-g="ig" onclick="setGroup('ig')">🔥 نارية</button><button data-g="sed" onclick="setGroup('sed')">🪨 رسوبية</button><button data-g="met" onclick="setGroup('met')">💎 متحوّلة</button>
+</div>
 <div class="tools">
  <button title="إعادة الوضع" onclick="resetView()">↺</button>
  <button title="تبديل الكاميرا" onclick="flipCam()">🔄</button>
@@ -106,7 +114,7 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
 <div id="start"><div class="in">
  <h1>مختبر الصخور 🪨💎</h1>
  <p>اختاري المشهد، وستفتح الكاميرا لتظهر الصخور في غرفتك!</p>
- <button class="choice" onclick="enter('rocks')"><img src="rocks-cover.jpg" alt=""><span>أنواع الصخور الثلاثة<small>ناري • رسوبي • متحوّل</small></span></button>
+ <button class="choice" onclick="enter('rocks')"><img src="rocks-cover.jpg" alt=""><span>أنواع الصخور الثلاثة<small>12 صخرًا: ناري • رسوبي • متحوّل</small></span></button>
  <button class="choice" onclick="enter('minerals')"><img src="minerals-cover.jpg" alt=""><span>بلورات المعادن<small>الكوارتز • الهاليت • البيريت • الميكا</small></span></button>
  <div class="by">العلوم • أول متوسط</div>
 </div></div>
@@ -140,20 +148,38 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 /* ---------- data ---------- */
 const DATA={
  rocks:[
-  {id:'granite',title:'الجرانيت',tag:'صخر ناري',text:'يتكوّن من تبريد الصهارة وتصلّبها؛ وبلوراته الكبيرة تدل على تبريد بطيء في باطن الأرض.'},
-  {id:'sandstone',title:'الحجر الرملي',tag:'صخر رسوبي',text:'يتكوّن من فتات صخور تراكمت في طبقات ثم تماسكت.'},
-  {id:'gneiss',title:'النايس',tag:'صخر متحوّل',text:'يتكوّن عندما يتعرّض صخر موجود للحرارة والضغط فيتغيّر دون أن ينصهر.'}],
+  {id:'granite',g:'ig',title:'الجرانيت',tag:'ناري جوفي',text:'يتكوّن من تبريد الصهارة وتصلّبها؛ وبلوراته الكبيرة تدل على تبريد بطيء في باطن الأرض.'},
+  {id:'basalt',g:'ig',title:'البازلت',tag:'ناري سطحي',text:'صخر داكن دقيق الحبيبات؛ يتكوّن من تبريد سريع للّابة على سطح الأرض.'},
+  {id:'obsidian',g:'ig',title:'الأوبسيديان (الزجاج البركاني)',tag:'ناري سطحي',text:'أسود لامع كالزجاج؛ تبرد اللابة بسرعة كبيرة جدًّا فلا تتكوّن فيه بلورات.'},
+  {id:'pumice',g:'ig',title:'الخفاف',tag:'ناري سطحي',text:'خفيف مليء بالفراغات التي تركتها فقاعات الغاز؛ ولذلك قد يطفو على الماء.'},
+  {id:'sandstone',g:'sed',title:'الحجر الرملي',tag:'رسوبي فتاتي',text:'يتكوّن من فتات صخور تراكمت في طبقات ثم تماسكت.'},
+  {id:'conglomerate',g:'sed',title:'الكونجلوميرات',tag:'رسوبي فتاتي',text:'حصى مستديرة كبيرة التحمت معًا بمادة لاحمة؛ واستدارتها تدل على أن الماء نقلها مسافة طويلة.'},
+  {id:'limestone',g:'sed',title:'الحجر الجيري',tag:'رسوبي كيميائي',text:'يتكوّن معظمه من معدن الكالسيت المترسّب من الماء، وقد يحتوي على أحافير أصداف.'},
+  {id:'coal',g:'sed',title:'الفحم',tag:'رسوبي عضوي',text:'يتكوّن من بقايا النباتات التي دُفنت وضُغطت ملايين السنين؛ ويُستخدم وقودًا.'},
+  {id:'gneiss',g:'met',title:'النايس',tag:'متحوّل متورّق',text:'يتكوّن عندما يتعرّض صخر موجود للحرارة والضغط فيتغيّر دون أن ينصهر؛ وتظهر فيه أشرطة داكنة وفاتحة.'},
+  {id:'slate',g:'met',title:'الأردواز',tag:'متحوّل متورّق',text:'يتكوّن من تحوّل الطَّفْل (الصخر الطيني)؛ وينفصل إلى ألواح مستوية رقيقة.'},
+  {id:'marble',g:'met',title:'الرخام',tag:'متحوّل غير متورّق',text:'يتكوّن من تحوّل الحجر الجيري بالحرارة والضغط؛ ويُستخدم في البناء والتماثيل.'},
+  {id:'quartzite',g:'met',title:'الكوارتزيت',tag:'متحوّل غير متورّق',text:'يتكوّن من تحوّل الحجر الرملي؛ وهو صلب جدًّا لأن حبيبات الكوارتز فيه التحمت بقوة.'}],
  minerals:[
   {id:'quartz',title:'الكوارتز',tag:'معدن',text:'بلورة سداسية • يُصنع منه الزجاج.'},
   {id:'halite',title:'الهاليت (الملح الصخري)',tag:'معدن',text:'شكل بلوري مكعّب • يتكوّن من تبخّر ماء البحر.'},
   {id:'pyrite',title:'البيريت',tag:'معدن',text:'لمعان فلزي • يُسمّى ذهب المغفّلين.'},
   {id:'mica',title:'الميكا',tag:'معدن',text:'انفصام في اتجاه واحد إلى صفائح.'}]
 };
+const GROUPS={all:{say:'هذه الصخور كلها! المسي أي صخرة لنكتشفها 🔍'},
+ ig:{lbl:'نارية',say:'الصخور النارية تتكوّن من تبريد الصهارة في باطن الأرض، أو اللابة على سطحها.'},
+ sed:{lbl:'رسوبية',say:'الصخور الرسوبية تتكوّن من رواسب تتراكم في طبقات ثم تتماسك، وهي فتاتية وكيميائية وعضوية.'},
+ met:{lbl:'متحوّلة',say:'الصخور المتحوّلة تتكوّن عندما تغيّر الحرارة والضغط صخرًا موجودًا دون أن ينصهر، وهي متورّقة وغير متورّقة.'}};
+const GCOL={all:'#0E4D45',ig:'#D9A21B',sed:'#5FA33A',met:'#5B3A8E'};
 const QUIZ={
  rocks:[
   {q:'أيّ صخر يتكوّن من تبريد الصهارة؟',o:['الجرانيت (ناري)','الحجر الرملي (رسوبي)','النايس (متحوّل)'],a:0,m:'granite'},
   {q:'أيّ صخر يتكوّن في طبقات من فتات الصخور؟',o:['النايس','الحجر الرملي','الجرانيت'],a:1,m:'sandstone'},
-  {q:'ماذا يحدث للصخر المتحوّل؟',o:['ينصهر تمامًا','يتغيّر بالحرارة والضغط دون أن ينصهر','يتبخّر','يذوب في الماء'],a:1,m:'gneiss'}],
+  {q:'ماذا يحدث للصخر المتحوّل؟',o:['ينصهر تمامًا','يتغيّر بالحرارة والضغط دون أن ينصهر','يتبخّر','يذوب في الماء'],a:1,m:'gneiss'},
+  {q:'أيّ صخر ناري قد يطفو على الماء لكثرة فراغاته؟',o:['البازلت','الخفاف','الجرانيت','الأوبسيديان'],a:1,m:'pumice'},
+  {q:'لماذا لا توجد بلورات في الأوبسيديان؟',o:['تبرّد ببطء شديد','تبرّد بسرعة كبيرة','تكوّن من النباتات','تكوّن في طبقات'],a:1,m:'obsidian'},
+  {q:'أيّ صخر رسوبي عضوي يتكوّن من بقايا النباتات؟',o:['الفحم','الكونجلوميرات','الأردواز','الحجر الجيري'],a:0,m:'coal'},
+  {q:'الرخام صخر متحوّل يتكوّن من تحوّل…؟',o:['الحجر الرملي','الفحم','الحجر الجيري','البازلت'],a:2,m:'marble'}],
  minerals:[
   {q:'أيّ معدن بلوراته مكعّبة؟',o:['الهاليت','الميكا','الكوارتز','البيريت'],a:0,m:'halite'},
   {q:'أيّ معدن يُسمّى «ذهب المغفّلين»؟',o:['الكوارتز','البيريت','الهاليت','الميكا'],a:1,m:'pyrite'},
@@ -215,7 +241,7 @@ function bumpy(geo,amt){const p=geo.attributes.position,v=new THREE.Vector3();fo
 function colorize(geo,fn){const p=geo.attributes.position,c=new Float32Array(p.count*3),v=new THREE.Vector3(),col=new THREE.Color();for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);fn(v,col);c.set([col.r,col.g,col.b],i*3)}geo.setAttribute('color',new THREE.BufferAttribute(c,3));return geo}
 function rnd(s){const x=Math.sin(s)*43758.5453;return x-Math.floor(x)}
 
-function makeGranite(){const g=bumpy(new THREE.IcosahedronGeometry(.85,5),.16).toNonIndexed();
+function makeGranite(){const g=bumpy(new THREE.IcosahedronGeometry(.85,5),.16);
  const p=g.attributes.position,c=new Float32Array(p.count*3);const pal=[[.92,.55,.52],[.97,.95,.93],[.1,.1,.11],[.82,.47,.47],[.93,.9,.88],[.2,.2,.22],[.95,.66,.62]];
  for(let i=0;i<p.count;i+=3){const k=Math.floor(rnd(i*.37+1)*pal.length),col=pal[k];for(let j=0;j<3;j++)c.set(col,(i+j)*3)}
  g.setAttribute('color',new THREE.BufferAttribute(c,3));return new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.65,flatShading:true}))}
@@ -239,16 +265,71 @@ function makeMica(){const grp=new THREE.Group();const mat=new THREE.MeshStandard
  for(let i=0;i<9;i++){const g=new THREE.CylinderGeometry(.62-i*.015,.65-i*.015,.05,7);const m=new THREE.Mesh(g,mat);m.position.y=-.3+i*.065;m.rotation.y=i*.4;m.scale.x=1+((i%3)-1)*.06;grp.add(m)}
  grp.userData.top=grp.children[grp.children.length-1];return grp}
 
-const MAKERS={granite:makeGranite,sandstone:makeSandstone,gneiss:makeGneiss,quartz:makeQuartz,halite:makeHalite,pyrite:makePyrite,mica:makeMica};
-function layout(){const n=DATA[current].length,narrow=innerWidth<innerHeight;
- const pos=current==='rocks'?(narrow?[[-.95,.85],[.95,.85],[0,-1.15]]:[[-2.2,0],[0,0],[2.2,0]]):(narrow?[[-.95,.95],[.95,.95],[-.95,-1.1],[.95,-1.1]]:[[-3,0],[-1,0],[1,0],[3,0]]);
- DATA[current].forEach((d,i)=>{const m=models[d.id];m.position.set(pos[i][0],pos[i][1],0);m.userData.base=m.position.clone()})}
-function build(){world.clear();models={};
- DATA[current].forEach(d=>{const m=MAKERS[d.id]();const w=new THREE.Group();w.add(m);w.userData.id=d.id;w.userData.inner=m;w.scale.setScalar(.9);world.add(w);models[d.id]=w});layout()}
+function makeBasalt(){const g=bumpy(new THREE.DodecahedronGeometry(.8,3),.1);
+ colorize(g,(v,c)=>{const n=rnd(v.x*91+v.y*37+v.z*13)*.09;c.setRGB(.17+n,.17+n,.19+n)});
+ const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85}));m.scale.set(1.15,.8,1);return m}
+function makeObsidian(){const g=bumpy(new THREE.IcosahedronGeometry(.8,1),.22);
+ const m=new THREE.Mesh(g,new THREE.MeshPhysicalMaterial({color:0x0c0c12,roughness:.06,metalness:.1,clearcoat:1,clearcoatRoughness:.05,flatShading:true}));m.scale.set(1.1,.85,.9);return m}
+function makePumice(){const g=bumpy(new THREE.IcosahedronGeometry(.82,12),.06);const P=[];
+ for(let i=0;i<80;i++){const q=new THREE.Vector3(rnd(i*3.1+1)-.5,rnd(i*7.7+2)-.5,rnd(i*1.9+3)-.5).normalize().multiplyScalar(.82);P.push([q,.05+rnd(i*5.3)*.08])}
+ const p=g.attributes.position,c=new Float32Array(p.count*3),v=new THREE.Vector3();
+ for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);let k=1;for(const [q,r] of P){const d=v.distanceTo(q);if(d<r)k=Math.min(k,d/r)}
+  let col=.86-noise3(v.x*6,v.y*6,v.z*6)*.03;if(k<1){col=.38+k*.45;v.multiplyScalar(1-(1-k)*.07);p.setXYZ(i,v.x,v.y,v.z)}c.set([col,col*.98,col*.92],i*3)}
+ g.computeVertexNormals();g.setAttribute('color',new THREE.BufferAttribute(c,3));
+ const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}));m.scale.set(1.1,.85,.95);return m}
+function makeConglomerate(){const grp=new THREE.Group();
+ grp.add(new THREE.Mesh(bumpy(new THREE.BoxGeometry(1.4,1,1,10,10,10),.05),new THREE.MeshStandardMaterial({color:0xb89a72,roughness:1})));
+ const cols=[0x8a8f96,0xd8cfc0,0x6e5a4a,0xc98f6a,0x4a4d55,0xe8e2d6];
+ for(let i=0;i<28;i++){const r=.1+rnd(i*4.1+1)*.13,f=Math.floor(rnd(i*2.3+1)*6),a=rnd(i*5.9+1)-.5,b=rnd(i*8.1+1)-.5;let x,y,z;
+  if(f<2){x=(f?1:-1)*.68;y=a*.85;z=b*.85}else if(f<4){y=(f-2?1:-1)*.48;x=a*1.25;z=b*.85}else{z=(f-4?1:-1)*.48;x=a*1.25;y=b*.85}
+  const s=new THREE.Mesh(new THREE.SphereGeometry(r,14,10),new THREE.MeshStandardMaterial({color:cols[i%6],roughness:.55}));s.position.set(x,y,z);s.scale.set(1,.75+rnd(i+.5)*.3,1);grp.add(s)}
+ return grp}
+function makeLimestone(){const grp=new THREE.Group();const g=bumpy(new THREE.BoxGeometry(1.35,.95,1,12,12,12),.07);
+ colorize(g,(v,c)=>{const n=noise3(v.x*3,v.y*3,v.z*3)*.04;c.setRGB(.9+n,.87+n,.76+n)});
+ grp.add(new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.95})));
+ const sm=new THREE.MeshStandardMaterial({color:0xb8a682,roughness:.8});
+ [[.25,.15,.52,.16],[-.35,-.15,.52,.12],[.7,.1,-.1,.13],[-.1,.5,.15,.11],[.1,-.2,-.52,.14]].forEach(([x,y,z,r])=>{
+  [1,.5].forEach(f=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r*f,r*f*.3,8,20,Math.PI*1.6),sm);t.position.set(x,y,z);
+   if(Math.abs(x)>.6)t.rotation.y=Math.PI/2;else if(y>.45)t.rotation.x=Math.PI/2;grp.add(t)})});
+ return grp}
+function makeCoal(){const grp=new THREE.Group();const mat=new THREE.MeshStandardMaterial({color:0x161616,roughness:.35,metalness:.3,flatShading:true});
+ [[0,0,0,.6],[.5,-.2,.15,.35],[-.45,-.25,.1,.38],[.1,-.3,.45,.3]].forEach(([x,y,z,r],i)=>{const m=new THREE.Mesh(bumpy(new THREE.DodecahedronGeometry(r,0),.15),mat);m.position.set(x,y,z);m.rotation.set(i,i*2,i*.5);m.scale.set(1.15,.9,1);grp.add(m)});return grp}
+function makeSlate(){const grp=new THREE.Group();
+ for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.BoxGeometry(1.5-i*.08,.07,1-i*.05),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(.6,.1,.2+i*.025),roughness:.5}));
+  m.position.set((rnd(i+1)-.5)*.12,-.2+i*.09,(rnd(i*3+1)-.5)*.12);m.rotation.y=(rnd(i*7+1)-.5)*.2;grp.add(m)}
+ grp.rotation.z=.12;return grp}
+function makeMarble(){const g=bumpy(new THREE.DodecahedronGeometry(.82,4),.08);
+ colorize(g,(v,c)=>{const t=Math.abs(Math.sin(v.x*5+v.y*3+noise3(v.x*2,v.y*2,v.z*2)*3));const k=t<.09?.5+t*4:.96-Math.abs(noise3(v.x*4,v.y*4,v.z*4))*.03;c.setRGB(k,k,k)});
+ return new THREE.Mesh(g,new THREE.MeshPhysicalMaterial({vertexColors:true,roughness:.25,clearcoat:.6}))}
+function makeQuartzite(){const g=bumpy(new THREE.IcosahedronGeometry(.8,6),.12);const p=g.attributes.position,c=new Float32Array(p.count*3);
+ for(let i=0;i<p.count;i+=3){const n=rnd(i*.71+1)*.09;for(let j=0;j<3;j++)c.set([.93-n,.76-n,.72-n],(i+j)*3)}
+ g.setAttribute('color',new THREE.BufferAttribute(c,3));
+ const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.35,flatShading:true}));m.scale.set(1.1,.85,.95);return m}
+function label(t,col){const cv=document.createElement('canvas');cv.width=320;cv.height=96;const x=cv.getContext('2d');x.fillStyle=col;
+ x.beginPath();if(x.roundRect)x.roundRect(6,6,308,84,42);else x.rect(6,6,308,84);x.fill();
+ x.fillStyle='#fff';x.font='800 46px Almarai, sans-serif';x.textAlign='center';x.textBaseline='middle';x.direction='rtl';x.fillText(t,160,52);
+ const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));s.scale.set(.9,.27,1);s.renderOrder=5;return s}
+const MAKERS={basalt:makeBasalt,obsidian:makeObsidian,pumice:makePumice,conglomerate:makeConglomerate,limestone:makeLimestone,coal:makeCoal,slate:makeSlate,marble:makeMarble,quartzite:makeQuartzite,granite:makeGranite,sandstone:makeSandstone,gneiss:makeGneiss,quartz:makeQuartz,halite:makeHalite,pyrite:makePyrite,mica:makeMica};
+let group='all',labels={};
+const list=()=>current==='rocks'&&group!=='all'?DATA.rocks.filter(d=>d.g===group):DATA[current];
+function layout(){const L=list(),n=L.length,narrow=innerWidth<innerHeight,G=['ig','sed','met'];let pos,s0=.9;
+ if(n===3)pos=narrow?[[-.95,.8],[.95,.8],[0,-1.05]]:[[-2.2,0],[0,0],[2.2,0]];
+ else if(n===4){pos=narrow?[[-1,.85],[1,.85],[-1,-.9],[1,-.9]]:[[-3,0],[-1,0],[1,0],[3,0]];s0=narrow?.8:.9}
+ else{s0=narrow?.42:.5;const cnt={};pos=L.map(d=>{const gi=G.indexOf(d.g),j=cnt[d.g]=(cnt[d.g]??-1)+1;
+   return narrow?[(1-gi)*1.15,.85-j*.92]:[(1-gi)*3.4+(j%2-.5)*-1.35,.55-Math.floor(j/2)*1.35]});
+  G.forEach((g,gi)=>{const l=labels[g];if(l)l.position.set(narrow?(1-gi)*1.15:(1-gi)*3.4,narrow?1.5:1.5,.5)})}
+ L.forEach((d,i)=>{const m=models[d.id];m.position.set(pos[i][0],pos[i][1],0);m.userData.base=m.position.clone();m.userData.s0=s0;m.scale.setScalar(s0)})}
+function build(){world.clear();models={};labels={};
+ list().forEach(d=>{const m=MAKERS[d.id]();const w=new THREE.Group();w.add(m);w.userData.id=d.id;w.userData.inner=m;world.add(w);models[d.id]=w});
+ if(current==='rocks'&&group==='all')['ig','sed','met'].forEach(g=>{const s=label(GROUPS[g].lbl,GCOL[g]);s.userData.lbl=g;world.add(s);labels[g]=s});
+ document.body.classList.toggle('allmode',current==='rocks'&&group==='all');layout()}
+if(document.fonts)document.fonts.ready.then(()=>{if(current==='rocks'&&group==='all'&&Object.keys(models).length)build()});
+window.setGroup=function(g,speak=true){group=g;document.querySelectorAll('#chips button').forEach(b=>{const on=b.dataset.g===g;b.classList.toggle('on',on);b.style.background=on?GCOL[b.dataset.g]:''});
+ hideCard();build();if(speak){sfx.tap();talk(GROUPS[g].say)}};
 window.setScene=function(s){current=s;document.getElementById('t-rocks').classList.toggle('on',s==='rocks');document.getElementById('t-minerals').classList.toggle('on',s==='minerals');
- build();hideCard();resetView(false);const a=document.getElementById('actions');
+ document.getElementById('chips').style.display=s==='rocks'?'flex':'none';if(s==='rocks')setGroup(group,false);else build();hideCard();resetView(false);const a=document.getElementById('actions');
  a.innerHTML=(s==='rocks'?'<button class="y" onclick="openCycle()">▶ دورة الصخور</button>':'')+'<button onclick="openQuiz()">🎯 تحدّي المستكشفة</button>';
- talk(!welcomed?(welcomed=true,'أهلًا يا مستكشفة! أنا جُمانة، المسي أي صخرة لنكتشفها معًا 🔍'):s==='rocks'?'هذه أنواع الصخور الثلاثة… المسي أي صخرة لنكتشفها معًا 🔍':'هذه بلورات المعادن… المسي أي بلورة لتعرفي خاصيتها 💎');
+ talk(!welcomed?(welcomed=true,'أهلًا يا مستكشفة! أنا جُمانة، المسي أي صخرة لنكتشفها معًا 🔍'):s==='rocks'?GROUPS[group].say:'هذه بلورات المعادن… المسي أي بلورة لتعرفي خاصيتها 💎');
  history.replaceState(null,'','?scene='+s)};
 
 function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;
@@ -269,9 +350,9 @@ canvas.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const 
 canvas.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(!moved&&pts.size===0)tap(e)});
 canvas.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
 function tap(e){ptr.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(ptr,cam);
- const hits=ray.intersectObjects(world.children,true);if(!hits.length)return;let o=hits[0].object;while(o.parent&&o.parent!==world)o=o.parent;select(o.userData.id)}
+ const hits=ray.intersectObjects(world.children,true);if(!hits.length)return;let o=hits[0].object;while(o.parent&&o.parent!==world)o=o.parent;if(o.userData.lbl){setGroup(o.userData.lbl);return}if(o.userData.id)select(o.userData.id)}
 let curText='';
-function select(id,speak=true){selected=id;glowT=0;sfx.tap();const d=DATA[current].find(x=>x.id===id);
+function select(id,speak=true){const d=DATA[current].find(x=>x.id===id);if(!d)return;if(!models[id]&&current==='rocks')setGroup(d.g,false);selected=id;glowT=0;sfx.tap();document.getElementById('c-tag').style.background=GCOL[d.g]||'#5B3A8E';
  document.getElementById('c-title').textContent=d.title;document.getElementById('c-tag').textContent=d.tag;document.getElementById('c-text').textContent=d.text;
  curText=d.title+'. '+d.text;document.getElementById('card').classList.add('on');bubble.textContent='هذا '+d.title+'! اسمعي معي 🔊';if(speak)say(curText);anim('jump');
  if(id==='mica'){const top=models.mica.userData.inner.userData.top;top.userData.lift=1}}
@@ -283,7 +364,7 @@ const clock=new THREE.Clock();
 function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();
  world.rotation.set(0,0,0);world.scale.setScalar(scl);
  Object.values(models).forEach((m,i)=>{m.rotation.y=rotY+t*.25+i;m.rotation.x=rotX;const b=m.userData.base;if(b)m.position.y=b.y+Math.sin(t*1.4+i)*.06;
-  const isSel=m.userData.id===selected;const s=isSel?1.08:.9;m.scale.lerp(new THREE.Vector3(s,s,s),.15);setGlow(m,isSel?(.25+Math.sin(t*5)*.15):0)});
+  const isSel=m.userData.id===selected,b0=m.userData.s0||.9,s=isSel?b0*1.2:b0;m.scale.lerp(new THREE.Vector3(s,s,s),.15);setGlow(m,isSel?(.25+Math.sin(t*5)*.15):0)});
  const mica=models.mica;if(mica){const top=mica.userData.inner.userData.top;const target=top.userData.lift?0.45:(-.3+8*.065);top.position.y+=(target-top.position.y)*.08;top.rotation.z=top.userData.lift?.35:0;if(top.userData.lift&&selected!=='mica')top.userData.lift=0}
  renderer.render(scene,cam)}
 loop();
@@ -304,7 +385,7 @@ function renderQ(){const Q=QUIZ[current][qi],box=document.getElementById('quizBo
  box.innerHTML='<h2>🎯 تحدّي المستكشفة</h2>'+(Q.img?'<img class="qi" src="'+Q.img+'">':'')+'<div class="q">'+Q.q+'</div><div class="opts">'+Q.o.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+'</div><div class="prog">السؤال '+(qi+1)+' من '+QUIZ[current].length+'</div><button class="close" onclick="closeM(\'m-quiz\')">إغلاق</button>';
  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.i,b))}
 function answer(i,b){const Q=QUIZ[current][qi];if(b.classList.contains('ok'))return;
- if(i===Q.a){b.classList.add('ok');sfx.ok();anim('jump');if(!missed)first++;talk('أحسنتِ! إجابة صحيحة 🌟');if(Q.m)select(Q.m,false);
+ if(i===Q.a){b.classList.add('ok');sfx.ok();anim('jump');if(!missed)first++;if(Q.m)select(Q.m,false);talk('أحسنتِ! إجابة صحيحة 🌟');
   setTimeout(()=>{qi++;if(qi<QUIZ[current].length)renderQ();else win()},1300)}
  else{b.classList.add('no');missed=true;sfx.no();anim('nod');talk('حاولي مرة أخرى 💭')}}
 function win(){sfx.win();confetti();const n=QUIZ[current].length;
