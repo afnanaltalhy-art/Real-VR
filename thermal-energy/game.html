@@ -5,24 +5,27 @@
 <style>
 :root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9}
 *{box-sizing:border-box}html,body{margin:0;height:100%}
-body{font-family:Almarai,sans-serif;color:var(--navy);background:radial-gradient(circle at 70% 20%,#FFF4E2,#DCEBF6 60%,#C7DDEE);overflow-x:hidden}
+body{font-family:Almarai,sans-serif;color:var(--navy);overflow-x:hidden;min-height:100vh}
+body{background:#123 url(img/bag.jpg) center/cover fixed no-repeat;transition:background-image .6s}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(230,240,250,.18));pointer-events:none;z-index:-1}
+
 .top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--navy);color:#fff}
 .top img{height:44px;background:#fff;border-radius:8px;padding:3px}.top h1{margin:0;font-size:clamp(16px,3.4vw,24px);text-align:center;flex:1}
 .scr{display:none;max-width:1050px;margin:auto;padding:14px}.scr.on{display:block;animation:in .4s}@keyframes in{from{opacity:0;transform:translateY(10px)}}
-.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+.hero{display:grid;grid-template-columns:minmax(0,560px) 1fr;gap:16px;align-items:center}
 @media(max-width:760px){.hero,.play{grid-template-columns:1fr!important}.girl{display:none}}
-.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
+.card{background:rgba(255,255,255,.76);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
 h2{margin:0 0 8px;font-size:28px}.lead{font-size:18px;line-height:1.9}
 input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;border:3px solid var(--navy);margin:10px 0}
 .btn{border:0;font:inherit;font-weight:800;font-size:19px;color:#fff;background:var(--hot);padding:13px 24px;border-radius:16px;cursor:pointer;box-shadow:0 5px 0 #a3421a}
 .btn:active{transform:translateY(4px);box-shadow:none}.btn.t{background:var(--teal);box-shadow:0 5px 0 #11484c}
-.hero img.cover{width:100%;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.hero img.cover{display:none}
 .play{display:grid;grid-template-columns:320px 1fr;gap:16px}
-.stage{background:#fff;border-radius:22px;padding:12px;box-shadow:0 10px 30px rgba(30,53,87,.15);text-align:center;position:relative}
+.stage{background:rgba(255,255,255,.76);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:12px;box-shadow:0 10px 30px rgba(30,53,87,.15);text-align:center;position:relative}
 #cup{width:100%;max-width:300px}
 .temp{font-size:44px;font-weight:800;color:var(--hot);direction:ltr}
 .hud{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}.hud span{background:var(--cream);border-radius:999px;padding:5px 12px;font-weight:800}
-.qcard{background:#fff;border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
+.qcard{background:rgba(255,255,255,.76);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
 .bar{height:14px;background:#e3ebf2;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#E0622B,#F2B01E,#2E8B57);transition:width 1s linear}
 .qn{color:var(--gold);font-weight:800;margin:10px 0 2px}.qt{font-size:23px;font-weight:800;line-height:1.7;margin:4px 0 14px}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.opts{grid-template-columns:1fr}}
@@ -31,7 +34,7 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 .fb{display:none;margin-top:12px;padding:12px;border-radius:14px;font-size:17px;line-height:1.7}.fb.ok{display:block;background:#E7F5EF}.fb.no{display:block;background:#FDECEA}
 .layers{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;min-height:34px}.layers b{background:var(--teal);color:#fff;border-radius:10px;padding:4px 8px;font-size:13px;animation:pop .4s}
 @keyframes pop{from{transform:scale(0)}}
-.cert{background:#fff;border:12px solid var(--gold);outline:3px solid var(--navy);outline-offset:-24px;border-radius:22px;padding:28px;text-align:center}
+.cert{background:rgba(255,255,255,.88);border:12px solid var(--gold);outline:3px solid var(--navy);outline-offset:-24px;border-radius:22px;padding:28px;text-align:center}
 .cert .lg{display:flex;justify-content:space-between}.cert .lg img{height:74px}.cert .nm{font-size:40px;color:var(--hot);font-weight:800;margin:8px 0}
 .stars{font-size:46px;color:#F2B01E;letter-spacing:6px}.sig{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;margin-top:16px;font-size:15px}
 .girl{position:fixed;left:4px;bottom:0;height:170px;pointer-events:none}
@@ -69,7 +72,7 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 <div class="stars" id="cst"></div><p id="cm" style="font-size:22px;font-weight:800;color:var(--teal)"></p>
 <div class="sig"><span>المعلمة: أ/ نجاح العنزي</span><span>المشرفة التعليمية: د/ ريم حرح</span><span>مديرة المدرسة: أ/ منال الزهراني</span></div></div>
 <p style="text-align:center"><button class="btn" onclick="location.reload()">↺ العبي مرة أخرى</button></p></section>
-<img class="girl" src="img/girl.png" alt="">
+
 <script>
 const Q=[
 ['درجة حرارة الجسم مقياس لـ:',['الطاقة الحرارية الكلية','متوسط الطاقة الحركية للجزيئات','عدد الجزيئات','الكتلة'],1,'درجة الحرارة ترتبط بمتوسط الطاقة الحركية للجزيئات فقط.'],
@@ -93,7 +96,8 @@ function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle(
 function start(){name=$('nm').value.trim();if(!name){$('nm').focus();$('nm').style.borderColor='#C0392B';return}play('bubble',.5);go('s1');show();cool=setInterval(tickT,200)}
 function tickT(){T=Math.max(25,T-k*(T-25)/40*2);draw()}
 function draw(){$('tv').textContent=T.toFixed(1)+' °C';const c=Math.max(0,Math.min(1,(T-25)/55));$('tea').setAttribute('fill',`rgb(${Math.round(60+c*132)},${Math.round(120-c*63)},${Math.round(200-c*157)})`);$('steam').style.opacity=c}
-function show(){ans=false;const q=Q[qi];$('qn').textContent=`السؤال ${qi+1} من ${Q.length}`;$('qt').textContent=q[0];$('fb').className='fb';$('nx').style.display='none';
+const QBG=['mugjug','icehot','irgun','calor','cotton','thermos','materials','digital','beach','building','expo','bag'];
+function show(){document.body.style.backgroundImage=`url(img/${QBG[qi%QBG.length]}.jpg)`;ans=false;const q=Q[qi];$('qn').textContent=`السؤال ${qi+1} من ${Q.length}`;$('qt').textContent=q[0];$('fb').className='fb';$('nx').style.display='none';
 $('op').innerHTML=q[1].map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${'أبجد'[i]}) ${o}</button>`).join('');left=30;$('tb').style.width='100%';clearInterval(tm);
 tm=setInterval(()=>{left--;$('tb').style.width=(left/30*100)+'%';if(left<=0){clearInterval(tm);if(!ans)fail(null)}},1000)}
 function floatTxt(t,c){const d=document.createElement('div');d.className='float';d.style.color=c;d.textContent=t;d.style.right='45%';d.style.top='35%';document.querySelector('.stage').appendChild(d);setTimeout(()=>d.remove(),1300)}
@@ -107,7 +111,7 @@ function fail(b){ans=true;const q=Q[qi];document.querySelectorAll('.opt')[q[2]].
 fb(false,(b?'💡 ':'⏰ انتهى الوقت! ')+q[3]);draw()}
 function fb(ok,m){const f=$('fb');f.className='fb '+(ok?'ok':'no');f.textContent=m;$('nx').style.display='inline-block'}
 function next(){qi++;play('drop',.6);if(qi<Q.length){show();return}clearInterval(cool);clearInterval(tm);finish()}
-function finish(){const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
+function finish(){document.body.style.backgroundImage='url(img/expo.jpg)';const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
 $('cm').textContent=st===3?'مهندسة عزل حراري متميّزة! 🌟':st===2?'أداء رائع… الشاي ما زال دافئًا 👏':'بداية موفّقة… جرّبي مرة أخرى لتحصلي على 3 نجوم 💪';go('s2');play('applause',.9)}
 draw();
 </script></body></html>

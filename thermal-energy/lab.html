@@ -8,27 +8,30 @@
 <style>
 :root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9;--bg:#EEF5FA}
 *{box-sizing:border-box}
-body{margin:0;font-family:Almarai,sans-serif;background:var(--bg);color:var(--navy)}
-header{position:relative;min-height:190px;background:url(img/lab.jpg) center/cover;display:flex;align-items:flex-end}
-header::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(30,53,87,.92),rgba(30,53,87,.25))}
+body{margin:0;font-family:Almarai,sans-serif;color:var(--navy);min-height:100vh}
+body{background:#123 url(img/lab.jpg) center/cover fixed no-repeat;transition:background-image .6s}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(230,240,250,.18));pointer-events:none;z-index:-1}
+
+header{position:relative;min-height:150px;background:transparent;display:flex;align-items:flex-end}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(30,53,87,.85),rgba(30,53,87,.15))}
 .hin{position:relative;padding:18px 20px;color:#fff;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
 .hin h1{margin:0;font-size:clamp(22px,4vw,34px)}
 .hin p{margin:6px 0 0;opacity:.9}
 .logos{display:flex;gap:10px}
 .logos img{height:58px;background:#fff;border-radius:10px;padding:4px}
-nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#fff;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 nav button{flex:0 0 auto;border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer}
 nav button.on{background:var(--navy);color:#fff}
 main{max-width:1100px;margin:auto;padding:16px}
 .lab{display:none}
 .lab.on{display:block;animation:fi .4s}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}}
-.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(30,53,87,.08);margin-bottom:14px}
+.card{background:rgba(255,255,255,.74);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(30,53,87,.08);margin-bottom:14px}
 h2{margin:0 0 6px;font-size:24px}
-.q{background:var(--cream);border-right:5px solid var(--gold);padding:10px 12px;border-radius:10px;margin:8px 0}
+.q{background:rgba(251,240,220,.8);border-right:5px solid var(--gold);padding:10px 12px;border-radius:10px;margin:8px 0}
 .row{display:flex;gap:14px;flex-wrap:wrap}
 .col{flex:1 1 300px}
-canvas{direction:ltr;width:100%;background:#F7FBFE;border-radius:12px;border:1px solid #d5e3ee;display:block}
+canvas{direction:ltr;width:100%;background:rgba(247,251,254,.82);border-radius:12px;border:1px solid #d5e3ee;display:block}
 label{display:block;font-weight:700;margin:10px 0 4px}
 input[type=range]{width:100%}
 select,input[type=number]{font:inherit;padding:6px;border-radius:8px;border:1px solid #9fb3c8;width:100%}
@@ -43,7 +46,7 @@ th{background:var(--navy);color:#fff}
 .ltr{direction:ltr;unicode-bidi:embed;display:inline-block}
 .chips button{border:2px solid var(--navy);background:#fff;font:inherit;padding:6px 10px;border-radius:10px;margin:3px;cursor:pointer}
 .chips button.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.chips button.no{background:#c0392b;color:#fff;border-color:#c0392b}
-footer{text-align:center;padding:18px;color:#5c6577;font-size:14px}
+footer{text-align:center;padding:12px;color:#1E3557;font-size:14px;background:rgba(255,255,255,.7);margin:0 16px 16px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -168,7 +171,8 @@ function f2(x,d=1){return (+x).toFixed(d)}
 // nav
 const labs=[...document.querySelectorAll('.lab')];
 $('nav').innerHTML=labs.map(s=>`<button data-id="${s.id}">${s.dataset.t}</button>`).join('');
-function show(id){labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
+const BG={particles:'mugjug',balloon:'balloon',equil:'icehot',mass:'materials',cool:'digital',transfer:'irgun',spec:'beach',calor:'calor',insul:'cotton'};
+function show(id){document.body.style.backgroundImage=`url(img/${BG[id]||'lab'}.jpg)`;labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
 $('nav').onclick=e=>{if(e.target.dataset.id){show(e.target.dataset.id);try{history.replaceState(null,'','#'+e.target.dataset.id)}catch(_){}}};
 show(location.hash.slice(1)&&$(location.hash.slice(1))?location.hash.slice(1):'particles');
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if($(h))show(h)});
