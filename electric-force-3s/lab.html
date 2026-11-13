@@ -23,6 +23,9 @@ input[type=range]{accent-color:#4B4FA8;padding:0!important;height:28px}
 table.dt{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
 table.dt th{background:#26306B;color:#fff;padding:6px}table.dt td{background:#fff;padding:6px;border:1px solid #E6E0F6;text-align:center}
 .meter{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.meter span{background:#fff;border:2px solid #DCD3F2;border-radius:14px;padding:5px 10px;font-weight:800;font-size:13.5px}
+.ban{display:block;width:100%;height:210px;object-fit:cover;border-radius:16px;border:3px solid #DCD3F2;margin:8px 0;transition:opacity .3s;box-shadow:0 6px 16px rgba(38,48,107,.18)}
+@media(max-width:620px){.ban{height:150px}}
+.bgimg{transition:background-image .4s}
 </style>
 </head>
 <body>
@@ -31,7 +34,7 @@ table.dt th{background:#26306B;color:#fff;padding:6px}table.dt td{background:#ff
 <div class="wrap">
 <div class="card"><h2>🔬 مختبر الأجسام المشحونة</h2><p>اختاري التجربة، وغيّري المتغيرات بنفسك، وراقبي الشحنات وهي تتحرك. أنجزي <b>المهمات</b> 🌱🌿🌳 لتجمعي النجوم!</p>
 <div class="tabs" id="tabs"><button data-t="0" class="on">⚖ القضيب المعلّق</button><button data-t="1">🔬 الكشّاف الكهربائي</button><button data-t="2">🔵🔵 الحث بكرتين</button><button data-t="3">✂ قصاصات الورق</button><button data-t="4">⚡ البرق</button></div>
-<div class="row" style="justify-content:space-between"><b id="ttl"></b><span class="pill" id="stars">⭐ 0 / 15</span></div>
+<img id="ban" class="ban" src="assets/img/sc_ruler.webp" alt=""><div class="row" style="justify-content:space-between"><b id="ttl"></b><span class="pill" id="stars">⭐ 0 / 15</span></div>
 </div>
 
 <!-- 1 القضيب المعلق -->
@@ -102,7 +105,7 @@ let STARS=0;const DONE={};
 function missions(id,list){document.getElementById(id).innerHTML=list.map((m,i)=>`<div id="${id}_${i}">${m}</div>`).join('')}
 function done(id,i,msg){const k=id+'_'+i;if(DONE[k])return;DONE[k]=1;document.getElementById(k).classList.add('done');STARS++;document.getElementById('stars').textContent=`⭐ ${STARS} / 15`;SFX.win();confetti(90);toast('⭐ '+(msg||'أحسنتِ! أنجزتِ المهمة'));say('رائع يا فيزيائية! ⭐')}
 const TT=['⚖ القضيب المعلّق: تجاذب أم تنافر؟','🔬 الكشّاف الكهربائي: التوصيل والحث والتأريض','🔵🔵 الشحن بالحث باستخدام كرتين','✂ لماذا تقفز قصاصات الورق؟','⚡ البرق ومانعة الصواعق'];
-let TAB=0;document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ac();SFX.click();TAB=+b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.pane').forEach((p,i)=>p.style.display=i===TAB?'':'none');document.getElementById('ttl').textContent=TT[TAB];resize()});
+let TAB=0;document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ac();SFX.click();TAB=+b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.pane').forEach((p,i)=>p.style.display=i===TAB?'':'none');document.getElementById('ttl').textContent=TT[TAB];const B=['sc_ruler','sc_scope','sc_paint','sc_paper','sc_museum'],G=['bg_lab','bg_girlR','bg_girlL','bg_lab','bg_space'];ban.style.opacity=0;setTimeout(()=>{ban.src='assets/img/'+B[TAB]+'.webp';ban.style.opacity=1},200);document.querySelector('.bgimg').style.backgroundImage=`url(assets/img/${G[TAB]}.webp)`;resize()});
 document.getElementById('ttl').textContent=TT[0];
 
 /* ===== 1 القضيب المعلق ===== */
@@ -206,7 +209,8 @@ function step3(){const s=+pm.value,h=+ph.value/100;const ry=60+h*260;const x=x3;
   if(P.q>0&&(b.st||F>.2)){ES.charge(x,-6,-3,-s,4.5);ES.charge(x,6,4,s,4.5)}
   x.restore()});
  if(P.q>0)P.q=Math.max(0,P.q-0.0015);
- // نصحح العدسة: الشحنات المخالفة للمسطرة في الأعلى
+ // عدسة مكبّرة: الشحنات المخالفة للمسطرة في الأعلى
+ const sep=Math.min(1,P.q/6);
  x.save();x.beginPath();x.arc(735,90,55,0,7);x.clip();x.fillStyle='#FFFDF3';x.fillRect(680,40,110,100);for(let i=0;i<3;i++){ES.charge(x,708+i*28,90-12*sep-4,-s,7);ES.charge(x,708+i*28,90+12*sep+4,s,7)}x.restore();
  ES.text(x,'🔍 قصاصة مكبّرة',735,160,'#26306B',13);
  pq.textContent='شحنة المسطرة: '+P.q.toFixed(1);pn.textContent=`القصاصات الملتصقة: ${stuck} / 12`;

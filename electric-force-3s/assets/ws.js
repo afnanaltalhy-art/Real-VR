@@ -2,11 +2,11 @@
 function norm(v){return String(v).trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace('٫','.').replace(/\s+/g,' ').replace(/^ال/,'')}
 function WS(cfg){
   const box=document.getElementById('ws');let total=0,got=0;const stages=cfg.stages;
-  box.innerHTML=`<div class="card" style="text-align:center"><div style="font-size:54px">${cfg.icon}</div><h2 style="justify-content:center">${cfg.title}</h2><p>${cfg.intro}</p>
+  box.innerHTML=`<div class="card" style="text-align:center">${cfg.banner?`<img class="sban" src="${cfg.banner}" alt="">`:''}<div style="font-size:54px">${cfg.icon}</div><h2 style="justify-content:center">${cfg.title}</h2><p>${cfg.intro}</p>
   <div class="row" style="justify-content:center;margin-top:8px"><input id="sn" class="name" placeholder="اسم الطالبة ✎" style="font:inherit;font-size:16px;padding:9px;border-radius:12px;border:2px solid #E6DDC0;text-align:center"></div>
   <div class="prog"><i id="pg"></i></div><b id="pt">⭐ 0</b></div>`+
-  stages.map((s,si)=>`<div class="card stage" id="st${si}"><h2><span class="pill">${s.lvl}</span> المرحلة ${si+1}: ${s.title}</h2><p>${s.hint||''}</p><div class="items">${s.items.map((it,ii)=>render(it,si,ii)).join('')}</div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" onclick="WScheck(${si})">✔ تحقّقي من المرحلة</button></div><div class="res" id="rs${si}"></div></div>`).join('')+
-  `<div class="card" id="cert" style="display:none;text-align:center"><div style="font-size:72px">🏆</div><h2 style="justify-content:center" id="ct"></h2><p id="cp"></p><button class="btn" onclick="window.print()">🖨 اطبعي شهادتك</button></div>`;
+  stages.map((s,si)=>`<div class="card stage" id="st${si}"><h2><span class="pill">${s.lvl}</span> المرحلة ${si+1}: ${s.title}</h2><p>${s.hint||''}</p>${s.img?`<img class="sban" src="${s.img}" alt="">`:''}<div class="items">${s.items.map((it,ii)=>render(it,si,ii)).join('')}</div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" onclick="WScheck(${si})">✔ تحقّقي من المرحلة</button></div><div class="res" id="rs${si}"></div></div>`).join('')+
+  `<div class="card" id="cert" style="display:none;text-align:center"><img src="assets/img/girl.webp" alt="" style="height:170px"><div style="font-size:60px">🏆</div><h2 style="justify-content:center" id="ct"></h2><p id="cp"></p><button class="btn" onclick="window.print()">🖨 اطبعي شهادتك</button></div>`;
   function render(it,si,ii){const id=`q${si}_${ii}`;
     if(it.t==='fill'){total+=it.a.length;let k=0;return `<div class="it">${it.q.replace(/__/g,()=>`<input class="box" id="${id}_${k++}" inputmode="${it.num?'decimal':'text'}" style="width:${it.w||70}px">`)}</div>`}
     if(it.t==='tf'){total++;return `<div class="it tf" id="${id}"><span>${it.q}</span><span class="row"><button class="ch" data-v="1">✔ صح</button><button class="ch" data-v="0">✘ خطأ</button></span></div>`}
