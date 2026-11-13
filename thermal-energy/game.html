@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اللعبة: أنقذي حرارة الشاي! | درجة الحرارة والطاقة الحرارية</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:Almarai,sans-serif;color:var(--navy);background:radial-gradient(circle at 70% 20%,#FFF4E2,#DCEBF6 60%,#C7DDEE);overflow-x:hidden}
+.top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--navy);color:#fff}
+.top img{height:44px;background:#fff;border-radius:8px;padding:3px}.top h1{margin:0;font-size:clamp(16px,3.4vw,24px);text-align:center;flex:1}
+.scr{display:none;max-width:1050px;margin:auto;padding:14px}.scr.on{display:block;animation:in .4s}@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}
+@media(max-width:760px){.hero,.play{grid-template-columns:1fr!important}.girl{display:none}}
+.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
+h2{margin:0 0 8px;font-size:28px}.lead{font-size:18px;line-height:1.9}
+input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;border:3px solid var(--navy);margin:10px 0}
+.btn{border:0;font:inherit;font-weight:800;font-size:19px;color:#fff;background:var(--hot);padding:13px 24px;border-radius:16px;cursor:pointer;box-shadow:0 5px 0 #a3421a}
+.btn:active{transform:translateY(4px);box-shadow:none}.btn.t{background:var(--teal);box-shadow:0 5px 0 #11484c}
+.hero img.cover{width:100%;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.play{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.stage{background:#fff;border-radius:22px;padding:12px;box-shadow:0 10px 30px rgba(30,53,87,.15);text-align:center;position:relative}
+#cup{width:100%;max-width:300px}
+.temp{font-size:44px;font-weight:800;color:var(--hot);direction:ltr}
+.hud{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}.hud span{background:var(--cream);border-radius:999px;padding:5px 12px;font-weight:800}
+.qcard{background:#fff;border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
+.bar{height:14px;background:#e3ebf2;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#E0622B,#F2B01E,#2E8B57);transition:width 1s linear}
+.qn{color:var(--gold);font-weight:800;margin:10px 0 2px}.qt{font-size:23px;font-weight:800;line-height:1.7;margin:4px 0 14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{font:inherit;font-size:19px;font-weight:700;text-align:right;border:3px solid #cfdbe6;background:#F6FAFD;border-radius:16px;padding:14px;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--cold);transform:translateY(-2px)}.opt.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.opt.no{background:#C0392B;color:#fff;border-color:#C0392B}
+.fb{display:none;margin-top:12px;padding:12px;border-radius:14px;font-size:17px;line-height:1.7}.fb.ok{display:block;background:#E7F5EF}.fb.no{display:block;background:#FDECEA}
+.layers{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;min-height:34px}.layers b{background:var(--teal);color:#fff;border-radius:10px;padding:4px 8px;font-size:13px;animation:pop .4s}
+@keyframes pop{from{transform:scale(0)}}
+.cert{background:#fff;border:12px solid var(--gold);outline:3px solid var(--navy);outline-offset:-24px;border-radius:22px;padding:28px;text-align:center}
+.cert .lg{display:flex;justify-content:space-between}.cert .lg img{height:74px}.cert .nm{font-size:40px;color:var(--hot);font-weight:800;margin:8px 0}
+.stars{font-size:46px;color:#F2B01E;letter-spacing:6px}.sig{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;margin-top:16px;font-size:15px}
+.girl{position:fixed;left:4px;bottom:0;height:170px;pointer-events:none}
+.float{position:absolute;font-weight:800;font-size:26px;animation:up 1.2s forwards;pointer-events:none}@keyframes up{to{transform:translateY(-80px);opacity:0}}
+.steam path{animation:st 2.4s infinite ease-in-out}.steam path:nth-child(2){animation-delay:.6s}.steam path:nth-child(3){animation-delay:1.2s}
+@keyframes st{0%{opacity:0;transform:translateY(10px)}50%{opacity:.8}100%{opacity:0;transform:translateY(-18px)}}
+.mute{position:fixed;top:70px;left:10px;border:0;background:#fff;border-radius:50%;width:44px;height:44px;font-size:20px;box-shadow:0 3px 10px rgba(0,0,0,.15);cursor:pointer}
+</style></head><body>
+<div class="top"><img src="img/moe.png" alt="وزارة التعليم"><h1>🎮 أنقذي حرارة الشاي! — لعبة درجة الحرارة والطاقة الحرارية</h1><img src="img/school.png" alt="شعار المدرسة"></div>
+<button class="mute" id="mute" onclick="toggleMute()">🔊</button>
+<section class="scr on" id="s0"><div class="hero"><div class="card">
+<h2>مهمتك يا مهندسة الحرارة ☕🔥</h2>
+<p class="lead">كوب شاي ساخن عند <b>80 °C</b> يفقد حرارته كل ثانية بالتوصيل والحمل والإشعاع! أجيبي عن <b>12 سؤالًا</b> (لكل سؤال 30 ثانية). كل إجابة صحيحة تضيف طبقة عزل للحافظة وتنقذ الحرارة، والخاطئة تجعل البخار يتسرّب. حافظي على الشاي دافئًا لتحصلي على 3 نجوم وشهادة شكر باسمك!</p>
+<input class="nm" id="nm" placeholder="اكتبي اسمك هنا ✍"><button class="btn" onclick="start()">ابدئي التحدي ◀</button></div>
+<img class="cover" src="img/bag.jpg" alt=""></div></section>
+
+<section class="scr" id="s1"><div class="play">
+<div class="stage"><svg id="cup" viewBox="0 0 300 330">
+<g class="steam" id="steam" stroke="#9fb3c8" stroke-width="6" fill="none" stroke-linecap="round"><path d="M110 70 q-15 -20 0 -40 q15 -20 0 -40"/><path d="M150 70 q-15 -20 0 -40 q15 -20 0 -40"/><path d="M190 70 q-15 -20 0 -40 q15 -20 0 -40"/></g>
+<g id="lay"></g>
+<path d="M70 90 h160 l-18 210 a16 16 0 0 1 -16 14 h-92 a16 16 0 0 1 -16 -14 z" fill="#fff" stroke="#1E3557" stroke-width="6"/>
+<path id="tea" d="M78 120 h144 l-15 176 a10 10 0 0 1 -10 9 h-94 a10 10 0 0 1 -10 -9 z" fill="#C0392B"/>
+<path d="M230 130 q50 10 40 60 q-8 40 -48 40" fill="none" stroke="#1E3557" stroke-width="10"/>
+<rect id="lid" x="60" y="76" width="180" height="18" rx="4" fill="#1F7A80" opacity="0"/>
+</svg>
+<div class="temp" id="tv">80.0 °C</div>
+<div class="layers" id="lyr"></div>
+<div class="hud"><span>⭐ <b id="sc">0</b></span><span>✔ <b id="ok">0</b>/12</span></div></div>
+<div class="qcard"><div class="bar"><i id="tb"></i></div><div class="qn" id="qn"></div><div class="qt" id="qt"></div><div class="opts" id="op"></div><div class="fb" id="fb"></div>
+<p style="text-align:left;margin:12px 0 0"><button class="btn t" id="nx" style="display:none" onclick="next()">التالي ◀</button></p></div></div></section>
+
+<section class="scr" id="s2"><div class="cert"><div class="lg"><img src="img/moe.png" alt=""><img src="img/school.png" alt=""></div>
+<h2 style="font-size:36px;margin:8px 0">شهادة شكر وتقدير</h2><p style="font-size:20px">تتقدّم معلمة الفيزياء بالشكر والتقدير للطالبة</p><div class="nm" id="cn"></div>
+<p style="font-size:20px;line-height:1.9">لإتمامها لعبة <b>«أنقذي حرارة الشاي!»</b> في درس درجة الحرارة والطاقة الحرارية (فيزياء 2) وحصولها على <b id="cs"></b> نقطة،<br>وحافظت على الشاي عند <b id="ct"></b></p>
+<div class="stars" id="cst"></div><p id="cm" style="font-size:22px;font-weight:800;color:var(--teal)"></p>
+<div class="sig"><span>المعلمة: أ/ نجاح العنزي</span><span>المشرفة التعليمية: د/ ريم حرح</span><span>مديرة المدرسة: أ/ منال الزهراني</span></div></div>
+<p style="text-align:center"><button class="btn" onclick="location.reload()">↺ العبي مرة أخرى</button></p></section>
+<img class="girl" src="img/girl.png" alt="">
+<script>
+const Q=[
+['درجة حرارة الجسم مقياس لـ:',['الطاقة الحرارية الكلية','متوسط الطاقة الحركية للجزيئات','عدد الجزيئات','الكتلة'],1,'درجة الحرارة ترتبط بمتوسط الطاقة الحركية للجزيئات فقط.'],
+['قالبا حديد عند 50°C، كتلة الأول 1kg والثاني 2kg. الطاقة الحرارية للثاني:',['نصف الأول','تساوي الأول','ضعف الأول','صفر'],2,'عدد جزيئاته ضعف الأول، فطاقته الحرارية ضعف.'],
+['تنتقل الحرارة تلقائيًّا دائمًا:',['من الأبرد إلى الأسخن','من الأسخن إلى الأبرد','من الأكبر كتلة إلى الأصغر','لا تنتقل'],1,'الحرارة طاقة تتدفق من الأسخن إلى الأبرد.'],
+['يتوقف صافي انتقال الحرارة بين جسمين متلامسين عندما:',['تتساوى كتلتاهما','تتساوى درجتا حرارتهما','تتساوى طاقتاهما الحراريتان','يتلامسان دقيقة'],1,'هذا هو الاتزان الحراري.'],
+['تصل طاقة الشمس إلى الأرض بـ:',['التوصيل','الحمل','الإشعاع','التبخر'],2,'الإشعاع لا يحتاج إلى وسط مادي.'],
+['دوران الماء في القدر عند تسخينه من الأسفل مثال على:',['التوصيل','الحمل','الإشعاع','العزل'],1,'الماء الساخن الأقل كثافة يصعد والبارد يهبط.'],
+['أفضل مادة لعزل حافظة الشاي:',['النحاس','الألومنيوم الرقيق','القطن أو الفلين','الحديد'],2,'القطن والفلين يحبسان الهواء فيقللان التوصيل.'],
+['حوّلي 27 °C إلى كلفن:',['246 K','273 K','300 K','327 K'],2,'T_K = 27 + 273 = 300 K'],
+['يسخن الرمل أسرع من ماء البحر لأن حرارته النوعية:',['أكبر','أقل','تساوي حرارة الماء','صفر'],1,'الماء حرارته النوعية كبيرة 4180 J/kg·K.'],
+['احسبي Q لتسخين 0.5 kg ماء بمقدار 20 °C (C = 4180):',['4180 J','20900 J','41800 J','83600 J'],2,'Q = 0.5 × 4180 × 20 = 41800 J'],
+['إذا كانت Q سالبة فإن الجسم:',['اكتسب حرارة','فقد حرارة','في اتزان','زادت كتلته'],1,'Q سالبة تعني أن الجسم فقد حرارة وبرد.'],
+['في المسعر المعزول:',['Q المفقودة + Q المكتسبة = 0','Q المفقودة = 0','الطاقة تزداد','Q المكتسبة أكبر دائمًا'],0,'حفظ الطاقة: ما يفقده الساخن يكتسبه البارد.']];
+const LAY=['قطن','غطاء محكم','رقائق ألمنيوم','قماش','فلين','طبقة هواء','كرتون','صوف','غطاء ثانٍ','بطانة فضية','عازل مزدوج','حافظة ذكية ✨'];
+const $=id=>document.getElementById(id);let name='',qi=0,score=0,okN=0,T=80,k=.06,left=30,tm=null,cool=null,ans=false,muted=false;
+const S={};['applause','knock','drop','hiss','bubble'].forEach(n=>{S[n]=new Audio('snd/'+n+'.mp3')});
+function play(n,v=.8){if(muted)return;try{const a=S[n].cloneNode();a.volume=v;a.play().catch(()=>{})}catch(e){}}
+function toggleMute(){muted=!muted;$('mute').textContent=muted?'🔇':'🔊'}
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
+function start(){name=$('nm').value.trim();if(!name){$('nm').focus();$('nm').style.borderColor='#C0392B';return}play('bubble',.5);go('s1');show();cool=setInterval(tickT,200)}
+function tickT(){T=Math.max(25,T-k*(T-25)/40*2);draw()}
+function draw(){$('tv').textContent=T.toFixed(1)+' °C';const c=Math.max(0,Math.min(1,(T-25)/55));$('tea').setAttribute('fill',`rgb(${Math.round(60+c*132)},${Math.round(120-c*63)},${Math.round(200-c*157)})`);$('steam').style.opacity=c}
+function show(){ans=false;const q=Q[qi];$('qn').textContent=`السؤال ${qi+1} من ${Q.length}`;$('qt').textContent=q[0];$('fb').className='fb';$('nx').style.display='none';
+$('op').innerHTML=q[1].map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${'أبجد'[i]}) ${o}</button>`).join('');left=30;$('tb').style.width='100%';clearInterval(tm);
+tm=setInterval(()=>{left--;$('tb').style.width=(left/30*100)+'%';if(left<=0){clearInterval(tm);if(!ans)fail(null)}},1000)}
+function floatTxt(t,c){const d=document.createElement('div');d.className='float';d.style.color=c;d.textContent=t;d.style.right='45%';d.style.top='35%';document.querySelector('.stage').appendChild(d);setTimeout(()=>d.remove(),1300)}
+function pick(i,b){if(ans)return;ans=true;clearInterval(tm);const q=Q[qi];document.querySelectorAll('.opt')[q[2]].classList.add('ok');
+if(i===q[2]){b.classList.add('ok');okN++;const p=10+Math.round(left/3);score+=p;k=Math.max(.008,k*.72);T=Math.min(80,T+2.5);
+$('lyr').insertAdjacentHTML('beforeend',`<b>${LAY[okN-1]}</b>`);if(okN>=2)$('lid').setAttribute('opacity','1');
+const L=$('lay');L.insertAdjacentHTML('beforeend',`<path d="M${66-okN*3} 92 h${168+okN*6} l-18 ${212+okN*2} h-${132+okN*6} z" fill="none" stroke="${['#F2C14E','#1F7A80','#BFC5CC','#E0622B','#8E44AD','#2B7BB9'][okN%6]}" stroke-width="4" opacity=".7"/>`);
+floatTxt('+'+p+' ⭐','#2E8B57');play('applause',.6);fb(true,'🎉 أحسنتِ! '+q[3]+' — أضفتِ طبقة: '+LAY[okN-1])}
+else{b.classList.add('no');fail(b)}$('sc').textContent=score;$('ok').textContent=okN;draw()}
+function fail(b){ans=true;const q=Q[qi];document.querySelectorAll('.opt')[q[2]].classList.add('ok');T=Math.max(25,T-6);k=Math.min(.2,k*1.25);floatTxt('−6 °C 💨','#C0392B');play('knock',.8);setTimeout(()=>play('hiss',.5),300);
+fb(false,(b?'💡 ':'⏰ انتهى الوقت! ')+q[3]);draw()}
+function fb(ok,m){const f=$('fb');f.className='fb '+(ok?'ok':'no');f.textContent=m;$('nx').style.display='inline-block'}
+function next(){qi++;play('drop',.6);if(qi<Q.length){show();return}clearInterval(cool);clearInterval(tm);finish()}
+function finish(){const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
+$('cm').textContent=st===3?'مهندسة عزل حراري متميّزة! 🌟':st===2?'أداء رائع… الشاي ما زال دافئًا 👏':'بداية موفّقة… جرّبي مرة أخرى لتحصلي على 3 نجوم 💪';go('s2');play('applause',.9)}
+draw();
+</script></body></html>

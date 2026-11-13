@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>الواقع المعزز | درجة الحرارة والطاقة الحرارية</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--hot:#E0622B;--cold:#2B7BB9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#0b1626;font-family:Almarai,sans-serif;color:#fff;touch-action:none}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+#bgFallback{position:fixed;inset:0;background:radial-gradient(circle at 50% 30%,#2a4a73,#0b1626 70%);z-index:0}
+#gl{position:fixed;inset:0;z-index:1}
+.glass{background:rgba(15,30,55,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:18px}
+#top{position:fixed;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:3;display:flex;align-items:center;gap:8px;padding:6px 10px}
+#top img{height:34px;background:#fff;border-radius:8px;padding:2px}#top h1{flex:1;margin:0;font-size:clamp(14px,3.6vw,20px);text-align:center}
+#info{position:fixed;top:calc(64px + env(safe-area-inset-top));right:8px;z-index:3;width:min(420px,calc(100% - 16px));padding:12px 14px;transition:.3s}
+#info h2{margin:0 0 4px;font-size:20px;color:#F2C14E}#info p{margin:0;font-size:15px;line-height:1.75}
+#info.min p{display:none}
+#bottom{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom));left:8px;right:8px;z-index:3}
+#chips{display:flex;gap:8px;overflow-x:auto;padding:8px;scrollbar-width:none}#chips::-webkit-scrollbar{display:none}
+#chips button{flex:0 0 auto;font:inherit;font-weight:800;font-size:15px;color:#fff;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);padding:9px 14px;border-radius:999px;cursor:pointer}
+#chips button.on{background:linear-gradient(135deg,#E0622B,#F2B01E);border-color:#fff;box-shadow:0 0 18px rgba(242,176,30,.7)}
+#ctrl{display:flex;gap:8px;align-items:center;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
+#ctrl label{font-size:14px;font-weight:700}#ctrl input[type=range]{flex:1;min-width:140px;accent-color:#E0622B}
+.ib{font:inherit;font-weight:800;font-size:14px;color:#fff;border:0;border-radius:12px;padding:9px 12px;cursor:pointer;background:var(--teal)}
+.ib.g{background:var(--gold)}.ib.h{background:var(--hot)}
+#side{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:10px}
+#side button{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(15,30,55,.6);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(8px)}
+#quiz,#shot,#perm,#intro{position:fixed;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:rgba(5,12,24,.55);padding:16px}
+#quiz .box,#shot .box,#perm .box,#intro .box{width:min(520px,100%);padding:18px;text-align:center}
+#quiz h3{margin:0 0 12px;font-size:21px;line-height:1.6}
+.qo{display:block;width:100%;font:inherit;font-weight:700;font-size:17px;margin:8px 0;padding:12px;border-radius:14px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;text-align:right}
+.qo.ok{background:#2E8B57;border-color:#2E8B57}.qo.no{background:#C0392B;border-color:#C0392B}
+#qfb{min-height:24px;margin-top:8px;line-height:1.7}
+#shot img{width:100%;border-radius:12px}
+#toast{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(.8);z-index:6;font-size:30px;font-weight:800;opacity:0;transition:.35s;pointer-events:none;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#hint{position:fixed;left:50%;top:58%;transform:translateX(-50%);z-index:2;font-size:14px;background:rgba(0,0,0,.4);padding:6px 12px;border-radius:999px;transition:opacity 1s;pointer-events:none}
+.big{font-size:54px;margin:4px 0}
+</style></head><body>
+<div id="bgFallback"></div>
+<video id="cam" playsinline muted autoplay></video>
+<canvas id="gl"></canvas>
+<div id="top" class="glass"><img src="img/moe.png" alt=""><h1>🔍 الواقع المعزز: الطاقة الحرارية من حولي</h1><img src="img/school.png" alt=""></div>
+<div id="info" class="glass" onclick="this.classList.toggle('min')"><h2 id="iT"></h2><p id="iP"></p></div>
+<div id="side"><button onclick="openQuiz()" title="سؤال">❓</button><button onclick="snap()" title="التقاط">📸</button><button onclick="recenter()" title="توسيط">🎯</button><button onclick="toggleSnd()" id="sndB" title="الصوت">🔊</button></div>
+<div id="hint">اسحبي لتدوير النموذج • قرّبي بإصبعين • حرّكي الجوال حولك</div>
+<div id="bottom"><div id="ctrl" class="glass"></div><div id="chips" class="glass"></div></div>
+<div id="quiz"><div class="box glass"><h3 id="qq"></h3><div id="qo"></div><div id="qfb"></div><button class="ib g" onclick="closeQ()" style="margin-top:10px">إغلاق</button></div></div>
+<div id="shot"><div class="box glass"><img id="shotImg" alt=""><p>اضغطي مطولًا على الصورة لحفظها، أو:</p><a id="dl" class="ib h" style="display:inline-block;text-decoration:none" download="ar-thermal.png">⬇ حفظ الصورة</a> <button class="ib" onclick="document.getElementById('shot').style.display='none'">إغلاق</button></div></div>
+<div id="perm"><div class="box glass"><div class="big">📷</div><h3>اسمحي بالوصول إلى الكاميرا</h3><p style="line-height:1.8">لعرض النماذج فوق ما حولك. إن ظهرت رسالة الإذن اضغطي «سماح».</p><button class="ib h" onclick="startCam(true)">تشغيل الكاميرا</button> <button class="ib" onclick="document.getElementById('perm').style.display='none'">المتابعة بدون كاميرا</button></div></div>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ---------- camera: request immediately ----------
+const video=document.getElementById('cam');
+async function startCam(fromBtn){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    video.srcObject=st;await video.play().catch(()=>{});document.getElementById('bgFallback').style.display='none';document.getElementById('perm').style.display='none';
+  }catch(e){document.getElementById('perm').style.display='flex'}
+  if(fromBtn)enableGyro();
+}
+startCam(false);
+
+// ---------- sounds (natural only) ----------
+const SND={};['applause','knock','drop','fire','bubble','whoosh'].forEach(n=>{SND[n]=new Audio('snd/'+n+'.mp3')});SND.fire.loop=true;SND.bubble.loop=true;
+let sndOn=true,amb=null,unlocked=false;
+function sfx(n,v=.8){if(!sndOn)return;try{const a=SND[n].cloneNode();a.volume=v;a.play().catch(()=>{})}catch(e){}}
+function ambient(n){if(amb){amb.pause();amb=null}if(!n||!sndOn||!unlocked)return;amb=SND[n];amb.volume=.35;amb.currentTime=0;amb.play().catch(()=>{})}
+function toggleSnd(){sndOn=!sndOn;document.getElementById('sndB').textContent=sndOn?'🔊':'🔇';if(!sndOn&&amb)amb.pause();else ambient(SC[cur].amb)}
+document.addEventListener('pointerdown',()=>{if(!unlocked){unlocked=true;enableGyro();ambient(SC[cur].amb)}},{once:false});
+
+// ---------- three ----------
+const cv=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);R.outputEncoding=THREE.sRGBEncoding;
+const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.05,100);
+scene.add(new THREE.HemisphereLight(0xffffff,0x334466,.9));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(2,4,3);scene.add(dl);
+const pl=new THREE.PointLight(0xffaa66,.6,10);pl.position.set(-2,1,2);scene.add(pl);
+const anchor=new THREE.Group();anchor.position.set(0,-.15,-3);scene.add(anchor);
+const holder=new THREE.Group();anchor.add(holder);
+// shadow disc
+const disc=new THREE.Mesh(new THREE.CircleGeometry(1.5,48),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22}));disc.rotation.x=-Math.PI/2;disc.position.y=-1.05;anchor.add(disc);
+const ring=new THREE.Mesh(new THREE.RingGeometry(1.45,1.52,64),new THREE.MeshBasicMaterial({color:0xF2C14E,transparent:true,opacity:.8,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=-1.04;anchor.add(ring);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)});
+
+// ---------- gyro (look around: objects stay in the room) ----------
+let gyro=false,q0=null;const qd=new THREE.Quaternion(),eu=new THREE.Euler(),zee=new THREE.Vector3(0,0,1),q1=new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5));
+function onOri(e){if(e.alpha==null)return;gyro=true;const a=THREE.MathUtils.degToRad(e.alpha),b=THREE.MathUtils.degToRad(e.beta),g=THREE.MathUtils.degToRad(e.gamma),o=THREE.MathUtils.degToRad(screen.orientation?screen.orientation.angle:(window.orientation||0));
+eu.set(b,a,-g,'YXZ');qd.setFromEuler(eu);qd.multiply(q1);qd.multiply(new THREE.Quaternion().setFromAxisAngle(zee,-o));if(!q0){q0=qd.clone().invert();}}
+function enableGyro(){if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')addEventListener('deviceorientation',onOri)}).catch(()=>{})}else addEventListener('deviceorientation',onOri)}
+function recenter(){q0=null;rotY=0;rotX=0;zoom=1;sfx('whoosh',.5)}
+
+// ---------- touch rotate / pinch ----------
+let rotY=0,rotX=0,zoom=1,drag=null,pinch=null;
+cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};document.getElementById('hint').style.opacity=0});
+addEventListener('pointermove',e=>{if(!drag||pinch)return;rotY+=(e.clientX-drag.x)*.01;rotX=Math.max(-.6,Math.min(.6,rotX+(e.clientY-drag.y)*.006));drag={x:e.clientX,y:e.clientY}});
+addEventListener('pointerup',()=>drag=null);
+cv.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch)zoom=Math.max(.5,Math.min(2.2,zoom*d/pinch));pinch=d}},{passive:true});
+cv.addEventListener('touchend',()=>pinch=null);
+cv.addEventListener('wheel',e=>{zoom=Math.max(.5,Math.min(2.2,zoom*(e.deltaY>0?.92:1.08)))},{passive:true});
+
+// ---------- helpers ----------
+const RD=()=>{const u=Math.random()*2-1,a=Math.random()*6.2832,s=Math.sqrt(1-u*u);return new THREE.Vector3(s*Math.cos(a),u,s*Math.sin(a))};
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.35,metalness:.1},o));
+function glow(color,size){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,color);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.scale.set(size,size,1);return s}
+function label(txt,bg='#1E3557',fg='#fff',w=1.1){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');const draw=()=>{g.clearRect(0,0,512,128);g.fillStyle=bg;g.globalAlpha=.88;g.beginPath();g.moveTo(30,10);g.lineTo(482,10);g.quadraticCurveTo(502,10,502,30);g.lineTo(502,98);g.quadraticCurveTo(502,118,482,118);g.lineTo(30,118);g.quadraticCurveTo(10,118,10,98);g.lineTo(10,30);g.quadraticCurveTo(10,10,30,10);g.fill();g.globalAlpha=1;g.fillStyle=fg;g.font='800 52px Almarai';g.textAlign='center';g.textBaseline='middle';g.direction='rtl';g.fillText(s.userData.t,256,66);tex.needsUpdate=true};
+const tex=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));s.scale.set(w,w/4,1);s.userData.t=txt;s.userData.set=t=>{s.userData.t=t;draw()};draw();s.renderOrder=10;return s}
+const tcol=(T)=>{const c=Math.max(0,Math.min(1,(T+10)/110));return new THREE.Color().setRGB(.17+c*.8,.48-c*.1+(c>.5?-.2*(c-.5):0),.73-c*.62)};
+let slider=null,sval=60,rodK=1;
+function setCtrl(html){document.getElementById('ctrl').innerHTML=html;document.getElementById('ctrl').style.display=html?'flex':'none'}
+
+// ---------- scenes ----------
+const SC=[
+{n:'🔴🔵 الجسيمات',t:'نموذج الجسيمات: ساخن أم بارد؟',p:'جسيمات الجسم الساخن (يمين) تتحرك أسرع من جسيمات الجسم البارد (يسار). درجة الحرارة مقياس لمتوسط الطاقة الحركية للجسيمات، أما الطاقة الحرارية فمجموع طاقاتها كلها. حرّكي المؤشر لتغيّري حرارة الجسم الساخن.',
+ amb:null,ctrl:'<label>🌡 حرارة المكعب الساخن: <b id="sv">80</b> °C</label><input type="range" min="-10" max="100" value="80" oninput="sval=+this.value;document.getElementById(\'sv\').textContent=this.value">',
+ q:['عند رفع درجة حرارة المكعب، ماذا يحدث لمتوسط الطاقة الحركية لجسيماته؟',['يقل','يزداد','لا يتغير'],1],
+ build(g){sval=80;this.box=[];[-1,1].forEach((sd,j)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(1.3,1.3,1.3),M(j?0xE0622B:0x2B7BB9,{transparent:true,opacity:.14,roughness:.05}));b.position.x=sd*.85;g.add(b);
+ const e=new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry),new THREE.LineBasicMaterial({color:j?0xffb38a:0x9fd3f2}));e.position.copy(b.position);g.add(e);
+ const ps=[];for(let i=0;i<34;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.055,16,12),M(j?0xff5a2a:0x3a8ee6,{emissive:j?0x661800:0x0a2a55}));m.position.set(b.position.x+(Math.random()-.5)*1.1,(Math.random()-.5)*1.1,(Math.random()-.5)*1.1);m.userData.v=RD();g.add(m);ps.push(m)}
+ const l=label(j?'ساخن':'بارد',j?'#E0622B':'#2B7BB9');l.position.set(b.position.x,1.0,0);g.add(l);this.box.push({ps,cx:b.position.x,cube:b,l})});setCtrl(this.ctrl)},
+ update(dt){this.box.forEach((B,j)=>{const T=j?sval:5;const sp=(.25+Math.sqrt(T+273)/17*((T+273)/293)*.9)*dt*1.6;B.cube.material.color.copy(tcol(T));B.ps.forEach(p=>{p.material.color.copy(tcol(T));p.position.addScaledVector(p.userData.v,sp);['x','y','z'].forEach(a=>{const c=a==='x'?B.cx:0;if(Math.abs(p.position[a]-c)>.6){p.userData.v[a]*=-1;p.position[a]=c+Math.sign(p.position[a]-c)*.6}});p.userData.v.applyAxisAngle(new THREE.Vector3(0,1,0),(Math.random()-.5)*.2)})});if(this.box[1])this.box[1].l.userData.t!==('ساخن '+sval+'°C')&&this.box[1].l.userData.set('ساخن '+sval+'°C')}},
+{n:'🎈 البالون والشمس',t:'البالون والشمس',p:'تكسب ذرات الغاز طاقة من أشعة الشمس فتتحرك أسرع وتصطدم بجدار البالون بمعدل وقوة أكبر، فيتمدد. وعند التبريد ينكمش رغم أن عدد الذرات لم يتغير.',
+ amb:null,ctrl:'<label>☀ درجة حرارة الغاز: <b id="sv">25</b> °C</label><input type="range" min="-10" max="70" value="25" oninput="sval=+this.value;document.getElementById(\'sv\').textContent=this.value">',
+ q:['لماذا يتمدد البالون تحت أشعة الشمس؟',['يزداد عدد ذرات الغاز','تتحرك الذرات أسرع فتزداد قوة تصادمها بالجدار','يتحول الغاز إلى سائل'],1],
+ build(g){sval=25;this.bal=new THREE.Mesh(new THREE.SphereGeometry(.7,48,32),M(0x58c43a,{transparent:true,opacity:.42,roughness:.08,metalness:.0}));this.bal.scale.y=1.12;this.bal.position.set(-.2,.15,0);g.add(this.bal);
+ const knot=new THREE.Mesh(new THREE.ConeGeometry(.08,.14,16),M(0x3e9a2a));knot.position.set(-.2,-.68,0);knot.rotation.x=Math.PI;g.add(knot);this.knot=knot;
+ const str=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.9),M(0xeeeeee));str.position.set(-.2,-1.15,0);g.add(str);this.str=str;
+ this.at=[];for(let i=0;i<30;i++){const a=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),M(0xffffff,{emissive:0x333333}));a.position.set(-.2,.15,0).add(RD().multiplyScalar(Math.random()*.5));a.userData.v=RD();g.add(a);this.at.push(a)}
+ this.sun=new THREE.Mesh(new THREE.SphereGeometry(.28,32,24),new THREE.MeshBasicMaterial({color:0xffd23f}));this.sun.position.set(1.25,.95,-.3);g.add(this.sun);this.sg=glow('rgba(255,190,40,.8)',1.6);this.sg.position.copy(this.sun.position);g.add(this.sg);
+ this.rays=[];for(let i=0;i<6;i++){const r=glow('rgba(255,210,80,.9)',.18);g.add(r);this.rays.push({r,o:i/6})}
+ this.tl=label('25 °C','#1F7A80');this.tl.position.set(-.2,1.25,0);g.add(this.tl);setCtrl(this.ctrl)},
+ update(dt,t){const T=sval;const s=Math.cbrt((T+273)/298)*(1+(T-25)/160);this.bal.scale.set(s,s*1.12,s);this.knot.position.y=.15-.78*s*1.12;this.str.position.y=this.knot.position.y-.48;
+ const sun=T>30;this.sun.visible=this.sg.visible=sun;this.sg.material.opacity=.7+.3*Math.sin(t*3);
+ this.rays.forEach(R_=>{R_.r.visible=sun;const k=(t*.5+R_.o)%1;R_.r.position.lerpVectors(this.sun.position,this.bal.position,k)});
+ const sp=(.3+(T+273)/298*.9)*dt*1.4,rad=.62*s;this.at.forEach(a=>{a.position.addScaledVector(a.userData.v,sp);const d=a.position.clone().sub(this.bal.position);if(d.length()>rad){a.userData.v.reflect(d.normalize());a.position.copy(this.bal.position).add(d.multiplyScalar(rad*.98))}a.material.color.copy(tcol(T))});
+ if(this.tl.userData.t!==T+' °C')this.tl.userData.set(T+' °C')}},
+{n:'🥄 التوصيل',t:'التوصيل الحراري',p:'تنتقل الطاقة الحركية بتصادم الجزيئات المتلامسة من الطرف الساخن إلى البعيد. الفلزات موصلات جيدة، والخشب عازل. جرّبي تغيير المادة وراقبي سرعة انتقال اللون الأحمر.',
+ amb:'fire',ctrl:'<button class="ib h" onclick="rodK=1;resetRod()">قضيب فلزي</button><button class="ib g" onclick="rodK=.12;resetRod()">قضيب خشبي</button><button class="ib" onclick="resetRod()">↺ إعادة</button>',
+ q:['لماذا يسخن طرف الملعقة المعدنية البعيد عن الماء الساخن؟',['الحمل الحراري','التوصيل الحراري عبر تصادم الجزيئات','الإشعاع فقط'],1],
+ build(g){this.seg=[];for(let i=0;i<24;i++){const m=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.1,24),M(0x9aa5b1,{metalness:.8,roughness:.25}));m.rotation.z=Math.PI/2;m.position.set(1.15-i*.1,.1,0);g.add(m);this.seg.push(m)}
+ this.T=new Array(24).fill(25);this.fl=[];for(let i=0;i<26;i++){const f=glow(i%2?'rgba(255,120,20,.9)':'rgba(255,200,40,.9)',.25);f.userData={o:Math.random(),x:(Math.random()-.5)*.25};g.add(f);this.fl.push(f)}
+ const st=new THREE.Mesh(new THREE.CylinderGeometry(.25,.32,.25,32),M(0x333a44,{metalness:.6}));st.position.set(1.25,-.55,0);g.add(st);
+ this.tl=label('25 °C','#2B7BB9');this.tl.position.set(-1.2,.55,0);g.add(this.tl);const l2=label('🔥 مصدر حرارة','#E0622B');l2.position.set(1.25,-.95,0);g.add(l2);
+ const dots=[];for(let i=0;i<20;i++){const d=glow('rgba(255,255,255,.9)',.08);g.add(d);dots.push(d)}this.dots=dots;setCtrl(this.ctrl);window.resetRod=()=>{this.T.fill(25)}},
+ update(dt,t){const T=this.T;T[0]+=(110-T[0])*dt*2;for(let k=0;k<4;k++)for(let i=1;i<24;i++){const fl=rodK*1.2*dt*(T[i-1]-T[i])+(i<23?rodK*1.2*dt*(T[i+1]-T[i]):0);T[i]+=fl}
+ this.seg.forEach((s,i)=>{s.material.color.copy(tcol(T[i]));s.material.emissive=new THREE.Color(T[i]>70?0x551100:0x000000);s.position.y=.1+Math.sin(t*20*(T[i]/100)+i)*.004*(T[i]/50)});
+ this.fl.forEach(f=>{const k=(t*1.4+f.userData.o)%1;f.position.set(1.25+f.userData.x*(1-k),-.4+k*.5,0);f.material.opacity=1-k;f.scale.setScalar(.3*(1-k*.6))});
+ this.dots.forEach((d,i)=>{const k=((t*.35*rodK+i/20)%1);d.position.set(1.15-k*2.3,.1+Math.sin(i+t*9)*.05,.1);d.material.opacity=k<.9?.9:0});
+ const e=Math.round(T[23]);if(this.tl.userData.t!=='الطرف البعيد '+e+'°C')this.tl.userData.set('الطرف البعيد '+e+'°C')}},
+{n:'♨ الحمل',t:'الحمل الحراري',p:'يسخن الماء في القاع فتقل كثافته فيصعد (أحمر)، ويهبط الماء الأبرد الأكثر كثافة (أزرق) ليحل محله، فتتكون تيارات الحمل. يحدث الحمل في السوائل والغازات فقط.',
+ amb:'bubble',ctrl:'',q:['لماذا يصعد الماء الساخن إلى أعلى القدر؟',['لأن كثافته أقل','لأن كثافته أكبر','لأن كتلته أكبر'],0],
+ build(g){const pot=new THREE.Mesh(new THREE.CylinderGeometry(.9,.8,1.5,48,1,true),M(0xcfe8ff,{transparent:true,opacity:.18,side:2,roughness:.05}));g.add(pot);
+ const rim=new THREE.Mesh(new THREE.TorusGeometry(.9,.03,12,64),M(0xbfc5cc,{metalness:.9}));rim.rotation.x=Math.PI/2;rim.position.y=.75;g.add(rim);
+ const bot=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.05,48),M(0x8c96a3,{metalness:.8}));bot.position.y=-.76;g.add(bot);
+ const water=new THREE.Mesh(new THREE.CylinderGeometry(.87,.8,1.3,48),M(0x6bb7ff,{transparent:true,opacity:.18}));water.position.y=-.08;g.add(water);
+ this.p=[];for(let i=0;i<160;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.035,10,8),M(0xffffff));m.userData={a:Math.random()*6.28,ph:Math.random()*6.28,r:.25+Math.random()*.15};g.add(m);this.p.push(m)}
+ this.fl=[];for(let i=0;i<40;i++){const f=glow(i%2?'rgba(60,140,255,.9)':'rgba(255,150,40,.9)',.22);f.userData={a:Math.random()*6.28,o:Math.random()};g.add(f);this.fl.push(f)}
+ this.bub=[];for(let i=0;i<25;i++){const b=new THREE.Mesh(new THREE.SphereGeometry(.03,8,6),M(0xffffff,{transparent:true,opacity:.6}));b.userData={x:(Math.random()-.5)*.6,z:(Math.random()-.5)*.6,o:Math.random()};g.add(b);this.bub.push(b)}
+ const l1=label('ساخن يصعد ⬆','#E0622B');l1.position.set(.0,1.1,0);g.add(l1);const l2=label('بارد يهبط ⬇','#2B7BB9');l2.position.set(1.35,.2,0);g.add(l2);setCtrl('')},
+ update(dt,t){this.p.forEach(m=>{const u=m.userData;u.ph+=dt*1.1;const rr=.45+.32*Math.cos(u.ph);const y=-.08+.55*Math.sin(u.ph);m.position.set(Math.cos(u.a)*rr,y,Math.sin(u.a)*rr);const rising=Math.sin(u.ph+Math.PI/2)<0?false:true;const c=(Math.cos(u.ph)<0)?1:0;m.material.color.copy(c?new THREE.Color(0xff5a2a):new THREE.Color(0x3a8ee6))});
+ this.fl.forEach(f=>{const k=(t*1.8+f.userData.o)%1;f.position.set(Math.cos(f.userData.a)*.6,-.95+k*.15,Math.sin(f.userData.a)*.6);f.material.opacity=1-k});
+ this.bub.forEach(b=>{const k=(t*.5+b.userData.o)%1;b.position.set(b.userData.x+Math.sin(t*5+b.userData.o*9)*.02,-.7+k*1.25,b.userData.z)})}},
+{n:'☀ الإشعاع',t:'الإشعاع الحراري',p:'تصل طاقة الشمس إلى الأرض عبر 150 مليون كيلومتر من الفراغ بالموجات الكهرومغناطيسية؛ فالإشعاع لا يحتاج إلى وسط مادي، بخلاف التوصيل والحمل.',
+ amb:null,ctrl:'',q:['أي طرق انتقال الحرارة لا يحتاج إلى وسط مادي؟',['التوصيل','الحمل','الإشعاع'],2],
+ build(g){this.sun=new THREE.Mesh(new THREE.SphereGeometry(.45,48,32),new THREE.MeshBasicMaterial({color:0xffc928}));this.sun.position.x=1.1;g.add(this.sun);this.sg=glow('rgba(255,170,30,.9)',2.2);this.sg.position.x=1.1;g.add(this.sg);
+ const ec=document.createElement('canvas');ec.width=256;ec.height=128;const e=ec.getContext('2d');e.fillStyle='#2b7bb9';e.fillRect(0,0,256,128);e.fillStyle='#3fa34d';for(let i=0;i<14;i++){e.beginPath();e.ellipse(Math.random()*256,Math.random()*128,10+Math.random()*30,6+Math.random()*16,Math.random()*3,0,7);e.fill()}
+ this.earth=new THREE.Mesh(new THREE.SphereGeometry(.3,48,32),new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(ec),roughness:.8}));this.earth.position.x=-1.25;g.add(this.earth);
+ this.waves=[];for(let k=0;k<3;k++){const pts=[];for(let i=0;i<120;i++)pts.push(new THREE.Vector3());const geo=new THREE.BufferGeometry().setFromPoints(pts);const ln=new THREE.Line(geo,new THREE.LineBasicMaterial({color:[0xffd23f,0xff8a3d,0xff5a2a][k]}));g.add(ln);this.waves.push(ln)}
+ this.ph=[];for(let i=0;i<14;i++){const p=glow('rgba(255,220,90,.95)',.14);p.userData.o=i/14;g.add(p);this.ph.push(p)}
+ const l=label('فراغ: لا يوجد وسط مادي','#1E3557','#fff',1.5);l.position.set(-.05,-.75,0);g.add(l);const l2=label('الأرض','#2B7BB9');l2.position.set(-1.25,.55,0);g.add(l2);setCtrl('')},
+ update(dt,t){this.sun.rotation.y+=dt*.3;this.earth.rotation.y+=dt*.6;this.sg.scale.setScalar(2.1+.15*Math.sin(t*2.5));
+ this.waves.forEach((w,k)=>{const p=w.geometry.attributes.position;for(let i=0;i<120;i++){const x=.65-i/119*1.6;p.setXYZ(i,x,(k-1)*.18+.07*Math.sin(x*14+t*8),0)}p.needsUpdate=true});
+ this.ph.forEach(p=>{const k=(t*.4+p.userData.o)%1;p.position.set(.65-k*1.6,Math.sin(p.userData.o*20)*.25,0)})}},
+{n:'⚖ الاتزان',t:'الاتزان الحراري',p:'قالبان متلامسان: تنتقل الحرارة من الأسخن إلى الأبرد حتى تتساوى درجتا حرارتهما (الاتزان الحراري). ما يفقده الساخن يكتسبه البارد في النظام المعزول.',
+ amb:null,ctrl:'<button class="ib h" onclick="eqReset()">↺ أعيدي التجربة</button>',q:['متى يتوقف صافي انتقال الحرارة بين القالبين؟',['عندما تتساوى كتلتاهما','عندما تتساوى درجتا حرارتهما','بعد دقيقة دائمًا'],1],
+ build(g){this.A=new THREE.Mesh(new THREE.BoxGeometry(.9,.9,.9),M(0xE0622B,{metalness:.5,roughness:.3}));this.A.position.x=.47;g.add(this.A);this.B=new THREE.Mesh(new THREE.BoxGeometry(.9,.9,.9),M(0x2B7BB9,{metalness:.5,roughness:.3}));this.B.position.x=-.47;g.add(this.B);
+ this.la=label('A','#E0622B');this.la.position.set(.47,.75,0);g.add(this.la);this.lb=label('B','#2B7BB9');this.lb.position.set(-.47,.75,0);g.add(this.lb);
+ this.f=[];for(let i=0;i<24;i++){const p=glow('rgba(255,140,40,.95)',.16);p.userData.o=i/24;g.add(p);this.f.push(p)}this.st=new THREE.Group();g.add(this.st);
+ this.ta=90;this.tb=10;window.eqReset=()=>{this.ta=90;this.tb=10;sfx('drop',.5)};setCtrl(this.ctrl)},
+ update(dt,t){const d=this.ta-this.tb,q=d*dt*.25;this.ta-=q;this.tb+=q;this.A.material.color.copy(tcol(this.ta));this.B.material.color.copy(tcol(this.tb));
+ const sa='A: '+this.ta.toFixed(0)+'°C',sb='B: '+this.tb.toFixed(0)+'°C';if(this.la.userData.t!==sa)this.la.userData.set(sa);if(this.lb.userData.t!==sb)this.lb.userData.set(sb);
+ this.f.forEach(p=>{const k=(t*.7+p.userData.o)%1;p.visible=d>1;p.position.set(.8-k*1.6,(p.userData.o-.5)*.7,.48);p.material.opacity=Math.min(1,d/30)})}},
+{n:'🏖 الحرارة النوعية',t:'الرمل أم الماء؟ الحرارة النوعية',p:'تكتسب الكتلتان المتساويتان الطاقة نفسها من الشمس، لكن الرمل (حرارته النوعية نحو 830 J/kg·K) يسخن أسرع بكثير من الماء (4180 J/kg·K). وهذا سبب اعتدال مناخ المدن الساحلية.',
+ amb:null,ctrl:'<button class="ib h" onclick="spReset()">☀ ابدئي التسخين من جديد</button>',q:['لماذا يسخن الرمل أسرع من الماء عند تساوي الكتلة والطاقة؟',['حرارته النوعية أقل','حرارته النوعية أكبر','كتلته أكبر'],0],
+ build(g){const mk=(x,col,lab)=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.42,.38,.9,40,1,true),M(0xdff1ff,{transparent:true,opacity:.22,side:2}));b.position.set(x,-.45,0);g.add(b);
+ const c=new THREE.Mesh(new THREE.CylinderGeometry(.39,.37,.55,40),M(col,{roughness:.9,transparent:lab==='الماء',opacity:lab==='الماء'?.75:1}));c.position.set(x,-.62,0);g.add(c);
+ const tube=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,1.3,16),M(0xffffff,{transparent:true,opacity:.5}));tube.position.set(x,.2,0);g.add(tube);
+ const col_=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,1,12),M(0xff2a2a,{emissive:0x550000}));col_.position.set(x,-.4,0);g.add(col_);const l=label(lab,'#1E3557');l.position.set(x,-1.25,0);g.add(l);const tl=label('25 °C','#E0622B',undefined,.8);tl.position.set(x,1.05,0);g.add(tl);return{col_,tl,T:25}};
+ this.s=mk(.6,0xe3c38a,'الرمل');this.w=mk(-.6,0x5aa9f0,'الماء');this.sun=glow('rgba(255,200,60,.95)',1.1);this.sun.position.set(0,1.55,-.3);g.add(this.sun);window.spReset=()=>{this.s.T=25;this.w.T=25;sfx('drop',.5)};setCtrl(this.ctrl)},
+ update(dt,t){[[this.s,830],[this.w,4180]].forEach(([o,C])=>{if(o.T<70)o.T+=dt*900/C*2;const h=Math.min(1.25,(o.T-15)/60*1.25);o.col_.scale.y=h;o.col_.position.y=-.45+h/2;const s=o.T.toFixed(1)+' °C';if(o.tl.userData.t!==s)o.tl.userData.set(s)});this.sun.scale.setScalar(1.05+.08*Math.sin(t*3))}},
+{n:'🧪 الحافظة',t:'سرّ الحافظة (الترمس): هندسة العزل',p:'الغطاء يمنع الحمل والتبخر، والفراغ بين الجدارين يمنع التوصيل والحمل، والسطح الفضي اللامع يعكس الإشعاع. اضغطي «فكّ الطبقات» لتري التصميم من الداخل — هذه فكرة مهمة «مهندسات العزل الحراري».',
+ amb:null,ctrl:'<button class="ib h" onclick="thx=!thx;sfx(\'whoosh\',.6)">🔧 فكّ / تركيب الطبقات</button>',q:['ما وظيفة الطبقة الفضية اللامعة في الحافظة؟',['تمنع التوصيل','تعكس الإشعاع الحراري','تزيد الكتلة'],1],
+ build(g){window.thx=false;this.k=0;this.outer=new THREE.Mesh(new THREE.CylinderGeometry(.62,.62,1.7,48,1,true,0,Math.PI*1.5),M(0x1E3557,{side:2,roughness:.4}));g.add(this.outer);
+ this.inner=new THREE.Mesh(new THREE.CylinderGeometry(.45,.45,1.5,48,1,true,0,Math.PI*1.5),M(0xdfe6ee,{metalness:1,roughness:.08,side:2}));g.add(this.inner);
+ this.tea=new THREE.Mesh(new THREE.CylinderGeometry(.43,.43,1.2,48),M(0x8B3A1A,{transparent:true,opacity:.9}));this.tea.position.y=-.12;g.add(this.tea);
+ this.lid=new THREE.Mesh(new THREE.CylinderGeometry(.5,.55,.25,48),M(0xA8741A,{metalness:.3}));this.lid.position.y=.98;g.add(this.lid);
+ this.L=[label('غطاء: يمنع الحمل','#A8741A',undefined,1.3),label('فراغ: يمنع التوصيل','#1F7A80',undefined,1.3),label('سطح فضي: يعكس الإشعاع','#5C6577',undefined,1.4),label('جدار خارجي','#1E3557',undefined,1.1)];this.L.forEach(l=>g.add(l));
+ this.ar=[];for(let i=0;i<6;i++){const c=new THREE.Mesh(new THREE.ConeGeometry(.05,.16,12),M(0xff4a1a,{emissive:0x661100}));c.userData={a:i/6*Math.PI*1.4,o:Math.random()};g.add(c);this.ar.push(c)}
+ this.steam=[];for(let i=0;i<10;i++){const s=glow('rgba(255,255,255,.7)',.25);s.userData.o=Math.random();g.add(s);this.steam.push(s)}setCtrl(this.ctrl)},
+ update(dt,t){this.k+=((thx?1:0)-this.k)*dt*3;const k=this.k;this.outer.position.x=-k*.9;this.inner.position.x=k*.55;this.tea.position.x=k*.55;this.lid.position.set(k*.55,.98+k*.6,0);
+ this.L[0].position.set(k*.55,1.3+k*.6,0);this.L[1].position.set(-.15,-.95-k*.1,.7);this.L[2].position.set(k*.55+.1,.55,.6);this.L[3].position.set(-k*.9,-1.15,0);this.L.forEach(l=>l.material.opacity=k>.3?1:.85);
+ this.ar.forEach(c=>{const p=(t*.8+c.userData.o)%1;const r=.43+(p<.5?p:1-p)*.35;c.position.set(this.inner.position.x+Math.cos(c.userData.a)*r,-.2+Math.sin(c.userData.a*3)*.3,Math.sin(c.userData.a)*r);c.lookAt(this.inner.position.x,c.position.y,0);c.rotateX(p<.5?-Math.PI/2:Math.PI/2)});
+ this.steam.forEach(s=>{const p=(t*.4+s.userData.o)%1;s.visible=k>.5;s.position.set(this.tea.position.x+Math.sin(s.userData.o*20)*.15,.6+p*.7,0);s.material.opacity=(1-p)*.7})}}
+];
+let cur=0,built=null;
+function load(i){cur=i;while(holder.children.length)holder.remove(holder.children[0]);const s=SC[i];built=Object.create(s);built.build(holder);
+document.getElementById('iT').textContent=s.t;document.getElementById('iP').textContent=s.p;document.getElementById('info').classList.remove('min');
+document.querySelectorAll('#chips button').forEach((b,j)=>b.classList.toggle('on',j===i));holder.scale.setScalar(.01);pop=0;sfx('whoosh',.55);ambient(s.amb);try{history.replaceState(null,'','#s'+i)}catch(e){}}
+let pop=1;
+document.getElementById('chips').innerHTML=SC.map((s,i)=>`<button onclick="load(${i})">${s.n}</button>`).join('');
+// quiz
+function openQuiz(){const q=SC[cur].q;document.getElementById('qq').textContent='❓ '+q[0];document.getElementById('qfb').textContent='';
+document.getElementById('qo').innerHTML=q[1].map((o,i)=>`<button class="qo" onclick="qa(${i},this)">${'أبج'[i]}) ${o}</button>`).join('');document.getElementById('quiz').style.display='flex';sfx('drop',.5)}
+function qa(i,b){const q=SC[cur].q;if(b.parentNode.dataset.d)return;b.parentNode.dataset.d=1;const ok=i===q[2];b.classList.add(ok?'ok':'no');b.parentNode.children[q[2]].classList.add('ok');
+document.getElementById('qfb').textContent=ok?'🎉 أحسنتِ! إجابة صحيحة':'💡 الإجابة الصحيحة مظلّلة بالأخضر';sfx(ok?'applause':'knock',.8);if(ok)toast('⭐ +10')}
+function closeQ(){document.getElementById('quiz').style.display='none'}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1200)}
+// snapshot
+function snap(){const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');
+if(video.videoWidth){const vr=video.videoWidth/video.videoHeight,cr=c.width/c.height;let sw=video.videoWidth,sh=video.videoHeight,sx=0,sy=0;if(vr>cr){sw=sh*cr;sx=(video.videoWidth-sw)/2}else{sh=sw/cr;sy=(video.videoHeight-sh)/2}g.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height)}else{g.fillStyle='#16304f';g.fillRect(0,0,c.width,c.height)}
+g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 2 • أ/ نجاح العنزي',c.width/2,c.height-25);
+const u=c.toDataURL('image/png');document.getElementById('shotImg').src=u;document.getElementById('dl').href=u;document.getElementById('shot').style.display='flex';sfx('drop',.7)}
+// loop
+const clock=new THREE.Clock();
+function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+if(gyro&&q0){cam.quaternion.copy(q0).multiply(qd)}else{cam.quaternion.set(0,0,0,1)}
+pop=Math.min(1,pop+dt*2.2);const e=1-Math.pow(1-pop,3)*(1-pop*0)+Math.sin(pop*Math.PI)*.08;
+var asp=innerWidth/innerHeight;window.base=asp<1?.38+asp*.42:1;anchor.position.y=asp<1?-.35:-.15;holder.scale.setScalar(Math.max(.01,e)*zoom*base);disc.scale.setScalar(base);disc.position.y=ring.position.y=-1.05*base;holder.rotation.y+=((rotY+(drag?0:t*.15))-holder.rotation.y)*.2;holder.rotation.x+=(rotX-holder.rotation.x)*.2;
+ring.material.opacity=.5+.3*Math.sin(t*3);ring.scale.setScalar((1+.03*Math.sin(t*3))*base);
+if(built)built.update.call(built,dt,t);R.render(scene,cam);requestAnimationFrame(loop)}
+document.fonts.load('800 52px Almarai').finally(()=>{const h=location.hash.match(/^#s(\d)$/);load(h?+h[1]:0);loop()});
+setTimeout(()=>document.getElementById('hint').style.opacity=0,6000);
+</script></body></html>

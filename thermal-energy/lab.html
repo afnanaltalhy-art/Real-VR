@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المختبر الافتراضي | درجة الحرارة والطاقة الحرارية</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9;--bg:#EEF5FA}
+*{box-sizing:border-box}
+body{margin:0;font-family:Almarai,sans-serif;background:var(--bg);color:var(--navy)}
+header{position:relative;min-height:190px;background:url(img/lab.jpg) center/cover;display:flex;align-items:flex-end}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(30,53,87,.92),rgba(30,53,87,.25))}
+.hin{position:relative;padding:18px 20px;color:#fff;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.hin h1{margin:0;font-size:clamp(22px,4vw,34px)}
+.hin p{margin:6px 0 0;opacity:.9}
+.logos{display:flex;gap:10px}
+.logos img{height:58px;background:#fff;border-radius:10px;padding:4px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#fff;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+nav button{flex:0 0 auto;border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--navy);color:#fff}
+main{max-width:1100px;margin:auto;padding:16px}
+.lab{display:none}
+.lab.on{display:block;animation:fi .4s}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(30,53,87,.08);margin-bottom:14px}
+h2{margin:0 0 6px;font-size:24px}
+.q{background:var(--cream);border-right:5px solid var(--gold);padding:10px 12px;border-radius:10px;margin:8px 0}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.col{flex:1 1 300px}
+canvas{direction:ltr;width:100%;background:#F7FBFE;border-radius:12px;border:1px solid #d5e3ee;display:block}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input[type=range]{width:100%}
+select,input[type=number]{font:inherit;padding:6px;border-radius:8px;border:1px solid #9fb3c8;width:100%}
+.btn{border:0;background:var(--teal);color:#fff;font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;cursor:pointer;margin:6px 0 0 6px}
+.btn.gold{background:var(--gold)}.btn.hot{background:var(--hot)}.btn.gray{background:#6b7a8c}
+.out{font-size:18px;font-weight:800;color:var(--teal);margin-top:8px}
+table{border-collapse:collapse;width:100%;margin-top:8px}
+td,th{border:1px solid #c9d7e3;padding:6px;text-align:center}
+th{background:var(--navy);color:#fff}
+.reveal{display:none;background:#E7F5EF;border-right:5px solid #2E8B57;padding:10px;border-radius:10px;margin-top:6px}
+.tag{display:inline-block;background:var(--gold);color:#fff;border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:6px}
+.ltr{direction:ltr;unicode-bidi:embed;display:inline-block}
+.chips button{border:2px solid var(--navy);background:#fff;font:inherit;padding:6px 10px;border-radius:10px;margin:3px;cursor:pointer}
+.chips button.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.chips button.no{background:#c0392b;color:#fff;border-color:#c0392b}
+footer{text-align:center;padding:18px;color:#5c6577;font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="hin"><div><h1>🔬 المختبر الافتراضي: درجة الحرارة والطاقة الحرارية</h1><p>فيزياء 2 • الثاني الثانوي • الدرس 6-1 • رحلة STEAM الاستقصائية</p></div><div class="logos"><img src="img/moe.png" alt="وزارة التعليم"><img src="img/school.png" alt="شعار المدرسة"></div></div></header>
+<nav id="nav"></nav>
+<main>
+
+<section class="lab" id="particles" data-t="① نموذج الجسيمات">
+<div class="card"><span class="tag">تجربة 1</span><h2>نموذج الجسيمات: جسم ساخن وآخر بارد</h2>
+<div class="q">حرّكي مؤشري درجة الحرارة، وقارني سرعة الجسيمات في الإناءين. ماذا يحدث لمتوسط الطاقة الحركية عند رفع درجة الحرارة؟</div>
+<div class="row"><div class="col"><canvas id="pA" width="460" height="300"></canvas><label>درجة حرارة الإناء A: <b id="tAv">20</b> °C</label><input type="range" id="tA" min="-20" max="100" value="20"></div>
+<div class="col"><canvas id="pB" width="460" height="300"></canvas><label>درجة حرارة الإناء B: <b id="tBv">80</b> °C</label><input type="range" id="tB" min="-20" max="100" value="80"></div></div>
+<canvas id="keBar" width="920" height="90" style="margin-top:10px"></canvas>
+<button class="btn gold" onclick="rv('r1')">▶ اكشفي الاستنتاج</button>
+<div class="reveal" id="r1">كلما ارتفعت درجة الحرارة زادت سرعة الجسيمات، فيزداد <b>متوسط الطاقة الحركية</b> لها. درجة الحرارة مقياس لمتوسط الطاقة الحركية للجسيمات، ولا تعتمد على عددها.</div></div>
+</section>
+
+<section class="lab" id="balloon" data-t="② البالون والشمس">
+<div class="card"><span class="tag">تجربة 2</span><h2>تحدّي البالون والشمس</h2>
+<div class="q">توقعي: ماذا يحدث لحجم البالون عند تعريضه لأشعة الشمس؟ ثم عند وضعه في صندوق التبريد؟</div>
+<div class="row"><div class="col"><canvas id="bal" width="560" height="360"></canvas></div>
+<div class="col"><label>المكان</label><div class="chips"><button onclick="setBal(45)">☀ تحت الشمس</button><button onclick="setBal(25)">🏫 داخل الصف</button><button onclick="setBal(2)">🧊 صندوق التبريد</button></div>
+<label>درجة حرارة الغاز: <b id="balT">25</b> °C</label><input type="range" id="balR" min="-10" max="60" value="25">
+<div class="out" id="balO"></div>
+<button class="btn gold" onclick="rv('r2')">▶ التفسير على مستوى الجسيمات</button>
+<div class="reveal" id="r2">تكسب ذرات الغاز طاقة من أشعة الشمس فتتحرك أسرع وتصطدم بجدار البالون بمعدل أكبر وبقوة أكبر، فيتمدد المطاط. وعند التبريد تبطؤ الذرات فينكمش البالون، رغم أن عدد الذرات لم يتغير.<br><b>اختبار آمن:</b> بالونان متماثلان، أحدهما في الظل والآخر في الشمس، ونقيس محيطهما بشريط قياس كل 5 دقائق.</div></div></div></div>
+</section>
+
+<section class="lab" id="equil" data-t="③ الاتزان الحراري">
+<div class="card"><span class="tag">تجربة 3</span><h2>الاتزان الحراري: ماء ساخن يلامس ماءً باردًا</h2>
+<div class="q">ضعي إناء ماء ساخن داخل إناء ماء بارد، وراقبي القراءتين. في أي اتجاه تنتقل الطاقة؟ ومتى يتوقف انتقالها؟</div>
+<div class="row"><div class="col">
+<label>كتلة الماء الساخن: <b id="m1v">0.20</b> kg</label><input type="range" id="m1" min="0.05" max="1" step="0.05" value="0.2">
+<label>درجة حرارته: <b id="T1v">80</b> °C</label><input type="range" id="T1" min="40" max="100" value="80">
+<label>كتلة الماء البارد: <b id="m2v">0.40</b> kg</label><input type="range" id="m2" min="0.05" max="1" step="0.05" value="0.4">
+<label>درجة حرارته: <b id="T2v">10</b> °C</label><input type="range" id="T2" min="0" max="35" value="10">
+<button class="btn hot" onclick="runEq()">▶ ابدئي التلامس</button><button class="btn gray" onclick="resetEq()">↺ إعادة</button>
+<div class="out" id="eqO"></div></div>
+<div class="col"><canvas id="eqC" width="520" height="330"></canvas></div></div>
+<button class="btn gold" onclick="rv('r3')">▶ اكشفي الاستنتاج</button>
+<div class="reveal" id="r3">تنتقل الحرارة دائمًا من الجسم الأسخن إلى الأبرد، ويتوقف صافي الانتقال عند <b>تساوي درجتي الحرارة</b> (الاتزان الحراري). الحرارة التي فقدها الساخن = الحرارة التي اكتسبها البارد: <span class="ltr">m₁C(T<sub>f</sub>−T₁) + m₂C(T<sub>f</sub>−T₂) = 0</span></div></div>
+</section>
+
+<section class="lab" id="mass" data-t="④ صممي تجربة: أثر الكتلة">
+<div class="card"><span class="tag">تجربة 4</span><h2>هل تؤثر كتلة المادة في مقدار تغير درجة حرارتها؟</h2>
+<div class="q">نعطي الكمية نفسها من الطاقة <b class="ltr">Q = 8360 J</b> لكتل مختلفة من الماء. المتغير المستقل: الكتلة • التابع: ΔT • الثوابت: Q ونوع المادة ودرجة الحرارة الابتدائية.</div>
+<div class="row"><div class="col"><label>المادة</label><select id="msMat"></select>
+<label>الكتلة: <b id="msMv">0.10</b> kg</label><input type="range" id="msM" min="0.05" max="1" step="0.05" value="0.1">
+<button class="btn" onclick="addMass()">＋ سجّلي القراءة</button><button class="btn gray" onclick="clrMass()">↺ مسح الجدول</button>
+<div class="out" id="msO"></div>
+<table><thead><tr><th>المادة</th><th>m (kg)</th><th>ΔT (°C)</th></tr></thead><tbody id="msTb"></tbody></table></div>
+<div class="col"><canvas id="msC" width="500" height="320"></canvas></div></div>
+<button class="btn gold" onclick="rv('r4')">▶ ما العلاقة؟</button>
+<div class="reveal" id="r4">عند ثبات كمية الطاقة ونوع المادة: كلما زادت الكتلة قلّ التغير في درجة الحرارة (علاقة عكسية): <span class="ltr">ΔT = Q / (mC)</span></div></div>
+</section>
+
+<section class="lab" id="cool" data-t="⑤ مختبر البيانات">
+<div class="card"><span class="tag">تجربة 5</span><h2>مختبر البيانات: منحنى تبريد الماء</h2>
+<div class="q">سجلت الطالبات: البداية 80°C • بعد دقيقتين 70°C • بعد 4 دقائق 63°C • بعد 6 دقائق 58°C. ما النمط؟ وهل معدل الانخفاض ثابت؟</div>
+<div class="row"><div class="col"><canvas id="coC" width="560" height="340"></canvas></div>
+<div class="col"><table><thead><tr><th>الزمن (min)</th><th>T (°C)</th><th>الانخفاض</th></tr></thead><tbody>
+<tr><td>0</td><td>80</td><td>—</td></tr><tr><td>2</td><td>70</td><td>10</td></tr><tr><td>4</td><td>63</td><td>7</td></tr><tr><td>6</td><td>58</td><td>5</td></tr><tr><td>8</td><td id="pred">؟</td><td id="predD">؟</td></tr></tbody></table>
+<label>توقّعك لدرجة الحرارة بعد 8 دقائق (°C)</label><input type="number" id="guess" placeholder="مثال: 55">
+<button class="btn" onclick="checkGuess()">✔ تحققي</button><div class="out" id="coO"></div>
+<button class="btn gold" onclick="rv('r5')">▶ التحليل</button>
+<div class="reveal" id="r5">تقل درجة الحرارة لأن الماء يفقد طاقة إلى الهواء الأبرد. معدل الانخفاض <b>غير ثابت</b>: يتناقص (10 ثم 7 ثم 5) لأن الفرق بين درجة حرارة الماء والمحيط يقل. التوقع بعد 8 دقائق نحو <b>54–55 °C</b>، وهو <b>تقدير</b> من النمط وليس قياسًا.</div></div></div></div>
+</section>
+
+<section class="lab" id="transfer" data-t="⑥ طرق انتقال الحرارة">
+<div class="card"><span class="tag">تجربة 6</span><h2>محققات انتقال الحرارة: التوصيل • الحمل • الإشعاع</h2>
+<div class="row"><div class="col"><canvas id="trC" width="560" height="320"></canvas>
+<div class="chips"><button onclick="trMode=0">🥄 التوصيل</button><button onclick="trMode=1">♨ الحمل</button><button onclick="trMode=2">☀ الإشعاع</button></div>
+<div id="trRod" class="chips">مادة القضيب: <button onclick="rodK=1">معدن</button><button onclick="rodK=.15">خشب</button></div></div>
+<div class="col"><div class="q" id="trTxt"></div>
+<h3>صنّفي المواقف 🎯</h3><div id="cls"></div><div class="out" id="clsO"></div></div></div></div>
+</section>
+
+<section class="lab" id="spec" data-t="⑦ الحرارة النوعية">
+<div class="card"><span class="tag">تجربة 7</span><h2>الرمل أم الماء؟ الحرارة النوعية</h2>
+<div class="q">كتلتان متساويتان (1 kg) تكتسبان الطاقة نفسها من الشمس كل ثانية. أيهما ترتفع درجة حرارتها أسرع؟</div>
+<div class="row"><div class="col"><canvas id="spC" width="560" height="330"></canvas><button class="btn hot" onclick="spRun()">☀ ابدئي التسخين</button><button class="btn gray" onclick="spReset()">↺ إعادة</button></div>
+<div class="col"><label>المادة الأولى</label><select id="spA"></select><label>المادة الثانية</label><select id="spB"></select>
+<div class="out" id="spO"></div>
+<h3>🧮 حاسبة Q = mCΔT</h3><label>المادة</label><select id="qMat"></select><label>الكتلة m (kg)</label><input type="number" id="qm" value="0.5" step="0.1"><label>ΔT (°C)</label><input type="number" id="qdT" value="20">
+<button class="btn" onclick="calcQ()">احسبي Q</button><div class="out" id="qO"></div></div></div>
+<button class="btn gold" onclick="rv('r7')">▶ الاستنتاج</button>
+<div class="reveal" id="r7">الحرارة النوعية للرمل أقل بكثير من الماء (4180 J/kg·K)، لذا ترتفع درجة حرارة الرمل أسرع عند اكتساب الكمية نفسها من الطاقة؛ ولهذا يبقى ماء البحر معتدلًا ويلطّف مناخ المدن الساحلية.</div></div>
+</section>
+
+<section class="lab" id="calor" data-t="⑧ المسعر الحراري">
+<div class="card"><span class="tag">تجربة 8</span><h2>المسعر الحراري وحفظ الطاقة</h2>
+<div class="q">نُسقط قالبًا ساخنًا في ماء بارد داخل مسعر معزول. أوجدي درجة الحرارة النهائية، وتحققي أن: <span class="ltr">Q<sub>lost</sub> + Q<sub>gained</sub> = 0</span></div>
+<div class="row"><div class="col"><label>الفلز</label><select id="caMat"></select>
+<label>كتلة القالب (kg)</label><input type="number" id="caMA" value="0.040" step="0.01"><label>درجة حرارة القالب (°C)</label><input type="number" id="caTA" value="115">
+<label>كتلة الماء (kg)</label><input type="number" id="caMB" value="0.50" step="0.05"><label>درجة حرارة الماء (°C)</label><input type="number" id="caTB" value="15">
+<button class="btn hot" onclick="caRun()">⬇ أسقطي القالب</button><div class="out" id="caO"></div></div>
+<div class="col"><canvas id="caC" width="480" height="360"></canvas></div></div></div>
+</section>
+
+<section class="lab" id="insul" data-t="⑨ مهندسات العزل الحراري">
+<div class="card"><span class="tag">مهمة STEAM</span><h2>مهندسات العزل الحراري: صممي حافظتك واختبريها</h2>
+<div class="q">المشكلة: كيف نصمم حافظة تحافظ على الماء الساخن أطول مدة بمواد بسيطة منخفضة التكلفة؟ اختاري المادة والسماكة والغطاء، ثم قيسي كل دقيقتين لمدة 10 دقائق.</div>
+<div class="row"><div class="col"><label>مادة العزل</label><select id="inMat"><option value="none">بلا عزل (كوب فقط)</option><option value="cotton">قطن</option><option value="paper">ورق مقوّى</option><option value="cloth">قماش</option><option value="foil">رقائق الألمنيوم</option><option value="combo">قطن + رقائق ألمنيوم</option></select>
+<label>عدد الطبقات: <b id="inLv">1</b></label><input type="range" id="inL" min="1" max="3" value="1">
+<label><input type="checkbox" id="inLid"> غطاء محكم</label>
+<label>اسم التصميم</label><input type="text" id="inName" value="تصميم 1" style="font:inherit;padding:6px;border-radius:8px;border:1px solid #9fb3c8;width:100%">
+<button class="btn hot" onclick="inRun()">▶ اختبري (10 دقائق)</button><button class="btn gray" onclick="inClr()">↺ مسح</button>
+<div class="out" id="inO"></div></div>
+<div class="col"><canvas id="inC" width="520" height="330"></canvas></div></div>
+<table><thead><tr><th>التصميم</th><th>0</th><th>2</th><th>4</th><th>6</th><th>8</th><th>10</th><th>ΔT</th><th>التكلفة</th></tr></thead><tbody id="inTb"></tbody></table>
+<button class="btn gold" onclick="rv('r9')">▶ ما الدليل على نجاح التصميم؟</button>
+<div class="reveal" id="r9">التصميم الأنجح هو صاحب <b>أقل ΔT</b> خلال الزمن نفسه وبالكمية نفسها من الماء وبالظروف نفسها. القطن والقماش يحبسان الهواء فيقللان التوصيل والحمل، والغطاء يمنع الحمل والتبخر، ورقائق الألمنيوم تعكس الإشعاع. البيانات المسجلة والرسم البياني هما الدليل.</div></div>
+</section>
+</main>
+<footer>إعداد المعلمة: أ/ نجاح العنزي • المشرفة التعليمية: د/ ريم حرح • مديرة المدرسة: أ/ منال الزهراني</footer>
+<script>
+const C={'الماء':4180,'الألومنيوم':897,'النحاس':385,'الحديد':450,'الخارصين':388,'الرصاص':130,'الفضة':235,'الزجاج':840,'الميثانول':2450,'الجليد':2060,'الرمل (تقريبي)':830};
+const $=id=>document.getElementById(id);
+function rv(id){const e=$(id);e.style.display=e.style.display==='block'?'none':'block'}
+function fill(sel,arr,def){sel.innerHTML=arr.map(k=>`<option ${k===def?'selected':''}>${k}</option>`).join('')}
+function f2(x,d=1){return (+x).toFixed(d)}
+// nav
+const labs=[...document.querySelectorAll('.lab')];
+$('nav').innerHTML=labs.map(s=>`<button data-id="${s.id}">${s.dataset.t}</button>`).join('');
+function show(id){labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
+$('nav').onclick=e=>{if(e.target.dataset.id){show(e.target.dataset.id);try{history.replaceState(null,'','#'+e.target.dataset.id)}catch(_){}}};
+show(location.hash.slice(1)&&$(location.hash.slice(1))?location.hash.slice(1):'particles');
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if($(h))show(h)});
+function col(T){const t=Math.max(0,Math.min(1,(T+20)/120));return `rgb(${Math.round(43+t*181)},${Math.round(123-t*25)},${Math.round(185-t*142)})`}
+// 1 particles
+function mkP(n,w,h){return Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,a:Math.random()*6.28}))}
+const PA=mkP(40,460,300),PB=mkP(40,460,300);
+function drawP(cv,P,T){const c=cv.getContext('2d'),w=cv.width,h=cv.height;c.fillStyle='#F7FBFE';c.fillRect(0,0,w,h);c.strokeStyle=col(T);c.lineWidth=6;c.strokeRect(3,3,w-6,h-6);
+const v=0.4+Math.sqrt(T+273)/17*2.2*((T+273)/293);for(const p of P){p.a+=(Math.random()-.5)*.6;p.x+=Math.cos(p.a)*v;p.y+=Math.sin(p.a)*v;if(p.x<10||p.x>w-10){p.a=Math.PI-p.a;p.x=Math.max(10,Math.min(w-10,p.x))}if(p.y<10||p.y>h-10){p.a=-p.a;p.y=Math.max(10,Math.min(h-10,p.y))}
+c.beginPath();c.fillStyle=col(T);c.arc(p.x,p.y,7,0,7);c.fill()}c.fillStyle='#1E3557';c.font='bold 18px Almarai';c.fillText(T+' °C',w-80,30)}
+function keBar(){const c=$('keBar').getContext('2d');c.clearRect(0,0,920,90);const a=+$('tA').value+273,b=+$('tB').value+273;c.font='bold 16px Almarai';c.textAlign='right';
+[[a,'A',$('tA').value],[b,'B',$('tB').value]].forEach(([K,n,T],i)=>{c.fillStyle='#1E3557';c.fillText('متوسط KE للإناء '+n,910,28+i*40);c.fillStyle=col(+T);const L=K/373*640;c.fillRect(740-L,12+i*40,L,24)})}
+function loop1(){$('tAv').textContent=$('tA').value;$('tBv').textContent=$('tB').value;drawP($('pA'),PA,+$('tA').value);drawP($('pB'),PB,+$('tB').value);keBar()}
+// 2 balloon
+const BP=mkP(30,200,200);function setBal(t){$('balR').value=t}
+function loop2(){const T=+$('balR').value;$('balT').textContent=T;const c=$('bal').getContext('2d');c.clearRect(0,0,560,360);
+if(T>35){c.fillStyle='#FFD34D';c.beginPath();c.arc(70,70,40,0,7);c.fill();for(let i=0;i<10;i++){c.strokeStyle='#FFB800';c.beginPath();const a=i*.63;c.moveTo(70+50*Math.cos(a),70+50*Math.sin(a));c.lineTo(70+70*Math.cos(a),70+70*Math.sin(a));c.stroke()}}
+if(T<8){c.fillStyle='#BFE3F7';c.fillRect(380,250,170,100);c.fillStyle='#2B7BB9';c.font='bold 16px Almarai';c.fillText('❄',450,300)}
+const r=110*Math.cbrt((T+273)/298);c.strokeStyle='#8a8';c.beginPath();c.moveTo(280,190+r);c.lineTo(280,350);c.stroke();
+c.fillStyle='rgba(120,200,60,.35)';c.strokeStyle='#4C9A2A';c.lineWidth=4;c.beginPath();c.ellipse(280,190,r*.92,r,0,0,7);c.fill();c.stroke();
+const v=0.5+(T+273)/298*2.2;for(const p of BP){p.a+=(Math.random()-.5)*.5;p.x+=Math.cos(p.a)*v;p.y+=Math.sin(p.a)*v;const dx=(p.x-100)/(r*.85),dy=(p.y-100)/(r*.9);if(dx*dx+dy*dy>1){p.a+=Math.PI;p.x=100+(p.x-100)*.9;p.y=100+(p.y-100)*.9}
+c.fillStyle=col(T);c.beginPath();c.arc(180+p.x,90+p.y,5,0,7);c.fill()}
+$('balO').textContent='الحجم النسبي للبالون ≈ '+f2((T+273)/298*100,0)+'% من حجمه داخل الصف'}
+// 3 equilibrium
+let eq=null;['m1','T1','m2','T2'].forEach(id=>$(id).oninput=()=>{$(id+'v').textContent=id[0]=='m'?f2($(id).value,2):$(id).value;resetEq()});
+function resetEq(){eq={t:0,T1:+$('T1').value,T2:+$('T2').value,run:false,h1:[],h2:[]};$('eqO').textContent='';}
+function runEq(){resetEq();eq.run=true}
+function loop3(){if(!eq)resetEq();const m1=+$('m1').value,m2=+$('m2').value;if(eq.run&&eq.t<300){const k=.02,dQ=k*(eq.T1-eq.T2)*4180*0.1;eq.T1-=dQ/(m1*4180);eq.T2+=dQ/(m2*4180);eq.t++;eq.h1.push(eq.T1);eq.h2.push(eq.T2);
+const Tf=(m1*+$('T1').value+m2*+$('T2').value)/(m1+m2);$('eqO').innerHTML=`T₁ = ${f2(eq.T1)} °C • T₂ = ${f2(eq.T2)} °C<br>T<sub>f</sub> المحسوبة = (m₁T₁+m₂T₂)/(m₁+m₂) = <b>${f2(Tf)} °C</b>`+(Math.abs(eq.T1-eq.T2)<.3?' ✔ تحقق الاتزان الحراري':'')}
+const c=$('eqC').getContext('2d');c.clearRect(0,0,520,330);c.strokeStyle='#999';c.strokeRect(40,10,470,270);c.fillStyle='#1E3557';c.font='13px Almarai';c.fillText('الزمن ⟵',40,300);c.fillText('T',20,20);
+[[eq.h1,'#E0622B'],[eq.h2,'#2B7BB9']].forEach(([h,cl])=>{c.strokeStyle=cl;c.lineWidth=3;c.beginPath();h.forEach((T,i)=>{const x=40+i/300*470,y=280-T/100*270;i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke()});
+const T1=eq.T1,T2=eq.T2;c.fillStyle=col(T2);c.fillRect(300,180,80,0);
+c.fillStyle='rgba(43,123,185,.25)';c.fillRect(380,190,120,80);c.fillStyle=col(T1);c.globalAlpha=.6;c.fillRect(410,210,60,50);c.globalAlpha=1;c.fillStyle='#1E3557';c.fillText('ساخن داخل بارد',395,185);
+if(eq.run&&Math.abs(T1-T2)>.3){c.fillStyle='#E0622B';c.font='bold 20px Almarai';c.fillText('⟶ حرارة',400,320)}}
+// 4 mass
+fill($('msMat'),Object.keys(C),'الماء');let msRows=[];$('msM').oninput=()=>$('msMv').textContent=f2($('msM').value,2);
+function addMass(){const m=+$('msM').value,mat=$('msMat').value,dT=8360/(m*C[mat]);msRows.push([mat,m,dT]);$('msTb').innerHTML=msRows.map(r=>`<tr><td>${r[0]}</td><td>${f2(r[1],2)}</td><td>${f2(r[2])}</td></tr>`).join('');$('msO').textContent=`ΔT = Q/(mC) = 8360/(${f2(m,2)}×${C[mat]}) = ${f2(dT)} °C`;drawMass()}
+function clrMass(){msRows=[];$('msTb').innerHTML='';drawMass()}
+function drawMass(){const c=$('msC').getContext('2d');c.clearRect(0,0,500,320);c.strokeStyle='#999';c.strokeRect(40,10,450,270);c.fillStyle='#1E3557';c.font='13px Almarai';c.fillText('m (kg)',440,305);c.fillText('ΔT',8,20);
+const mx=Math.max(20,...msRows.map(r=>r[2]));msRows.forEach(r=>{const x=40+r[1]*450,y=280-r[2]/mx*260;c.fillStyle='#E0622B';c.beginPath();c.arc(x,y,6,0,7);c.fill()})}
+drawMass();
+// 5 cooling
+const Ta=25,kc=Math.log(55/45)/2;const Tm=t=>Ta+55*Math.exp(-kc*t);
+function drawCool(show){const c=$('coC').getContext('2d');c.clearRect(0,0,560,340);c.strokeStyle='#999';c.strokeRect(50,10,490,280);c.fillStyle='#1E3557';c.font='13px Almarai';
+for(let t=0;t<=10;t+=2){c.fillText(t,50+t*49-4,308)}for(let T=40;T<=90;T+=10){c.fillText(T,20,290-(T-40)*5.6+4)}c.fillText('الزمن (min)',470,330);
+const pts=[[0,80],[2,70],[4,63],[6,58]];c.fillStyle='#E0622B';pts.forEach(([t,T])=>{c.beginPath();c.arc(50+t*49,290-(T-40)*5.6,7,0,7);c.fill()});
+if(show){c.setLineDash([6,5]);c.strokeStyle='#1F7A80';c.lineWidth=2;c.beginPath();for(let t=0;t<=10;t+=.1){const x=50+t*49,y=290-(Tm(t)-40)*5.6;t?c.lineTo(x,y):c.moveTo(x,y)}c.stroke();c.setLineDash([])}}
+drawCool(false);function checkGuess(){const g=+$('guess').value;drawCool(true);const ok=g>=52&&g<=56;$('coO').innerHTML=(ok?'✔ تقدير منطقي! ':'↺ راجعي النمط: الانخفاض يتناقص (10، 7، 5…). ')+'التقدير المتوقع ≈ 54–55 °C (تقدير وليس قياسًا).';$('pred').textContent='≈ 55';$('predD').textContent='≈ 3–4'}
+// 6 transfer
+let trMode=0,rodK=1,trT=0;const trInfo=['<b>التوصيل:</b> انتقال الطاقة الحركية عند تصادم الجزيئات المتلامسة مباشرة. يحدث في المواد الصلبة خاصة، والفلزات موصلات جيدة والخشب والبلاستيك عوازل.','<b>الحمل:</b> حركة المائع (سائل أو غاز) بسبب اختلاف درجة الحرارة؛ الماء الساخن الأقل كثافة يصعد والبارد الأكثر كثافة يهبط فتتكوّن تيارات حمل.','<b>الإشعاع:</b> انتقال الطاقة بالموجات الكهرومغناطيسية، ولا يحتاج إلى وسط مادي؛ لذا تصل طاقة الشمس إلى الأرض عبر الفراغ.'];
+const conv=mkP(50,200,200);let rodTemps=new Array(30).fill(25);
+function loop6(){$('trTxt').innerHTML=trInfo[trMode];$('trRod').style.display=trMode==0?'block':'none';const c=$('trC').getContext('2d');c.clearRect(0,0,560,320);trT++;
+if(trMode==0){for(let i=0;i<30;i++){rodTemps[i]+= i==0?(95-rodTemps[0])*.2:rodK*.08*(rodTemps[i-1]-rodTemps[i])+(i<29?rodK*.08*(rodTemps[i+1]-rodTemps[i]):0);}
+for(let i=0;i<30;i++){c.fillStyle=col(rodTemps[i]);c.fillRect(500-i*15,140,15,40)}c.fillStyle='#E0622B';c.font='bold 22px Almarai';c.fillText('🔥',505,215);c.fillStyle='#1E3557';c.font='15px Almarai';c.fillText('الطرف البعيد: '+f2(rodTemps[29])+' °C',60,240);if(trT%400==0)rodTemps.fill(25)}
+else if(trMode==1){c.strokeStyle='#1E3557';c.lineWidth=4;c.strokeRect(180,60,200,200);c.fillStyle='#E0622B';c.fillText('🔥🔥🔥',240,290);for(const p of conv){const cx=280,cy=160;let a=Math.atan2(p.y-100,p.x-100);const side=p.x<100?-1:1;a+=0.02*side;const R=Math.hypot(p.x-100,p.y-100)||40;p.x=100+R*Math.cos(a);p.y=100+R*Math.sin(a);const hot=p.y>100? (p.x>100):(p.x>100);c.fillStyle=p.x>100?'#E0622B':'#2B7BB9';c.beginPath();c.arc(180+p.x,60+p.y,5,0,7);c.fill()}
+c.fillStyle='#1E3557';c.font='14px Almarai';c.fillText('ساخن يصعد ⬆',400,120);c.fillText('بارد يهبط ⬇',60,120)}
+else{c.fillStyle='#000';c.fillRect(0,0,560,320);c.fillStyle='#FFD34D';c.beginPath();c.arc(70,160,50,0,7);c.fill();c.fillStyle='#2B7BB9';c.beginPath();c.arc(490,160,30,0,7);c.fill();c.strokeStyle='#FFB800';c.lineWidth=2;
+for(let k=0;k<4;k++){c.beginPath();for(let x=130;x<455;x+=2){const y=110+k*33+8*Math.sin((x-trT*3)/12);x==130?c.moveTo(x,y):c.lineTo(x,y)}c.stroke()}c.fillStyle='#fff';c.font='14px Almarai';c.fillText('فراغ — لا يوجد وسط مادي',220,300)}}
+const clsItems=[['تسخين ملعقة معدنية','توصيل'],['دوران الماء في القدر','حمل'],['دفء الأرض بأشعة الشمس','إشعاع'],['انتقال الحرارة عبر جدار ساخن','توصيل'],['النسيم البحري','حمل'],['الدفء أمام المدفأة','إشعاع']];
+let clsScore=0;$('cls').innerHTML=clsItems.map((it,i)=>`<div style="margin:6px 0"><b>${it[0]}</b><div class="chips">${['توصيل','حمل','إشعاع'].map(o=>`<button onclick="clsAns(this,${i},'${o}')">${o}</button>`).join('')}</div></div>`).join('');
+function clsAns(b,i,o){if(b.parentNode.dataset.done)return;b.parentNode.dataset.done=1;const ok=clsItems[i][1]===o;b.classList.add(ok?'ok':'no');if(ok)clsScore++;else[...b.parentNode.children].find(x=>x.textContent===clsItems[i][1]).classList.add('ok');$('clsO').textContent='نقاطك: '+clsScore+' / '+clsItems.length}
+// 7 specific heat
+fill($('spA'),Object.keys(C),'الرمل (تقريبي)');fill($('spB'),Object.keys(C),'الماء');fill($('qMat'),Object.keys(C),'الماء');
+let sp={t:0,run:false};function spRun(){sp={t:0,run:true}}function spReset(){sp={t:0,run:false}}
+function loop7(){const P=200,ca=C[$('spA').value],cb=C[$('spB').value];if(sp.run&&sp.t<600)sp.t++;const ta=25+P*sp.t/10/ca,tb=25+P*sp.t/10/cb;
+const c=$('spC').getContext('2d');c.clearRect(0,0,560,330);c.fillStyle='#FFD34D';c.beginPath();c.arc(280,40,28,0,7);c.fill();
+[[ta,$('spA').value,150],[tb,$('spB').value,410]].forEach(([T,n,x])=>{c.fillStyle=n.includes('الرمل')?'#E3C38A':n==='الماء'?'#9FD3F2':'#c9ccd3';c.fillRect(x-70,200,140,90);c.fillStyle='#ddd';c.fillRect(x-6,90,12,130);c.fillStyle='#d33';const h=Math.min(120,(T-20)*2);c.fillRect(x-4,218-h,8,h);c.fillStyle='#1E3557';c.font='bold 16px Almarai';c.textAlign='center';c.fillText(n,x,315);c.fillText(f2(T)+' °C',x,80);c.textAlign='start'});
+$('spO').innerHTML=`بعد ${f2(sp.t/10,0)} s: ΔT₁ = ${f2(ta-25)} °C ، ΔT₂ = ${f2(tb-25)} °C`}
+function calcQ(){const m=+$('qm').value,cc=C[$('qMat').value],d=+$('qdT').value,Q=m*cc*d;$('qO').innerHTML=`Q = m C ΔT = ${m} × ${cc} × ${d} = <b>${Q.toLocaleString('en')} J</b>`+(Q<0?' (سالبة: الجسم فقد حرارة)':' (موجبة: الجسم اكتسب حرارة)')}
+// 8 calorimeter
+fill($('caMat'),['الخارصين','الألومنيوم','النحاس','الحديد','الرصاص','الفضة'],'الخارصين');let ca={y:0,run:false,T:null};
+function caRun(){ca={y:0,run:true,done:false}}
+function loop8(){const c=$('caC').getContext('2d');c.clearRect(0,0,480,360);c.fillStyle='#d9dde3';c.fillRect(110,120,260,220);c.fillStyle='#f4f6f8';c.fillRect(130,130,220,200);c.fillStyle='#9FD3F2';c.fillRect(130,200,220,130);c.fillStyle='#1E3557';c.font='13px Almarai';c.fillText('عازل',378,240);
+const mA=+$('caMA').value,cA=C[$('caMat').value],TA=+$('caTA').value,mB=+$('caMB').value,TB=+$('caTB').value,Tf=(mA*cA*TA+mB*4180*TB)/(mA*cA+mB*4180);
+if(ca.run){ca.y=Math.min(ca.y+3,190)}const y=20+ca.y;c.fillStyle=ca.y>=190?col(Tf):col(TA);c.fillRect(215,y,50,40);
+if(ca.y>=190&&!ca.done){ca.done=1;const Qa=mA*cA*(Tf-TA),Qb=mB*4180*(Tf-TB);$('caO').innerHTML=`T<sub>f</sub> = (m<sub>A</sub>C<sub>A</sub>T<sub>A</sub> + m<sub>B</sub>C<sub>B</sub>T<sub>B</sub>) / (m<sub>A</sub>C<sub>A</sub> + m<sub>B</sub>C<sub>B</sub>) = <b>${f2(Tf)} °C</b><br>Q<sub>المفقودة</sub> = ${f2(Qa,0)} J • Q<sub>المكتسبة</sub> = +${f2(Qb,0)} J • المجموع ≈ ${f2(Qa+Qb,0)} J ✔`}
+c.fillStyle='#1E3557';c.font='bold 16px Almarai';c.fillText('🌡 '+f2(ca.done?Tf:TB)+' °C',380,160)}
+// 9 insulation
+const IK={none:.105,cotton:.045,paper:.07,cloth:.055,foil:.075,combo:.035},COST={none:0,cotton:2,paper:1,cloth:2,foil:3,combo:5};let inRows=[];
+$('inL').oninput=()=>$('inLv').textContent=$('inL').value;
+function inRun(){const m=$('inMat').value,L=+$('inL').value,lid=$('inLid').checked;let k=IK[m];if(m!=='none')k=k/(1+.35*(L-1));if(lid)k*=.7;const T=[0,2,4,6,8,10].map(t=>25+45*Math.exp(-k*t)+ (Math.random()-.5)*.4);
+inRows.push({n:$('inName').value||('تصميم '+(inRows.length+1)),T,cost:COST[m]*L+(lid?1:0)});$('inName').value='تصميم '+(inRows.length+1);drawIn()}
+function inClr(){inRows=[];drawIn()}
+function drawIn(){$('inTb').innerHTML=inRows.map(r=>`<tr><td>${r.n}</td>${r.T.map(t=>`<td>${f2(t)}</td>`).join('')}<td><b>${f2(r.T[0]-r.T[5])}</b></td><td>${r.cost} ريال</td></tr>`).join('');
+const c=$('inC').getContext('2d');c.clearRect(0,0,520,330);c.strokeStyle='#999';c.strokeRect(50,10,450,280);c.fillStyle='#1E3557';c.font='13px Almarai';for(let t=0;t<=10;t+=2)c.fillText(t,50+t*45-4,308);for(let T=40;T<=70;T+=10)c.fillText(T,20,290-(T-35)*7.5+4);c.fillText('الزمن (min)',430,326);
+const cols=['#E0622B','#1F7A80','#A8741A','#2B7BB9','#8E44AD','#2E8B57'];inRows.forEach((r,j)=>{c.strokeStyle=cols[j%6];c.lineWidth=3;c.beginPath();r.T.forEach((T,i)=>{const x=50+i*90,y=290-(T-35)*7.5;i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();c.fillStyle=cols[j%6];c.fillText(r.n,60+ (j%3)*140,25+Math.floor(j/3)*16)});
+if(inRows.length){const best=inRows.reduce((a,b)=>(a.T[0]-a.T[5])<(b.T[0]-b.T[5])?a:b);$('inO').innerHTML=`الأقل فقدًا للحرارة: <b>${best.n}</b> (ΔT = ${f2(best.T[0]-best.T[5])} °C)`}else $('inO').textContent=''}
+function tick(){const id=document.querySelector('.lab.on')?.id;({particles:loop1,balloon:loop2,equil:loop3,transfer:loop6,spec:loop7,calor:loop8})[id]?.();requestAnimationFrame(tick)}tick();
+</script>
+</body>
+</html>
