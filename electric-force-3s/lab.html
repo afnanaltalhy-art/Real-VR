@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>المختبر الافتراضي 🔬 القوة الكهربائية وطرق الشحن</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<script src="assets/es.js"></script>
+<style>
+.stage{background:linear-gradient(180deg,#F4F0FF,#FBF8EE);border:2px solid #DCD3F2;border-radius:18px;overflow:hidden;touch-action:none}
+canvas.sim{width:100%;display:block}
+.ctrl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:600px){.ctrl{grid-template-columns:1fr}}
+.ctrl label{font-weight:800;font-size:14.5px;display:flex;flex-direction:column;gap:4px}
+.ctrl select,.ctrl input[type=range]{font:inherit;font-size:14.5px;padding:6px;border-radius:12px;border:2px solid #CFC5EC;background:#fff;width:100%}
+input[type=range]{accent-color:#4B4FA8;padding:0!important;height:28px}
+.obs{background:#EEF9F7;border-right:5px solid #2FA89A;border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.85;margin-top:10px;min-height:52px}
+.mis{display:grid;gap:6px;margin-top:10px}
+.mis div{background:#fff;border:2px dashed #CFC5EC;border-radius:12px;padding:8px 10px;font-size:14.5px;font-weight:700}
+.mis div.done{border-style:solid;border-color:#2E9E5B;background:#e9f8ef}
+.mis div.done::after{content:' ✔';color:#2E9E5B;font-weight:900}
+table.dt{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+table.dt th{background:#26306B;color:#fff;padding:6px}table.dt td{background:#fff;padding:6px;border:1px solid #E6E0F6;text-align:center}
+.meter{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.meter span{background:#fff;border:2px solid #DCD3F2;border-radius:14px;padding:5px 10px;font-weight:800;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/bg_lab.webp)"></div>
+<script>header('المختبر الافتراضي 🔬','فيزياء 3 • ثالث ثانوي • الدرس 8-2: القوة الكهربائية • طرق الشحن')</script>
+<div class="wrap">
+<div class="card"><h2>🔬 مختبر الأجسام المشحونة</h2><p>اختاري التجربة، وغيّري المتغيرات بنفسك، وراقبي الشحنات وهي تتحرك. أنجزي <b>المهمات</b> 🌱🌿🌳 لتجمعي النجوم!</p>
+<div class="tabs" id="tabs"><button data-t="0" class="on">⚖ القضيب المعلّق</button><button data-t="1">🔬 الكشّاف الكهربائي</button><button data-t="2">🔵🔵 الحث بكرتين</button><button data-t="3">✂ قصاصات الورق</button><button data-t="4">⚡ البرق</button></div>
+<div class="row" style="justify-content:space-between"><b id="ttl"></b><span class="pill" id="stars">⭐ 0 / 15</span></div>
+</div>
+
+<!-- 1 القضيب المعلق -->
+<div class="card pane" id="p0">
+<div class="stage"><canvas class="sim" id="c0"></canvas></div>
+<div class="ctrl">
+<label>القضيب المعلّق<select id="h1"></select></label>
+<label>القضيب الذي تقرّبينه<select id="h2"></select></label>
+<label style="grid-column:1/-1">↔ قرّبي القضيب (المسافة)<input type="range" id="hd" min="0" max="100" value="20"></label>
+</div>
+<div class="obs" id="o0"></div>
+<div class="row" style="margin-top:8px"><button class="btn" onclick="rec0()">📝 سجّلي الملاحظة في جدول البيانات</button></div>
+<table class="dt"><thead><tr><th>القضيب المعلّق</th><th>شحنته</th><th>القضيب المقرَّب</th><th>شحنته</th><th>ملاحظات على الحركة</th></tr></thead><tbody id="tb0"></tbody></table>
+<div class="mis" id="m0"></div>
+</div>
+
+<!-- 2 الكشاف -->
+<div class="card pane" id="p1" style="display:none">
+<div class="stage"><canvas class="sim" id="c1"></canvas></div>
+<div class="ctrl">
+<label>نوع القضيب<select id="es"><option value="-1">قضيب مطاطي سالب (−)</option><option value="1">قضيب زجاجي موجب (+)</option></select></label>
+<label>↔ قرّبي القضيب (أقصى اليسار = تلامس)<input type="range" id="ed" min="0" max="100" value="0"></label>
+</div>
+<div class="row" style="margin-top:8px"><button class="btn g" id="eg">✋ المسي الكرة بإصبعك (تأريض)</button><button class="btn w" onclick="E.reset()">↺ فرّغي الكشّاف</button></div>
+<div class="meter"><span id="mq">الشحنة الكلية: 0</span><span id="mk">الكرة: 0</span><span id="ml">الورقتان: 0</span></div>
+<div class="obs" id="o1"></div>
+<div class="mis" id="m1"></div>
+</div>
+
+<!-- 3 الكرتان -->
+<div class="card pane" id="p2" style="display:none">
+<div class="stage"><canvas class="sim" id="c2"></canvas></div>
+<div class="ctrl">
+<label>نوع القضيب<select id="ss"><option value="-1">قضيب سالب (−)</option><option value="1">قضيب موجب (+)</option></select></label>
+<label>↔ قرّبي القضيب من الكرة A<input type="range" id="sd" min="0" max="100" value="0"></label>
+</div>
+<div class="row" style="margin-top:8px"><button class="btn g" id="sp">↔ افصلي الكرتين</button><button class="btn w" onclick="S2.reset()">↺ أعيدي التجربة</button></div>
+<div class="obs" id="o2"></div>
+<div class="mis" id="m2"></div>
+</div>
+
+<!-- 4 قصاصات الورق -->
+<div class="card pane" id="p3" style="display:none">
+<div class="stage"><canvas class="sim" id="c3"></canvas></div>
+<div class="ctrl">
+<label>↕ قرّبي المسطرة من القصاصات<input type="range" id="ph" min="0" max="100" value="10"></label>
+<label>القطعة المستعملة للدلك<select id="pm"><option value="-1">صوف (المسطرة تصبح سالبة)</option><option value="1">غلاف طعام بلاستيكي (المسطرة تصبح موجبة)</option></select></label>
+</div>
+<div class="row" style="margin-top:8px"><button class="btn g" onclick="P.rub()">🧶 ادلكي المسطرة</button><button class="btn w" onclick="P.reset()">↺ أعيدي القصاصات</button></div>
+<div class="meter"><span id="pq">شحنة المسطرة: 0</span><span id="pn">القصاصات الملتصقة: 0 / 12</span></div>
+<div class="obs" id="o3"></div>
+<div class="mis" id="m3"></div>
+</div>
+
+<!-- 5 البرق -->
+<div class="card pane" id="p4" style="display:none">
+<div class="stage"><canvas class="sim" id="c4"></canvas></div>
+<div class="row" style="margin-top:8px"><button class="btn g" id="lc">☁ اشحني الغيمة</button><label style="font-weight:800"><input type="checkbox" id="lr"> 🏙 ثبّتي مانعة صواعق على المبنى</label><button class="btn w" onclick="L.reset()">↺</button></div>
+<div class="meter"><span id="lq">شحنة أسفل الغيمة: 0%</span></div>
+<div class="obs" id="o4"></div>
+<div class="mis" id="m4"></div>
+</div>
+</div>
+<script>girl();footer()</script>
+<script>
+/* ===== المهمات والنجوم ===== */
+let STARS=0;const DONE={};
+function missions(id,list){document.getElementById(id).innerHTML=list.map((m,i)=>`<div id="${id}_${i}">${m}</div>`).join('')}
+function done(id,i,msg){const k=id+'_'+i;if(DONE[k])return;DONE[k]=1;document.getElementById(k).classList.add('done');STARS++;document.getElementById('stars').textContent=`⭐ ${STARS} / 15`;SFX.win();confetti(90);toast('⭐ '+(msg||'أحسنتِ! أنجزتِ المهمة'));say('رائع يا فيزيائية! ⭐')}
+const TT=['⚖ القضيب المعلّق: تجاذب أم تنافر؟','🔬 الكشّاف الكهربائي: التوصيل والحث والتأريض','🔵🔵 الشحن بالحث باستخدام كرتين','✂ لماذا تقفز قصاصات الورق؟','⚡ البرق ومانعة الصواعق'];
+let TAB=0;document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ac();SFX.click();TAB=+b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.pane').forEach((p,i)=>p.style.display=i===TAB?'':'none');document.getElementById('ttl').textContent=TT[TAB];resize()});
+document.getElementById('ttl').textContent=TT[0];
+
+/* ===== 1 القضيب المعلق ===== */
+const MATS=[['قضيب مطاطي مدلوك بالصوف',-1],['قضيب زجاجي مدلوك بالحرير',1],['مسطرة بلاستيكية مدلوكة بالصوف',-1],['مسطرة بلاستيكية مدلوكة بغلاف طعام',1],['قضيب غير مدلوك (متعادل)',0]];
+['h1','h2'].forEach((id,k)=>{document.getElementById(id).innerHTML=MATS.map((m,i)=>`<option value="${i}" ${i===k?'selected':''}>${m[0]}</option>`).join('')});
+missions('m0',['🌱 أظهري تنافرًا بين قضيبين','🌿 أظهري تجاذبًا بين قضيبين مختلفين في الشحنة','🌳 اكتشفي: هل يجذب القضيبُ المشحون قضيبًا متعادلًا؟']);
+const H={ang:0,x:null};let x0;
+function sgnTxt(s){return s>0?'موجبة (+)':s<0?'سالبة (−)':'متعادل'}
+function step0(){const a=MATS[+h1.value],b=MATS[+h2.value],dd=+hd.value;const dist=1-dd/100*0.82;let F=0;
+ if(a[1]&&b[1])F=a[1]*b[1]*0.9/(dist*dist);else if(a[1]||b[1])F=-0.35/(dist*dist*dist)*.5;
+ const tgt=Math.max(-40,Math.min(40,F*9));H.ang+=(tgt-H.ang)*.08;
+ const x=x0,W=800,Hh=420;x.clearRect(0,0,W,Hh);
+ ES.text(x,'منظر علوي للحامل',110,24,'#5d6190',14);
+ // الحامل (منظر علوي): القضيب المقرَّب يقترب من الطرف الأيمن من أسفل
+ x.fillStyle='#26306B';x.beginPath();x.arc(360,190,12,0,7);x.fill();
+ x.save();x.translate(360,190);x.rotate(-H.ang*Math.PI/180);ES.rod(x,-230,0,230,0,a[1],6,26);x.restore();
+ x.fillStyle='#4c7a4c';x.beginPath();x.arc(360,190,6,0,7);x.fill();
+ const ex=360+230*Math.cos(H.ang*Math.PI/180),ey=190-230*Math.sin(H.ang*Math.PI/180);
+ const tipY=ey+40+(1-dd/100)*150;ES.rod(x,ex+40,tipY+190,ex,tipY,b[1],4,26);
+ if(Math.abs(tgt)>2){const rep=tgt>0,ay=Math.max(70,Math.min(330,ey));ES.arrow(x,ex-40,ay+(rep?25:-25),ex-40,ay+(rep?-25:25),rep?'#E2463F':'#2FA89A',5);ES.text(x,rep?'تنافر ⟵ يبتعد الطرف':'تجاذب ⟵ يقترب الطرف',150,380,rep?'#E2463F':'#2FA89A',20)}
+ const o=document.getElementById('o0');let t;
+ if(!a[1]&&!b[1])t='القضيبان متعادلان ⟵ لا توجد قوة كهربائية، فلا يدور القضيب.';
+ else if(a[1]&&b[1])t=a[1]===b[1]?`الشحنتان متشابهتان (${sgnTxt(a[1])}) ⟵ <b class="p">تنافر</b>: يدور المعلّق مبتعدًا، ويزداد الدوران كلما قرّبتِ القضيب.`:`الشحنتان مختلفتان ⟵ <b class="ok">تجاذب</b>: يدور المعلّق مقتربًا دون تلامس!`;
+ else t='أحدهما متعادل ⟵ <b class="ok">تجاذب ضعيف</b>: المشحون يفصل الشحنات في المتعادل فيغلب التجاذب (يظهر عند الاقتراب الشديد).';
+ if(o._t!==t){o.innerHTML=t;o._t=t}
+ if(dd>40&&a[1]&&b[1]&&a[1]===b[1])done('m0',0,'تنافر الشحنات المتشابهة');
+ if(dd>40&&a[1]&&b[1]&&a[1]!==b[1])done('m0',1,'تجاذب الشحنات المختلفة');
+ if(dd>75&&(!a[1]^!b[1]))done('m0',2,'المشحون يجذب المتعادل بفصل الشحنات');
+}
+function rec0(){const a=MATS[+h1.value],b=MATS[+h2.value];let m=(!a[1]&&!b[1])?'لا حركة':(a[1]&&b[1])?(a[1]===b[1]?'تنافر – يبتعد':'تجاذب – يقترب'):'تجاذب ضعيف';const r=document.createElement('tr');r.innerHTML=`<td>${a[0]}</td><td>${sgnTxt(a[1])}</td><td>${b[0]}</td><td>${sgnTxt(b[1])}</td><td>${m}</td>`;document.getElementById('tb0').prepend(r);SFX.coin();toast('📝 سُجّلت الملاحظة')}
+
+/* ===== 2 الكشاف ===== */
+missions('m1',['🌱 اشحني الكشّاف بشحنة سالبة بالتوصيل','🌿 حدّدي نوع الشحنة: قرّبي قضيبًا موجبًا من كشّاف سالب ولاحظي نقص الانفراج','🌳 اشحني الكشّاف بشحنة موجبة بالحث مستخدمة القضيب السالب']);
+const E={Q:0,ang:3,ground:false,touched:false,lastTouch:false,parts:[],
+ reset(){this.Q=0;this.touched=false;this.ground=false;eg.classList.remove('r');eg.textContent='✋ المسي الكرة بإصبعك (تأريض)';SFX.pop();o1.innerHTML='الكشّاف متعادل: الورقتان رأسيتان متلامستان.'}};
+eg.onclick=()=>{ac();E.ground=!E.ground;eg.textContent=E.ground?'✋ أبعدي إصبعك (افصلي التأريض)':'✋ المسي الكرة بإصبعك (تأريض)';SFX.click()};
+function step1(){const s=+document.getElementById('es').value,p=+ed.value/100;const I=s*p*p*5;
+ if(p>=.99&&!E.lastTouch&&!E.ground){E.Q+=s*4;E.touched=true;SFX.zap();toast('⚡ تلامس! انتقلت شحنات بالتوصيل');}
+ E.lastTouch=p>=.99;
+ if(E.ground){const tq=-2*I;if(Math.abs(tq-E.Q)>.05){const dq=tq-E.Q;E.Q+=dq*.08;if(Math.random()<.5)E.parts.push({t:0,dir:dq>0?1:-1})}}
+ const leaves=E.Q/2+I,knob=E.Q/2-I;const tgt=Math.min(44,3+Math.abs(leaves)*6.5);E.ang+=(tgt-E.ang)*.12;
+ const x=x1;x.clearRect(0,0,800,460);ES.scope(x,330,190,1.05,{ang:E.ang,knob,leaves,finger:E.ground});
+ // القضيب
+ const tx=330-44-(1-p)*230,ty=48;if(p>0.01||true)ES.rod(x,tx-260,ty-70,tx,ty+0,s,4,22);
+ // جسيمات التأريض
+ E.parts=E.parts.filter(q=>q.t<1);E.parts.forEach(q=>{q.t+=.04;const u=q.dir<0?q.t:1-q.t;ES.charge(x,330+60+u*150,48+u*0,-1,7,1)});
+ ES.text(x,'Q الكلية: '+(Math.round(E.Q)>0?'+':'')+Math.round(E.Q),690,420,'#26306B',17);
+ mq.textContent='الشحنة الكلية: '+Math.round(E.Q);mk.textContent='الكرة: '+Math.round(knob);ml.textContent='الورقتان: '+Math.round(leaves);
+ let t;
+ if(E.ground&&p>.05)t='بالتأريض تنتقل الإلكترونات بين الكشّاف والأرض حتى تتعادل الورقتان (تنطبقان)، وتبقى على الكرة شحنة مخالفة لشحنة القضيب.';
+ else if(E.ground)t='الكشّاف متصل بالأرض: أي شحنة فائضة تنتقل إلى الأرض.';
+ else if(Math.abs(E.Q)<.5&&p>.05)t='الشحن بالحث (مؤقتًا): القضيب '+(s<0?'السالب يدفع الإلكترونات':'الموجب يجذب الإلكترونات')+' فتُشحن الورقتان بشحنة '+(s<0?'سالبة':'موجبة')+' وتنفرجان، وتعودان عند إبعاده.';
+ else if(Math.abs(E.Q)<.5)t='الكشّاف متعادل: الورقتان رأسيتان متلامستان. قرّبي القضيب ولاحظي.';
+ else if(p>.05)t=(Math.sign(E.Q)===s?'شحنة القضيب مماثلة لشحنة الكشّاف ⟵ <b class="p">يزداد</b> الانفراج.':'شحنة القضيب مخالفة لشحنة الكشّاف ⟵ <b class="n">يقلّ</b> الانفراج.');
+ else t='الكشّاف مشحون بشحنة '+(E.Q>0?'<b class="p">موجبة</b>':'<b class="n">سالبة</b>')+'؛ الورقتان منفرجتان لتنافر شحنتيهما المتشابهتين.';
+ if(o1._t!==t){o1.innerHTML=t;o1._t=t}
+ if(E.Q<-1&&E.touched&&p<.1&&!E.ground)done('m1',0,'شحنتِ الكشّاف بالتوصيل');
+ if(E.Q<-1&&s>0&&p>.5&&!E.ground&&leaves>E.Q/2)done('m1',1,'الانفراج يقلّ عند تقريب شحنة مخالفة');
+ if(E.Q>1&&!E.touched&&p<.1&&!E.ground&&s<0)done('m1',2,'شحن بالحث: الشحنة مخالفة لشحنة القضيب!');
+}
+
+/* ===== 3 الكرتان ===== */
+missions('m2',['🌱 قرّبي القضيب ولاحظي انتقال الإلكترونات بين الكرتين','🌿 احصلي على كرتين مشحونتين بشحنتين مختلفتين بعد إبعاد القضيب','🌳 كرّري التجربة بالقضيب الموجب وقارني نوع شحنة كل كرة']);
+const S2={sep:0,sepT:0,qa:0,qb:0,frozen:false,reset(){this.sep=0;this.sepT=0;this.frozen=false;this.qa=this.qb=0;sp.textContent='↔ افصلي الكرتين';sd.value=0;SFX.pop()},hist:{}};
+sp.onclick=()=>{ac();S2.sepT=S2.sepT?0:1;sp.textContent=S2.sepT?'↔ ضمّي الكرتين':'↔ افصلي الكرتين';SFX.click()};
+function step2(){const s=+document.getElementById('ss').value,p=+sd.value/100;const I=s*p*p*5;
+ S2.sep+=(S2.sepT-S2.sep)*.1;const joined=S2.sep<.05;
+ if(joined){S2.qa=-I;S2.qb=I;S2.frozen=false}else S2.frozen=true;
+ const x=x2;x.clearRect(0,0,800,430);
+ const ca=330-S2.sep*60,cb=470+S2.sep*80,cy=190,R=70;
+ ES.sphere(x,ca,cy,R);ES.sphere(x,cb,cy,R);ES.text(x,'A',ca,cy+R+105,'#26306B',18);ES.text(x,'B',cb,cy+R+105,'#26306B',18);
+ // توزيع الشحنات: داخل كل كرة تتأثر بالقضيب
+ const drawQ=(cx,q,biasLeft)=>{const n=Math.min(7,Math.round(Math.abs(q)));for(let i=0;i<n;i++){const an=(biasLeft?Math.PI:0)+(i-(n-1)/2)*.45;ES.charge(x,cx+Math.cos(an)*(R-18),cy+Math.sin(an)*(R-18),Math.sign(q),10)}};
+ // الكرة A قريبة من القضيب (يسار)؛ الشحنة المخالفة لجهة القضيب
+ drawQ(ca,S2.qa,S2.qa*s<0);drawQ(cb,S2.qb,!(S2.qb*s>0));
+ // أزواج متعادلة باهتة
+ [[ca,0],[cb,0]].forEach(([cx])=>{ES.charge(x,cx-10,cy-8,1,8,.25);ES.charge(x,cx+12,cy+10,-1,8,.25)});
+ const tip=ca-R-20-(1-p)*170;ES.rod(x,tip-200,cy-110,tip,cy-20,s,4,22);
+ let t;if(joined&&p<.05)t='كرتان فلزيتان متعادلتان متلامستان ومعزولتان.';
+ else if(joined)t=`القضيب ${s<0?'السالب يدفع':'الموجب يجذب'} الإلكترونات ⟵ الكرة A ${s<0?'<b class="p">موجبة</b>':'<b class="n">سالبة</b>'} والكرة B ${s<0?'<b class="n">سالبة</b>':'<b class="p">موجبة</b>'}. افصلي الكرتين والقضيب ما زال قريبًا!`;
+ else if(Math.abs(S2.qa)<.5)t='فصلتِ الكرتين قبل تقريب القضيب ⟵ تبقيان متعادلتين. ضمّيهما وأعيدي المحاولة.';
+ else t=`بعد الفصل: A ${S2.qa>0?'موجبة':'سالبة'} و B ${S2.qb>0?'موجبة':'سالبة'} بشحنتين متساويتين مقدارًا ومختلفتين نوعًا ✔ ${p<.05?'(وأبعدتِ القضيب دون أن يفقد شحنته)':''}`;
+ if(o2._t!==t){o2.innerHTML=t;o2._t=t}
+ if(joined&&p>.6)done('m2',0,'الإلكترونات انتقلت بين الكرتين');
+ if(!joined&&Math.abs(S2.qa)>1&&p<.05){done('m2',1,'شحن بالحث بكرتين');S2.hist[s]=1;if(S2.hist[1]&&S2.hist[-1])done('m2',2,'القضيب الموجب يعكس النتيجة')}
+}
+
+/* ===== 4 قصاصات الورق ===== */
+missions('m3',['🌱 ادلكي المسطرة واجذبي أول قصاصة','🌿 اجذبي 6 قصاصات على الأقل','🌳 اجذبي القصاصات بمسطرة موجبة الشحنة أيضًا']);
+const P={q:0,bits:[],init(){this.bits=[...Array(12)].map((_,i)=>({x:150+i*45+Math.random()*10,y:380,w:.6+Math.random()*1.2,st:0,vy:0,r:Math.random()*6}))},reset(){this.init();SFX.pop()},rub(){ac();this.q=Math.min(10,this.q+2);for(let i=0;i<3;i++)setTimeout(()=>SFX.click(),i*90);noise(.25,.12,2500);toast('🧶 شحنة المسطرة تزداد…')}};P.init();
+function step3(){const s=+pm.value,h=+ph.value/100;const ry=60+h*260;const x=x3;x.clearRect(0,0,800,430);
+ // مسطرة
+ x.fillStyle=s<0?'#B8A7E6':'#9ED6CE';x.fillRect(130,ry-14,560,28);for(let i=0;i<28;i++){x.fillStyle='#26306B';x.fillRect(140+i*20,ry-14,2,i%5?8:14)}
+ const n=Math.min(9,Math.round(P.q));for(let i=0;i<n;i++)ES.charge(x,170+i*55,ry+2,s,9);
+ x.fillStyle='#8B6B4A';x.fillRect(80,392,640,14);
+ let stuck=0;P.bits.forEach(b=>{const gap=b.y-ry;const F=P.q*25/Math.max(30,gap);
+  if(b.st===0&&P.q>0&&F>b.w*1.2&&gap>0){b.st=1;SFX.pop()}
+  if(b.st===1){b.y-=(b.y-(ry+18))*.25;if(Math.abs(b.y-(ry+18))<2){b.st=2}}
+  if(b.st===2){b.y=ry+18+b.r*.3;stuck++}
+  x.save();x.translate(b.x,b.y);x.rotate(b.r*.05);x.fillStyle='#FFFDF3';x.strokeStyle='#bfb59a';x.fillRect(-14,-9,28,18);x.strokeRect(-14,-9,28,18);
+  if(P.q>0&&(b.st||F>.2)){ES.charge(x,-6,-3,-s,4.5);ES.charge(x,6,4,s,4.5)}
+  x.restore()});
+ if(P.q>0)P.q=Math.max(0,P.q-0.0015);
+ // نصحح العدسة: الشحنات المخالفة للمسطرة في الأعلى
+ x.save();x.beginPath();x.arc(735,90,55,0,7);x.clip();x.fillStyle='#FFFDF3';x.fillRect(680,40,110,100);for(let i=0;i<3;i++){ES.charge(x,708+i*28,90-12*sep-4,-s,7);ES.charge(x,708+i*28,90+12*sep+4,s,7)}x.restore();
+ ES.text(x,'🔍 قصاصة مكبّرة',735,160,'#26306B',13);
+ pq.textContent='شحنة المسطرة: '+P.q.toFixed(1);pn.textContent=`القصاصات الملتصقة: ${stuck} / 12`;
+ const t=P.q<.3?'المسطرة متعادلة؛ ادلكيها بقطعة الدلك لتشحنيها.':`المسطرة ${s<0?'السالبة':'الموجبة'} تفصل الشحنات في القصاصة المتعادلة: تقترب الشحنات ${s<0?'الموجبة':'السالبة'} وتبتعد ${s<0?'السالبة':'الموجبة'}، والقوة أكبر للأقرب ⟵ يغلب التجاذب. قرّبي المسطرة أكثر لتتغلب القوة على وزن القصاصة!`;
+ if(o3._t!==t){o3.innerHTML=t;o3._t=t}
+ if(stuck>=1)done('m3',0,'المشحون يجذب المتعادل');if(stuck>=6)done('m3',1,'قوة أكبر عند اقتراب أكبر وشحنة أكبر');if(stuck>=1&&s>0)done('m3',2,'المسطرة الموجبة تجذب القصاصات أيضًا')}
+
+/* ===== 5 البرق ===== */
+missions('m4',['🌱 اشحني الغيمة حتى تحدث صاعقة','🌿 ثبّتي مانعة الصواعق واجعلي الصاعقة تُفرَّغ بأمان','🌳 عدّي الثواني بين البرق والرعد (الضوء أسرع من الصوت!)']);
+const L={q:0,flash:0,target:null,charging:false,reset(){this.q=0;this.flash=0;SFX.pop()}};
+lc.onpointerdown=()=>{ac();L.charging=true};['pointerup','pointerleave'].forEach(e=>lc.addEventListener(e,()=>L.charging=false));
+lc.onclick=()=>{L.q=Math.min(100,L.q+12);SFX.hum()};
+function step4(){const x=x4;if(L.charging)L.q=Math.min(100,L.q+.6);const rod=lr.checked;
+ x.fillStyle='#1f2a55';x.fillRect(0,0,800,430);
+ for(let i=0;i<40;i++){x.fillStyle='rgba(255,255,255,.5)';x.fillRect((i*97)%800,(i*53)%120,2,2)}
+ // غيمة
+ x.fillStyle='#8a90ad';[[300,90,80],[400,70,95],[510,95,80],[360,120,70],[460,125,75]].forEach(([a,b,r])=>{x.beginPath();x.ellipse(a,b,r,r*.6,0,0,7);x.fill()});
+ const n=Math.round(L.q/12.5);for(let i=0;i<n;i++)ES.charge(x,270+i*35,160,-1,9);for(let i=0;i<Math.round(n*.7);i++)ES.charge(x,300+i*40,60,1,7,.8);
+ // الأرض والمبنى والشجرة
+ x.fillStyle='#3f6b3a';x.fillRect(0,370,800,60);x.fillStyle='#d9d3c3';x.fillRect(560,230,90,140);for(let r=0;r<4;r++)for(let c=0;c<2;c++){x.fillStyle='#7fb3e6';x.fillRect(575+c*40,245+r*30,20,18)}
+ if(rod){x.strokeStyle='#C0C0C8';x.lineWidth=4;x.beginPath();x.moveTo(605,230);x.lineTo(605,190);x.stroke();x.beginPath();x.moveTo(650,232);x.lineTo(660,232);x.lineTo(660,372);x.stroke()}
+ x.fillStyle='#6b4a2a';x.fillRect(205,300,14,70);x.fillStyle='#3d8a4a';x.beginPath();x.arc(212,285,38,0,7);x.fill();
+ for(let i=0;i<n;i++)ES.charge(x,150+i*55,395,1,8);
+ if(L.q>=100&&!L.flash){L.flash=1;L.target=rod?[605,190]:[212,250];L.t0=performance.now();SFX.zap();setTimeout(()=>{SFX.boom();done('m4',2,'الضوء يصل قبل الصوت!')},1600);done('m4',0,'تفريغ الشحنات: البرق!');if(rod)done('m4',1,'المانعة أرّضت الصاعقة بأمان')}
+ if(L.flash){const k=(performance.now()-L.t0)/600;if(k<1){x.fillStyle=`rgba(255,255,220,${.5*(1-k)})`;x.fillRect(0,0,800,430);x.strokeStyle='#FFF59D';x.lineWidth=6;x.beginPath();let px=420,py=170;x.moveTo(px,py);const [tx,ty]=L.target;for(let i=1;i<=7;i++){px=420+(tx-420)*i/7+(i<7?(Math.random()-.5)*40:0);py=170+(ty-170)*i/7;x.lineTo(px,py)}x.stroke();if(rod){x.strokeStyle='#FFE066';x.lineWidth=4;x.beginPath();x.moveTo(660,232);x.lineTo(660,372);x.stroke()}}else{L.flash=0;L.q=0}}
+ lq.textContent=`شحنة أسفل الغيمة: ${Math.round(L.q)}%`;
+ const t=L.q<5?'اضغطي «اشحني الغيمة» (أو استمري بالضغط) لتتجمع الشحنات السالبة أسفلها.':L.q<100?'الشحنات السالبة أسفل الغيمة تفصل الشحنات على الأرض فتنجذب الموجبة نحو السطح أسفلها… وعند تكوّن مسار موصل تنطلق الصاعقة بسرعة 500,000 km/h تقريبًا!':'';
+ if(t&&o4._t!==t){o4.innerHTML=t;o4._t=t}
+ if(L.flash&&o4._t!=='f'){o4.innerHTML=rod?'⚡ أصابت الصاعقة <b>مانعة الصواعق</b> فانتقلت الشحنات عبر السلك إلى الأرض بأمان (تأريض) 🏙':'⚡ أصابت الصاعقة أعلى نقطة: <b>الشجرة</b>! ثبّتي مانعة الصواعق لحماية المبنى.';o4._t='f'}}
+
+/* ===== حلقة الرسم ===== */
+let x1,x2,x3,x4;
+function resize(){x0=ES.fit(document.getElementById('c0'),800,420);x1=ES.fit(document.getElementById('c1'),800,460);x2=ES.fit(document.getElementById('c2'),800,430);x3=ES.fit(document.getElementById('c3'),800,430);x4=ES.fit(document.getElementById('c4'),800,430)}
+addEventListener('resize',resize);
+
+(function loop(){if(!x0)resize();try{[step0,step1,step2,step3,step4][TAB]()}catch(e){console.error(e)}requestAnimationFrame(loop)})();
+document.fonts&&document.fonts.ready.then(resize);resize();E.reset();
+setTimeout(()=>say('اختاري تجربة وابدئي الاستقصاء 🔬'),800);
+</script>
+</body>
+</html>

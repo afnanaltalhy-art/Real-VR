@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>📱 الواقع المعزز – القوة الكهربائية وطرق الشحن</title>
+<link rel="stylesheet" href="assets/common.css">
+<link rel="stylesheet" href="assets/ar.css">
+<script src="assets/common.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<video id="cam" autoplay muted playsinline></video>
+<div id="nocam"><div>📷 اسمحي للمتصفح باستخدام الكاميرا لترَي الكشّاف الكهربائي في فصلك!<br><button class="btn g" style="margin-top:8px" onclick="retryCam()">تفعيل الكاميرا</button></div></div>
+<canvas id="gl"></canvas>
+<div id="flash" class="flash"></div>
+<div class="arbar"><img src="assets/img/logo.webp" alt=""><b>الواقع المعزز ⚡ القوة الكهربائية وطرق الشحن<small>فيزياء 3 • ثالث ثانوي • المعلمة: أ. حصة السبيعي</small></b><a href="index.html">⌂</a></div>
+<div class="artabs" id="artabs"></div>
+<div class="chips" id="chips"></div>
+<div class="tools"><button onclick="zoomBy(1.15)">＋</button><button onclick="zoomBy(.87)">－</button><button onclick="toggleSpin()">⟳</button><button onclick="flipCam()">🔄</button><button onclick="snap()">📸</button></div>
+<div class="legend"><span><i style="background:#E2463F"></i>شحنة موجبة +</span><span><i style="background:#2F6FD6"></i>إلكترون −</span><span><i style="background:#E0B43A"></i>ورقتان فلزيتان</span></div>
+<div class="arcard" id="arcard"></div>
+<div class="splash" id="splash" onclick="this.style.opacity=0;setTimeout(()=>this.remove(),500);ac();SFX.win()"><div class="atom">⚡</div><h1>القوة الكهربائية وطرق الشحن</h1><p>الكشّاف الكهربائي والقضبان المشحونة والبرق… أمامك في الفصل!<br>اسحبي للتدوير، وقرّبي بإصبعين للتكبير 🤏</p><button class="btn g" style="margin-top:14px;font-size:18px">ابدئي ▶</button></div>
+<script type="module">
+import {THREE,root,glow,label,setUpdater,clock} from './assets/arcore.js';
+import {arUI} from './assets/arui.js';
+const M={
+ glass:new THREE.MeshPhysicalMaterial({color:0xcfe6ff,transparent:true,opacity:.22,roughness:.05,transmission:.6,side:THREE.DoubleSide,depthWrite:false}),
+ metal:new THREE.MeshStandardMaterial({color:0xc9ced8,metalness:.85,roughness:.25}),
+ gold:new THREE.MeshStandardMaterial({color:0xE0B43A,metalness:.8,roughness:.3,side:THREE.DoubleSide,emissive:0x3a2a00}),
+ navy:new THREE.MeshStandardMaterial({color:0x26306B,roughness:.6}),
+ cork:new THREE.MeshStandardMaterial({color:0x3d3d48,roughness:.8}),
+ ebon:new THREE.MeshStandardMaterial({color:0x40404f,roughness:.35,metalness:.2}),
+ glassRod:new THREE.MeshStandardMaterial({color:0xF0BE78,roughness:.2,transparent:true,opacity:.9}),
+ pos:new THREE.MeshStandardMaterial({color:0xE2463F,emissive:0x8a1a14,emissiveIntensity:.9,roughness:.3}),
+ neg:new THREE.MeshStandardMaterial({color:0x2F6FD6,emissive:0x0b3a8a,emissiveIntensity:.9,roughness:.3}),
+ skin:new THREE.MeshStandardMaterial({color:0xF0C3A0,roughness:.7}),
+ cloud:new THREE.MeshStandardMaterial({color:0x8a90ad,roughness:1,transparent:true,opacity:.95}),
+ ground:new THREE.MeshStandardMaterial({color:0x3f6b3a,roughness:1}),
+ wall:new THREE.MeshStandardMaterial({color:0xd9d3c3,roughness:.9}),
+ tree:new THREE.MeshStandardMaterial({color:0x3d8a4a,roughness:.9}),
+ trunk:new THREE.MeshStandardMaterial({color:0x6b4a2a,roughness:.9})};
+const CS=new THREE.SphereGeometry(.13,16,12);
+function chg(sign){const m=new THREE.Mesh(CS,sign>0?M.pos:M.neg);const g=glow(sign>0?0xff7a6e:0x7fb0ff,.7,.6);m.add(g);return m}
+function setLabel(old,text,bg='rgba(38,48,107,.85)',y=3.9,s=.85){if(old)root.remove(old);const l=label(text,'#fff',bg,s);l.position.set(0,y,0);root.add(l);return l}
+function rodMesh(sign,len=4){const g=new THREE.Group();const m=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,len,20),sign>0?M.glassRod:M.ebon);m.rotation.z=Math.PI/2;g.add(m);for(let i=0;i<5;i++){const c=chg(sign);c.position.set(-len/2+.35+i*.4,.17,0);g.add(c)}return g}
+function syncCharges(group,arr,n,sign,posFn){while(arr.length>Math.abs(n)){group.remove(arr.pop())}
+ arr.forEach(c=>{if(c.userData.s!==Math.sign(n)){c.material=Math.sign(n)>0?M.pos:M.neg;c.userData.s=Math.sign(n)}});
+ while(arr.length<Math.min(8,Math.abs(n))){const c=chg(Math.sign(n));c.userData.s=Math.sign(n);group.add(c);arr.push(c)}
+ arr.forEach((c,i)=>{const p=posFn(i,arr.length);c.position.lerp(p,.2)})}
+
+/* ===== المشهد 1: الكشّاف ===== */
+function buildScope(api){root.clear();const S={Q:0,sign:-1,near:0,nearT:0,touch:false,ground:false,ang:.05,kn:[],lv:[]};
+ const g=new THREE.Group();root.add(g);g.position.y=-.6;
+ const dome=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,2.6,40,1,true),M.glass);dome.position.y=-.4;g.add(dome);
+ const cap=new THREE.Mesh(new THREE.SphereGeometry(1.5,40,20,0,Math.PI*2,0,Math.PI/2),M.glass);cap.position.y=.9;g.add(cap);
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(1.8,1.9,.25,40),M.navy);base.position.y=-1.85;g.add(base);
+ const cork=new THREE.Mesh(new THREE.CylinderGeometry(.35,.28,.4,24),M.cork);cork.position.y=2.35;g.add(cork);
+ const stem=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,3.2,12),M.metal);stem.position.y=1.0;g.add(stem);
+ const knob=new THREE.Mesh(new THREE.SphereGeometry(.42,32,24),M.metal);knob.position.y=2.95;g.add(knob);
+ const hinge=new THREE.Group();hinge.position.y=-.55;g.add(hinge);
+ const leaves=[-1,1].map(sd=>{const p=new THREE.Group();const l=new THREE.Mesh(new THREE.BoxGeometry(.16,1.2,.02),M.gold);l.position.y=-.6;p.add(l);hinge.add(p);p.userData.sd=sd;return p});
+ const rod=rodMesh(-1,3.6);rod.position.set(-4.6,3.4,0);rod.rotation.z=-.25;g.add(rod);
+ const finger=new THREE.Group();const f1=new THREE.Mesh(new THREE.CapsuleGeometry(.17,1.4,8,16),M.skin);f1.rotation.z=Math.PI/2;finger.add(f1);finger.position.set(3.5,2.95,0);finger.visible=false;g.add(finger);
+ let lab=setLabel(null,'الكشّاف الكهربائي متعادل');
+ const parts=[];
+ window._es={S,setRod(s){S.sign=s;g.remove(rod.children.length?rod:rod);const r2=rodMesh(s,3.6);r2.position.copy(rod.position);r2.rotation.copy(rod.rotation);g.remove(window._es.rod);g.add(r2);window._es.rod=r2},rod};
+ g.remove(rod);window._es.rod=rodMesh(-1,3.6);window._es.rod.position.set(-4.6,3.4,0);window._es.rod.rotation.z=-.25;g.add(window._es.rod);
+ setUpdater((dt,t)=>{S.near+=(S.nearT-S.near)*Math.min(1,dt*3);const r=window._es.rod;r.position.x=-4.6+S.near*(S.touch?2.55:2.1);r.position.y=3.4-S.near*.15;
+  const I=S.sign*S.near*S.near*5;
+  if(S.touch&&S.near>.97&&!S._did){S.Q+=S.sign*4;S._did=true;SFX.zap();lab=setLabel(lab,'تلامس! انتقلت الشحنات بالتوصيل ⚡')}
+  if(S.ground){const tq=-2*I;S.Q+=(tq-S.Q)*Math.min(1,dt*2.5);if(Math.random()<.15){const e=chg(-1);e.userData.dir=(tq-S.Q)>0?1:-1;e.userData.t=0;g.add(e);parts.push(e)}}
+  parts.forEach(p=>{p.userData.t+=dt*1.5;const u=p.userData.dir>0?p.userData.t:1-p.userData.t;p.position.set(.5+u*3.4,2.95,0)});for(let i=parts.length-1;i>=0;i--)if(parts[i].userData.t>1){g.remove(parts[i]);parts.splice(i,1)}
+  const lq=S.Q/2+I,kq=S.Q/2-I;const tgt=Math.min(.75,.04+Math.abs(lq)*.11);S.ang+=(tgt-S.ang)*Math.min(1,dt*4);
+  leaves.forEach(p=>p.rotation.z=p.userData.sd*S.ang);
+  syncCharges(g,S.kn,Math.round(kq),1,(i,n)=>{const a=(i/n)*Math.PI*2+t*.3;return new THREE.Vector3(Math.cos(a)*.5,2.95+Math.sin(a)*.5,.15)});
+  syncCharges(g,S.lv,Math.round(lq),1,(i,n)=>{const sd=i%2?1:-1,j=Math.floor(i/2);const d=.35+j*.25;return new THREE.Vector3(sd*Math.sin(S.ang)*d,-.55-Math.cos(S.ang)*d,.1)});
+  finger.visible=S.ground})}
+function esSay(api,txt,l){api.setText(txt)}
+
+/* ===== المشهد 2: القضبان ===== */
+function buildRods(api,a=-1,b=-1){root.clear();const st={ang:0};
+ const bar=new THREE.Mesh(new THREE.BoxGeometry(5,.15,.15),M.navy);bar.position.y=3;root.add(bar);
+ const piv=new THREE.Group();piv.position.y=.6;root.add(piv);
+ const str=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,2.4,6),new THREE.MeshStandardMaterial({color:0x4c7a4c}));str.position.y=1.8;root.add(str);
+ const hung=rodMesh(a,4.4);piv.add(hung);
+ const held=rodMesh(b,3.4);held.rotation.y=Math.PI/2;held.position.set(2.6,.6,3.4);root.add(held);
+ const like=a===b;let lab=setLabel(null,like?'شحنتان متشابهتان ⟵ تنافر':'شحنتان مختلفتان ⟵ تجاذب');
+ let k=0;setUpdater((dt,t)=>{k=Math.min(1,k+dt*.35);held.position.z=3.4-k*2.1;const tgt=(like?-1:1)*.6*k*k;st.ang+=(tgt-st.ang)*Math.min(1,dt*2.5);piv.rotation.y=st.ang})}
+
+/* ===== المشهد 3: الكرتان ===== */
+function buildSpheres(api){root.clear();const S={near:0,nearT:0,sep:0,sepT:0,qa:0,qb:0,ca:[],cb:[]};
+ const mk=(x)=>{const g=new THREE.Group();const s=new THREE.Mesh(new THREE.SphereGeometry(1,40,30),M.metal);g.add(s);const st=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,2,12),M.trunk);st.position.y=-2;g.add(st);const bs=new THREE.Mesh(new THREE.CylinderGeometry(.7,.7,.15,24),M.trunk);bs.position.y=-3;g.add(bs);g.position.x=x;root.add(g);return g};
+ const A=mk(-1),B=mk(1);const rod=rodMesh(-1,3.4);rod.position.set(-6,1.6,0);rod.rotation.z=-.4;root.add(rod);
+ let lab=setLabel(null,'كرتان فلزيتان متعادلتان متلامستان',undefined,2.6);
+ window._sp={S,setLab(t){lab=setLabel(lab,t,undefined,2.6)}};
+ setUpdater((dt,t)=>{S.near+=(S.nearT-S.near)*Math.min(1,dt*2.5);S.sep+=(S.sepT-S.sep)*Math.min(1,dt*2.5);rod.position.x=-6+S.near*2.9;
+  A.position.x=-1-S.sep*1.2;B.position.x=1+S.sep*1.6;
+  if(S.sep<.05){const I=-S.near*S.near*5;S.qa=-I;S.qb=I}
+  syncCharges(A,S.ca,Math.round(S.qa),1,(i,n)=>{const a=Math.PI+(i-(n-1)/2)*.42;return new THREE.Vector3(Math.cos(a)*1.05,Math.sin(a)*1.05,.2)});
+  syncCharges(B,S.cb,Math.round(S.qb),1,(i,n)=>{const a=(i-(n-1)/2)*.42;return new THREE.Vector3(Math.cos(a)*1.05,Math.sin(a)*1.05,.2)})})}
+
+/* ===== المشهد 4: البرق ===== */
+function buildStorm(api){root.clear();const S={q:0,rod:false,bolt:null};
+ const cl=new THREE.Group();[[0,0,0,1.4],[1.4,.2,0,1.1],[-1.4,.1,0,1.1],[.7,.7,.2,1],[-.7,.6,.2,1]].forEach(([x,y,z,r])=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),M.cloud);m.position.set(x,y,z);cl.add(m)});cl.position.y=3;root.add(cl);
+ const gnd=new THREE.Mesh(new THREE.BoxGeometry(9,.2,4),M.ground);gnd.position.y=-2.6;root.add(gnd);
+ const bld=new THREE.Mesh(new THREE.BoxGeometry(1.2,2.6,1.2),M.wall);bld.position.set(2.2,-1.2,0);root.add(bld);
+ const lr=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,1,8),M.metal);lr.position.set(2.2,.6,0);lr.visible=false;root.add(lr);
+ const tr=new THREE.Group();const tt=new THREE.Mesh(new THREE.CylinderGeometry(.12,.15,1.4,10),M.trunk);tt.position.y=-1.8;tr.add(tt);const tc=new THREE.Mesh(new THREE.SphereGeometry(.8,20,16),M.tree);tc.position.y=-.7;tr.add(tc);tr.position.x=-2.2;root.add(tr);
+ const neg=[],pos=[];for(let i=0;i<9;i++){const c=chg(-1);c.position.set(-2+i*.5,1.75,.6);c.visible=false;root.add(c);neg.push(c);const p=chg(1);p.position.set(-2+i*.5,-2.35,1.2);p.visible=false;root.add(p);pos.push(p)}
+ let lab=setLabel(null,'غيمة رعدية فوق الأرض',undefined,4.8);
+ window._st={S,charge(){S.q=Math.min(9,S.q+3);SFX.hum();neg.forEach((c,i)=>c.visible=i<S.q);pos.forEach((c,i)=>c.visible=i<S.q);lab=setLabel(lab,S.q<9?'تتجمع الشحنات السالبة أسفل الغيمة… وتنجذب الموجبة إلى سطح الأرض':'الشحنات كافية! أطلقي الصاعقة ⚡',undefined,4.8)},
+  rod(){S.rod=!S.rod;lr.visible=S.rod;SFX.click();toast(S.rod?'🏙 ثُبّتت مانعة الصواعق':'أُزيلت المانعة')},
+  strike(){if(S.q<9){toast('اشحني الغيمة أولًا ☁');return}const tgt=S.rod?new THREE.Vector3(2.2,1.1,0):new THREE.Vector3(-2.2,.1,0);const pts=[new THREE.Vector3(0,1.8,0)];for(let i=1;i<8;i++){const u=i/8;pts.push(new THREE.Vector3(tgt.x*u+(Math.random()-.5)*.6,1.8+(tgt.y-1.8)*u,0))}pts.push(tgt);if(S.rod)pts.push(new THREE.Vector3(2.85,.1,0),new THREE.Vector3(2.85,-2.5,0));
+   if(S.bolt)root.remove(S.bolt);S.bolt=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xfff59d}));root.add(S.bolt);const gl=glow(0xfff3a0,5,.9);gl.position.copy(tgt);root.add(gl);
+   const f=document.getElementById('flash');f.style.opacity=.8;setTimeout(()=>f.style.opacity=0,180);SFX.zap();setTimeout(()=>SFX.boom(),1400);
+   S.q=0;neg.forEach(c=>c.visible=false);pos.forEach(c=>c.visible=false);
+   lab=setLabel(lab,S.rod?'أصابت المانعة وانتقلت الشحنات إلى الأرض بأمان ✔':'أصابت الصاعقة الشجرة! ثبّتي المانعة 🏙',S.rod?'rgba(46,158,91,.9)':'rgba(226,70,63,.9)',4.8);
+   setTimeout(()=>{root.remove(S.bolt);root.remove(gl);S.bolt=null},700)}};
+ setUpdater((dt,t)=>{cl.position.x=Math.sin(t*.3)*.2})}
+
+const SCENES=[
+{tab:'① الكشّاف الكهربائي',title:'🔬 الكشّاف الكهربائي: توصيل وحث وتأريض',text:'كرة فلزية على ساق فلزية متصلة بورقتين ذهبيتين رقيقتين داخل إناء زجاجي. جرّبي الأزرار بالترتيب وراقبي الإلكترونات الزرقاء والورقتين!',
+ quiz:{q:'قرّبنا قضيبًا سالبًا ثم أرّضنا الكرة ثم فصلنا التأريض ثم أبعدنا القضيب. شحنة الكشّاف:',o:['موجبة','سالبة','متعادلة'],a:0,why:'الشحن بالحث يعطي شحنة مخالفة لشحنة القضيب.'},
+ build:buildScope,
+ actions:[{l:'⬅ قرّبي القضيب',c:'b',f(b,api){const S=_es.S;S.touch=false;S._did=false;S.nearT=1;SFX.whoosh&&SFX.whoosh();api.setText(S.sign<0?'القضيب السالب يدفع الإلكترونات إلى الورقتين فتنفرجان (حث مؤقت)، وتبقى الكرة موجبة.':'القضيب الموجب يجذب الإلكترونات إلى الكرة، فتُشحن الورقتان بشحنة موجبة وتنفرجان.')}},
+  {l:'🤝 المسي الكرة (توصيل)',f(b,api){const S=_es.S;S.touch=true;S._did=false;S.nearT=1;api.setText('بالتوصيل: تنتقل الإلكترونات بين القضيب والكشّاف بالتلامس، فيُشحن الكشّاف بشحنة مماثلة لشحنة القضيب.')}},
+  {l:'✋ أرّضي بإصبعك',c:'g',f(b,api){const S=_es.S;S.ground=!S.ground;b.innerHTML=S.ground?'✋ افصلي التأريض':'✋ أرّضي بإصبعك';api.setText(S.ground?'التأريض: تنتقل الإلكترونات بين الكشّاف والأرض حتى تتعادل الورقتان فتنطبقان.':'فصلتِ التأريض: الشحنة الكلية للكشّاف أصبحت ثابتة الآن.')}},
+  {l:'➡ أبعدي القضيب',f(b,api){const S=_es.S;S.nearT=0;S.touch=false;setTimeout(()=>{const q=Math.round(S.Q);api.setText(Math.abs(q)<1?'الكشّاف متعادل والورقتان منطبقتان.':`الكشّاف مشحون بشحنة ${q>0?'<b class="p">موجبة</b>':'<b class="n">سالبة</b>'} والورقتان منفرجتان لتنافر شحنتيهما المتشابهتين.`)},900)}},
+  {l:'🔁 بدّلي نوع القضيب',f(b,api){_es.setRod(-_es.S.sign);toast(_es.S.sign<0?'قضيب مطاطي سالب (−)':'قضيب زجاجي موجب (+)')}},
+  {l:'↺',f(b,api){buildScope(api);api.setText('الكشّاف متعادل: الورقتان منطبقتان.')}}]},
+{tab:'② القضيب المعلّق',title:'⚖ تجاذب أم تنافر؟',text:'قضيب مشحون معلّق بخيط ويدور بسهولة. اختاري زوج الشحنات وراقبي دوران القضيب المعلّق دون أي تلامس!',
+ quiz:{q:'قضيب مطاطي سالب معلّق، قرّبنا منه قضيبًا زجاجيًّا موجبًا. ماذا يحدث؟',o:['يدور مبتعدًا','يدور مقتربًا','لا يتحرك'],a:1,why:'الشحنات المختلفة تتجاذب.'},
+ build(api){buildRods(api,-1,-1)},
+ actions:[{l:'(−) و (−)',c:'b',f(b,api){buildRods(api,-1,-1);api.setText('مطاطي سالب مع مطاطي سالب ⟵ <b>تنافر</b>: يدور المعلّق مبتعدًا.')}},{l:'(+) و (+)',c:'b',f(b,api){buildRods(api,1,1);api.setText('زجاجي موجب مع زجاجي موجب ⟵ <b>تنافر</b>.')}},{l:'(−) و (+)',c:'g',f(b,api){buildRods(api,-1,1);api.setText('شحنتان مختلفتان ⟵ <b>تجاذب</b>: يدور المعلّق مقتربًا.')}}]},
+{tab:'③ الحث بكرتين',title:'🔵🔵 الشحن بالحث: كرتان متلامستان',text:'كرتان فلزيتان معزولتان متلامستان. قرّبي القضيب السالب ثم افصلي الكرتين ثم أبعدي القضيب.',
+ quiz:{q:'بعد الفصل وإبعاد القضيب السالب، شحنة الكرة البعيدة B:',o:['موجبة','سالبة','متعادلة'],a:1,why:'الإلكترونات دُفعت إلى الكرة البعيدة.'},
+ build:buildSpheres,
+ actions:[{l:'⬅ قرّبي القضيب السالب',c:'b',f(b,api){_sp.S.nearT=1;api.setText('القضيب السالب يدفع الإلكترونات من الكرة A إلى B: A موجبة و B سالبة.');_sp.setLab('الإلكترونات تنتقل من A إلى B')}},
+  {l:'↔ افصلي الكرتين',c:'g',f(b,api){_sp.S.sepT=1;api.setText('فصلتِ الكرتين والقضيب قريب: تُحبس الشحنات في كل كرة.')}},
+  {l:'➡ أبعدي القضيب',f(b,api){_sp.S.nearT=0;const ok=_sp.S.sepT===1&&Math.abs(_sp.S.qa)>1;api.setText(ok?'✔ كرتان مشحونتان بشحنتين متساويتين مقدارًا ومختلفتين نوعًا، والقضيب لم يفقد شحنته!':'أبعدتِ القضيب قبل الفصل، فعادت الكرتان متعادلتين.');_sp.setLab(ok?'A موجبة (+) • B سالبة (−)':'الكرتان متعادلتان');if(ok){SFX.win();confetti(80)}}},
+  {l:'↺',f(b,api){buildSpheres(api)}}]},
+{tab:'④ البرق',title:'⚡ البرق ومانعة الصواعق',text:'الشحنات السالبة أسفل الغيمة تفصل الشحنات على الأرض. اشحني الغيمة ثلاث مرات ثم أطلقي الصاعقة… وجرّبي مع مانعة الصواعق!',
+ quiz:{q:'لماذا تُثبَّت مانعة الصواعق على المباني؟',o:['لجذب المطر','لتأريض شحنات البرق بأمان','لشحن الغيوم'],a:1,why:'توصل شحنات الصاعقة إلى الأرض عبر سلك موصل.'},
+ build:buildStorm,
+ actions:[{l:'☁ اشحني الغيمة',c:'b',f(){_st.charge()}},{l:'🏙 مانعة الصواعق',c:'g',f(){_st.rod()}},{l:'⚡ أطلقي الصاعقة',f(b,api){_st.strike();api.setText('تنتقل الصاعقة بسرعة 500,000 km/h تقريبًا على المسار الموصل، فتُفرَّغ شحنات الغيمة. ﴿هُوَ الَّذِي يُرِيكُمُ الْبَرْقَ خَوْفًا وَطَمَعًا﴾')}}]}
+];
+arUI(SCENES);
+</script>
+</body>
+</html>

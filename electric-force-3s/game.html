@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>🎮 مغامرة الشحنات – القوة الكهربائية</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<script src="assets/es.js"></script>
+<style>
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:620px){.lv{grid-template-columns:1fr}}
+.lv button{border:none;border-radius:20px;padding:16px 10px;color:#fff;font:inherit;font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 8px 18px rgba(38,48,107,.25);transition:.2s;line-height:1.6}
+.lv button small{display:block;font-size:13px;font-weight:700;opacity:.95}
+.lv button:hover{transform:translateY(-3px)}
+.hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.hud span{background:#fff;border:2px solid #DCD3F2;border-radius:16px;padding:6px 12px;font-weight:900;font-size:15px}
+.tbar{height:12px;background:#ECE7F8;border-radius:10px;overflow:hidden;margin:10px 0}
+.tbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#E2463F,#E0B43A,#2FA89A);transition:width .2s linear}
+.qq{font-size:20px;font-weight:900;line-height:1.8;margin:6px 0 10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:620px){.opts{grid-template-columns:1fr}}
+.opts button{border:3px solid #CFC5EC;background:#fff;border-radius:16px;padding:12px;font:inherit;font-weight:800;font-size:16.5px;cursor:pointer;color:#26306B;transition:.15s;text-align:right}
+.opts button:hover{border-color:#4B4FA8;transform:scale(1.01)}
+.opts button.ok{background:#e9f8ef;border-color:#2E9E5B}.opts button.bad{background:#fdeceb;border-color:#E2463F}
+.vis{background:linear-gradient(180deg,#F4F0FF,#FBF8EE);border:2px solid #DCD3F2;border-radius:16px;margin-bottom:10px}
+.why{margin-top:10px;background:#EEF9F7;border-right:5px solid #2FA89A;border-radius:12px;padding:9px 12px;font-weight:700;display:none;line-height:1.8}
+.big{font-size:54px;text-align:center;letter-spacing:6px}
+.streak{animation:bounce .6s infinite}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/sc_paper.webp)"></div>
+<script>header('🎮 مغامرة الشحنات','فيزياء 3 • ثالث ثانوي • الدرس 8-2: القوة الكهربائية')</script>
+<div class="wrap">
+<div class="card" id="start">
+<h2>⚡ مغامرة الشحنات</h2>
+<p>أنتِ فيزيائية في مهمة لكشف أسرار الشحنات! لكل مرحلة <b>10 أسئلة</b>، و<b>25 ثانية</b> لكل سؤال، و<b>3 قلوب</b> ❤. الإجابات المتتالية الصحيحة تمنحكِ نقاطًا إضافية ⚡.</p>
+<label style="font-weight:800">اسمك: <input id="nm" class="box" style="width:200px;text-align:right" placeholder="اكتبي اسمك"></label>
+<h3 style="margin-top:14px">اختاري مستواكِ (تعليم متمايز):</h3>
+<div class="lv">
+<button style="background:#2E9E5B" onclick="start(0)">🌱 بذرة<small>أساسيات القوة والشحن</small></button>
+<button style="background:#2FA89A" onclick="start(1)">🌿 غصن<small>الكشّاف وتحديد نوع الشحنة</small></button>
+<button style="background:#4B4FA8" onclick="start(2)">🌳 شجرة<small>الحث والتأريض والتفكير الناقد</small></button>
+</div>
+</div>
+<div class="card" id="play" style="display:none">
+<div class="hud"><span id="hq">السؤال 1/10</span><span id="hs">⭐ 0</span><span id="hk"></span><span id="hl">❤❤❤</span></div>
+<div class="tbar"><i id="tb"></i></div>
+<canvas class="vis" id="cv" style="display:none;width:100%"></canvas>
+<div class="qq" id="qt"></div>
+<div class="opts" id="op"></div>
+<div class="why" id="wy"></div>
+<div class="row" style="margin-top:10px"><button class="btn" id="nx" style="display:none" onclick="next()">التالي ⟵</button></div>
+</div>
+<div class="card" id="end" style="display:none;text-align:center"></div>
+</div>
+<script>girl();footer()</script>
+<script>
+/* v: مواصفات الرسم {knob,leaves,ang,rod:{s,near:true},finger} */
+const N0={ang:3,knob:0,leaves:0},NEG={ang:26,knob:-2,leaves:-2};
+const LV=[
+[ ['الشحنات الكهربائية المتشابهة:',['تتنافر','تتجاذب','لا تتأثر','تتعادل'],0,'الشحنات المتشابهة تتنافر، والمختلفة تتجاذب.'],
+  ['الشحنات الكهربائية المختلفة:',['تتنافر','تتجاذب','تتلاشى','لا تتأثر'],1,'الموجبة والسالبة تتجاذبان.'],
+  ['الجهاز المستخدم للكشف عن الشحنات الكهربائية:',['الأميتر','البوصلة','الكشّاف الكهربائي','الترمومتر'],2,'الكشّاف: كرة فلزية + ساق + ورقتان فلزيتان رقيقتان.'],
+  ['شحن الجسم المتعادل بملامسته جسمًا مشحونًا يُسمّى:',['الشحن بالحث','الشحن بالتوصيل','التأريض','العزل'],1,'التوصيل = تلامس.'],
+  ['شحن الجسم دون ملامسته بتقريب جسم مشحون منه يُسمّى:',['الشحن بالحث','الشحن بالتوصيل','الشحن بالدلك','التأريض'],0,'الحث = دون تلامس.'],
+  ['توصيل جسم بالأرض للتخلّص من الشحنات الفائضة:',['العزل','الحث','التأريض','التوصيل'],2,'الأرض تستوعب كمية كبيرة من الشحنات.'],
+  ['انظري إلى الكشّاف: لماذا الورقتان متلامستان؟',['لأنه مشحون بشحنة سالبة','لأنه متعادل','لأنه مشحون بشحنة موجبة','لأن الورقتين من بلاستيك'],1,'في الكشّاف المتعادل تكون الورقتان رأسيتين متلامستين.',{...N0}],
+  ['القوة الكهربائية بين جسمين مشحونين تؤثر:',['عند التلامس فقط','عن بُعد','داخل الفلزات فقط','في الفراغ فقط'],1,'تؤثر عن بُعد كما في القضيب المعلّق.'],
+  ['ورقتا الكشّاف الكهربائي مصنوعتان من:',['بلاستيك','زجاج','فلز رقيق','خشب'],2,'لأن الفلز موصل تنتقل خلاله الشحنات.'],
+  ['تكون القوة الكهربائية بين شحنتين أكبر عندما تكونان:',['متباعدتين','متقاربتين','متعادلتين','معزولتين'],1,'كلما قلّت المسافة زادت القوة.'] ],
+[ ['كشّاف سالب الشحنة قرّبنا منه قضيبًا موجبًا. ماذا يحدث لانفراج الورقتين؟',['يزداد','يقل','لا يتغير','تنقلب الشحنة فورًا'],1,'القضيب الموجب يجذب الإلكترونات نحو الكرة فيقل الانفراج.',{ang:12,knob:-4,leaves:-1,rod:1}],
+  ['كشّاف سالب الشحنة قرّبنا منه قضيبًا سالبًا. ماذا يحدث لانفراج الورقتين؟',['يزداد','يقل','ينعدم','لا يتغير'],0,'تشابه الشحنتين يدفع إلكترونات أكثر إلى الورقتين.',{ang:40,knob:-1,leaves:-5,rod:-1}],
+  ['قُرّب قضيب زجاجي موجب من قضيب زجاجي موجب معلّق، فإن المعلّق:',['يدور مقتربًا','يدور مبتعدًا','لا يتحرك','يدور ثم يلتصق'],1,'متشابهتان ⟵ تنافر.'],
+  ['لمس قضيب سالب كرة كشّاف متعادل. شحنة الكشّاف بعد إبعاد القضيب:',['موجبة','سالبة','متعادلة','نصفها موجب'],1,'بالتوصيل تكون الشحنة مماثلة لشحنة الجسم المؤثر.',{ang:26,knob:-2,leaves:-2,rod:-1,touch:1}],
+  ['في الشحن بالحث تكون شحنة الجسم المشحون:',['مماثلة لشحنة الجسم المؤثر','مخالفة لشحنة الجسم المؤثر','صفرًا دائمًا','ضعف شحنة الجسم المؤثر'],1,'الحث يعطي شحنة مخالفة.'],
+  ['تنفرج ورقتا الكشّاف عند شحنه لأن:',['شحنتيهما متشابهة فتتنافران','شحنتيهما مختلفة فتتجاذبان','الهواء يدفعهما','وزنهما يزداد'],0,'التنافر بين الشحنات المتشابهة.'],
+  ['في الأجسام الصلبة، الشحنات التي تنتقل عند الشحن هي:',['البروتونات','النيوترونات','الإلكترونات','الأنوية'],2,'البروتونات مقيّدة في الأنوية.'],
+  ['لماذا توضع ورقتا الكشّاف داخل إناء زجاجي مغلق؟',['لتسخينهما','لمنع تيارات الهواء من تحريكهما','لشحنهما','لتأريضهما'],1,'للحدّ من تأثير تيارات الهواء.'],
+  ['تتدلى سلسلة من شاحنات الوقود وتلامس الطريق؛ والسبب:',['تفريغ الشحنات بالتأريض','زيادة السرعة','تجميل الشاحنة','تبريد الوقود'],0,'التأريض يمنع تراكم الشحنات والشرر.'],
+  ['تنتقل الصاعقة على امتداد المسار الموصل بسرعة تقارب:',['500 km/h','5,000 km/h','500,000 km/h','50 km/h'],2,'نحو 500,000 km/h.'] ],
+[ ['قرّبنا قضيبًا سالبًا من كشّاف متعادل ثم أرّضنا الكرة بالإصبع. ماذا يحدث للورقتين؟',['تنفرجان أكثر','تنطبقان','تنفرجان بشحنة موجبة','لا تتغيران'],1,'تنتقل الإلكترونات إلى الأرض فتتعادل الورقتان وتنطبقان.',{ang:3,knob:3,leaves:0,rod:-1,finger:1}],
+  ['لشحن كشّاف بشحنة سالبة بالحث نستخدم قضيبًا:',['سالبًا','موجبًا','متعادلًا','فلزيًّا متعادلًا'],1,'شحنة الحث مخالفة لشحنة القضيب.'],
+  ['شحنّا كشّافًا بالحث، لكننا أبعدنا القضيب قبل فصل التأريض. النتيجة:',['يصبح موجبًا','يصبح سالبًا','يعود متعادلًا','تتضاعف شحنته'],2,'تعود الإلكترونات عبر التأريض فيتعادل.'],
+  ['كرتان فلزيتان متلامستان A و B، قُرّب قضيب موجب من A ثم فُصلتا. الشحنتان:',['A موجبة و B سالبة','A سالبة و B موجبة','كلتاهما موجبة','كلتاهما متعادلة'],1,'الموجب يجذب الإلكترونات إلى A القريبة.'],
+  ['كرتان معلّقتان تتجاذبان. الاستنتاج الصحيح:',['كلتاهما مشحونة بشحنتين مختلفتين حتمًا','قد تكون إحداهما متعادلة','كلتاهما متعادلة','كلتاهما موجبة'],1,'المشحون يجذب المتعادل؛ التنافر هو الدليل الأكيد.'],
+  ['كشّاف مشحون قُرّب منه جسم سالب فقلّ انفراج ورقتيه. شحنة الكشّاف:',['سالبة','موجبة','متعادلة','لا يمكن التحديد'],1,'يقل الانفراج عندما تختلف الشحنتان.',{ang:12,knob:4,leaves:1,rod:-1}],
+  ['يمكن استخدام القضيب نفسه مرات عدة في الشحن بالحث لأنه:',['يُدلك من جديد','لا يلمس الجسم فلا يفقد شحنته','موصل جيد','يأخذ شحنة من الأرض'],1,'لا تنتقل شحنته لعدم التلامس.'],
+  ['قاطع البلازما في محطة الفضاء الدولية يشبه في عمله:',['الشحن بالدلك','التأريض','العزل','الشحن بالحث'],1,'يصل المحطة بسحابة البلازما للتخلص من الشحنة الفائضة.'],
+  ['لا ترتفع ورقتا الكشّاف المشحون فوق زاوية معيّنة بسبب:',['توازن القوة الكهربائية مع وزن الورقتين','نفاد الشحنة','الإناء الزجاجي','تعادل الورقتين'],0,'وتضعف القوة كلما تباعدت الورقتان.'],
+  ['يُجذب جسم متعادل إلى جسم مشحون لأن:',['المتعادل يكتسب شحنة فورًا','الشحنات تنفصل فيه والقوة أكبر للأقرب','الجاذبية تزداد','الجسم المتعادل موصل دائمًا'],1,'فصل الشحنات + القوة أكبر للمسافة الأقل.'] ] ];
+const LN=['🌱 بذرة','🌿 غصن','🌳 شجرة'];
+let L=0,Q=[],i=0,score=0,lives=3,streak=0,tm=null,t=25,locked=false,right=0;
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1])}
+function start(l){ac();SFX.click();L=l;Q=shuffle(LV[l].map(q=>q));i=0;score=0;lives=3;streak=0;right=0;start_.style.display='none';end.style.display='none';play.style.display='';say(LN[l]+'… هيا بنا! ⚡');show()}
+const start_=document.getElementById('start');
+function draw(v){const cv=document.getElementById('cv');if(!v){cv.style.display='none';return}cv.style.display='';const x=ES.fit(cv,800,330);x.clearRect(0,0,800,330);ES.scope(x,400,150,.58,{ang:v.ang,knob:v.knob,leaves:v.leaves,finger:v.finger});if(v.rod){const tip=v.touch?376:350;ES.rod(x,tip-230,25,tip,72,v.rod,4,18)}}
+function show(){locked=false;const q=Q[i];hq.textContent=`${LN[L]} • السؤال ${i+1}/${Q.length}`;hs.textContent='⭐ '+score;hl.textContent='❤'.repeat(lives)+'🤍'.repeat(3-lives);hk.textContent=streak>1?`⚡ سلسلة ×${streak}`:'⚡';hk.className=streak>1?'streak':'';
+ qt.textContent=q[0];draw(q[4]);wy.style.display='none';nx.style.display='none';
+ const ord=shuffle(q[1].map((o,k)=>k));op.innerHTML=ord.map(k=>`<button data-k="${k}">${q[1][k]}</button>`).join('');
+ op.querySelectorAll('button').forEach(b=>b.onclick=()=>pick(+b.dataset.k,b));
+ t=25;clearInterval(tm);tm=setInterval(()=>{t-=.2;tb.style.width=Math.max(0,t/25*100)+'%';if(t<=5&&Math.abs(t-Math.round(t))<.1)SFX.tick&&SFX.tick();if(t<=0){clearInterval(tm);pick(-1,null)}},200)}
+function pick(k,b){if(locked)return;locked=true;clearInterval(tm);const q=Q[i];const ok=k===q[2];
+ op.querySelectorAll('button').forEach(x=>{if(+x.dataset.k===q[2])x.classList.add('ok')});
+ if(ok){streak++;right++;const pts=10+Math.round(t)+(streak>1?5*(streak-1):0);score+=pts;SFX.ok();confetti(40);say(['أحسنتِ! 🌟','رائعة! ⚡','فيزيائية متألقة! 💜'][Math.floor(Math.random()*3)]);toast(`+${pts} نقطة`)}
+ else{streak=0;lives--;if(b){b.classList.add('bad');b.classList.add('shake')}SFX.no();say(k<0?'انتهى الوقت ⏰':'حاولي التركيز 💪')}
+ wy.innerHTML=(ok?'✔ ':'💡 ')+q[3];wy.style.display='block';hs.textContent='⭐ '+score;hl.textContent='❤'.repeat(Math.max(0,lives))+'🤍'.repeat(3-Math.max(0,lives));
+ nx.style.display='';nx.textContent=(lives<=0||i===Q.length-1)?'النتيجة 🏁':'التالي ⟵'}
+function next(){ac();if(lives<=0||i===Q.length-1)return finish();i++;show()}
+function finish(){play.style.display='none';end.style.display='';const pct=right/Q.length,st=pct>=.9?3:pct>=.6?2:pct>=.3?1:0;const nm=(document.getElementById('nm').value||'الفيزيائية').trim();
+ end.innerHTML=`<h2>${st>=2?'🏆 أحسنتِ يا '+nm:'💪 محاولة جميلة يا '+nm}</h2><div class="big">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p style="font-size:18px">المستوى: <b>${LN[L]}</b> • الإجابات الصحيحة: <b>${right} / ${Q.length}</b> • النقاط: <b>${score}</b></p>${lives<=0?'<p>نفدت القلوب ❤… راجعي شريحة الخلاصة ثم أعيدي المحاولة!</p>':''}<div class="row" style="justify-content:center"><button class="btn" onclick="start(${L})">↺ أعيدي المستوى</button>${L<2?`<button class="btn g" onclick="start(${L+1})">المستوى التالي ${LN[L+1]} ⟵</button>`:''}<button class="btn w" onclick="location.reload()">⌂ اختيار المستوى</button></div><p style="margin-top:12px">📸 صوّري هذه الشاشة وأرسليها لمعلمتك ${SCHOOL.teacher}</p>`;
+ if(st>=2){SFX.win();confetti(160)}else SFX.pop()}
+</script>
+</body>
+</html>
