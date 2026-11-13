@@ -1,4 +1,4 @@
-.it{background:#FBF8EE;border:2px solid #EEE6CC;border-radius:16px;padding:10px 12px;margin:8px 0;font-size:15.5px;line-height:2.2}
+.it{background:rgba(251,248,238,.82);border:2px solid #EEE6CC;border-radius:16px;padding:10px 12px;margin:8px 0;font-size:15.5px;line-height:2.2}
 .it.tf{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .ch{border:2px solid #E6DDC0;background:#fff;border-radius:14px;padding:7px 12px;font-weight:800;font-size:14.5px;color:#3B4A17;margin:3px}
 .ch.sel{border-color:#D4A72C;background:#FFF5D6}.ch.okb{border-color:#2E9E5B;background:#e6f7ec}.ch.badb{border-color:#D9473B;background:#fdeceb}

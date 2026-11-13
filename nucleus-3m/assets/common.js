@@ -3,18 +3,20 @@ const SCHOOL={teacher:'فاطمه الزربان',principal:'الجوهره ال
 let AC=null;function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 function tone(f,d=.15,type='sine',v=.18,when=0,slide=0){const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,a.currentTime+when);if(slide)o.frequency.exponentialRampToValueAtTime(slide,a.currentTime+when+d);g.gain.setValueAtTime(v,a.currentTime+when);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+when+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+when);o.stop(a.currentTime+when+d+.02)}
 function noise(d=.3,v=.25,hp=800){const a=ac();if(!a)return;const b=a.createBuffer(1,a.sampleRate*d,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*(1-i/c.length);const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=a.createGain();g.gain.value=v;s.connect(f);f.connect(g);g.connect(a.destination);s.start()}
+function burst(d=.05,v=.3,f=1500,q=1,type='bandpass',when=0){const a=ac();if(!a)return;const b=a.createBuffer(1,Math.max(1,a.sampleRate*d),a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/c.length,3);const s=a.createBufferSource();s.buffer=b;const fl=a.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;const g=a.createGain();g.gain.value=v;s.connect(fl);fl.connect(g);g.connect(a.destination);s.start(a.currentTime+when)}
+/* مؤثرات طبيعية فقط – بلا موسيقى */
 const SFX={
- pop(){tone(520,.08,'sine',.2,0,880)},
- ok(){tone(660,.12,'triangle',.2);tone(880,.12,'triangle',.2,.1);tone(1320,.2,'triangle',.18,.2)},
- no(){tone(220,.25,'sawtooth',.12,0,140)},
- click(){tone(1200,.04,'square',.06)},
- zap(){tone(1600,.35,'sawtooth',.12,0,200);noise(.25,.12,2000)},
- boom(){tone(120,.6,'sine',.35,0,40);noise(.5,.3,200)},
- tick(){tone(1800,.03,'square',.05)},
- win(){[523,659,784,1046,1318].forEach((f,i)=>tone(f,.22,'triangle',.18,i*.11))},
- coin(){tone(988,.08,'square',.1);tone(1318,.25,'square',.1,.08)},
- alarm(){for(let i=0;i<6;i++){tone(1000,.16,'square',.12,i*.36);tone(800,.16,'square',.12,i*.36+.18)}},
- hum(){tone(110,1.2,'sine',.08)}
+ pop(){tone(420,.07,'sine',.16,0,160)},                       // فقاعة
+ ok(){burst(.06,.45,1600,.8);burst(.06,.4,1900,.8,'bandpass',.13)},  // تصفيقتان
+ no(){burst(.18,.35,180,.7,'lowpass')},                        // ارتطام خفيف
+ click(){burst(.02,.25,3000,1.5)},                             // نقرة
+ zap(){for(let i=0;i<7;i++)burst(.03,.25,2500+Math.random()*2500,2,'bandpass',i*.04)}, // طقطقة كهربائية
+ boom(){burst(.7,.55,120,.6,'lowpass')},                       // دويّ
+ tick(){burst(.015,.2,4000,3)},                                // تكّة ساعة
+ win(){for(let i=0;i<40;i++)burst(.05,.18+Math.random()*.15,1200+Math.random()*1200,.9,'bandpass',Math.random()*1.8)}, // تصفيق
+ coin(){tone(2600,.12,'sine',.08);tone(3900,.09,'sine',.05,.01)},  // رنين معدن
+ alarm(){for(let i=0;i<5;i++)tone(3100,.22,'square',.07,i*.45)}, // صفارة كاشف الدخان
+ hum(){tone(100,1,'sine',.07)}                                 // طنين كهربائي
 };
 function toast(msg,ms=1900){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t)}t.innerHTML=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),ms)}
 function say(msg,ms=3200){let s=document.getElementById('speech');if(!s)return;s.innerHTML=msg;s.classList.add('on');clearTimeout(s._h);s._h=setTimeout(()=>s.classList.remove('on'),ms)}
