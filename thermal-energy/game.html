@@ -6,13 +6,14 @@
 :root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9}
 *{box-sizing:border-box}html,body{margin:0;height:100%}
 body{font-family:Almarai,sans-serif;color:var(--navy);overflow-x:hidden;min-height:100vh}
-body{background:#123 url(img/bag.jpg) center/cover fixed no-repeat;transition:background-image .6s}
+body{background:#123 url(img/bg-game.jpg) center/cover fixed no-repeat;transition:background-image .6s}
 body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(230,240,250,.18));pointer-events:none;z-index:-1}
 
 .top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--navy);color:#fff}
 .top img{height:44px;background:#fff;border-radius:8px;padding:3px}.top h1{margin:0;font-size:clamp(16px,3.4vw,24px);text-align:center;flex:1}
-.scr{display:none;max-width:1050px;margin:auto;padding:14px}.scr.on{display:block;animation:in .4s}@keyframes in{from{opacity:0;transform:translateY(10px)}}
-.hero{display:grid;grid-template-columns:minmax(0,560px) 1fr;gap:16px;align-items:center}
+.scr{display:none;max-width:1050px;margin:auto;padding:14px}@media(min-width:1000px){.wrapL{width:60vw;max-width:1000px;margin-left:2vw!important;margin-right:auto!important}}
+body{background-position:right center!important}.scr.on{display:block;animation:in .4s}@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.hero{display:grid;grid-template-columns:1fr;gap:16px;align-items:center}
 @media(max-width:760px){.hero,.play{grid-template-columns:1fr!important}.girl{display:none}}
 .card{background:rgba(255,255,255,.76);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(30,53,87,.15)}
 h2{margin:0 0 8px;font-size:28px}.lead{font-size:18px;line-height:1.9}
@@ -45,13 +46,13 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 </style></head><body>
 <div class="top"><img src="img/moe.png" alt="وزارة التعليم"><h1>🎮 أنقذي حرارة الشاي! — لعبة درجة الحرارة والطاقة الحرارية</h1><img src="img/school.png" alt="شعار المدرسة"></div>
 <button class="mute" id="mute" onclick="toggleMute()">🔊</button>
-<section class="scr on" id="s0"><div class="hero"><div class="card">
+<section class="scr on wrapL" id="s0"><div class="hero"><div class="card">
 <h2>مهمتك يا مهندسة الحرارة ☕🔥</h2>
 <p class="lead">كوب شاي ساخن عند <b>80 °C</b> يفقد حرارته كل ثانية بالتوصيل والحمل والإشعاع! أجيبي عن <b>12 سؤالًا</b> (لكل سؤال 30 ثانية). كل إجابة صحيحة تضيف طبقة عزل للحافظة وتنقذ الحرارة، والخاطئة تجعل البخار يتسرّب. حافظي على الشاي دافئًا لتحصلي على 3 نجوم وشهادة شكر باسمك!</p>
 <input class="nm" id="nm" placeholder="اكتبي اسمك هنا ✍"><button class="btn" onclick="start()">ابدئي التحدي ◀</button></div>
 <img class="cover" src="img/bag.jpg" alt=""></div></section>
 
-<section class="scr" id="s1"><div class="play">
+<section class="scr wrapL" id="s1"><div class="play">
 <div class="stage"><svg id="cup" viewBox="0 0 300 330">
 <g class="steam" id="steam" stroke="#9fb3c8" stroke-width="6" fill="none" stroke-linecap="round"><path d="M110 70 q-15 -20 0 -40 q15 -20 0 -40"/><path d="M150 70 q-15 -20 0 -40 q15 -20 0 -40"/><path d="M190 70 q-15 -20 0 -40 q15 -20 0 -40"/></g>
 <g id="lay"></g>
@@ -66,7 +67,7 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 <div class="qcard"><div class="bar"><i id="tb"></i></div><div class="qn" id="qn"></div><div class="qt" id="qt"></div><div class="opts" id="op"></div><div class="fb" id="fb"></div>
 <p style="text-align:left;margin:12px 0 0"><button class="btn t" id="nx" style="display:none" onclick="next()">التالي ◀</button></p></div></div></section>
 
-<section class="scr" id="s2"><div class="cert"><div class="lg"><img src="img/moe.png" alt=""><img src="img/school.png" alt=""></div>
+<section class="scr wrapL" id="s2"><div class="cert"><div class="lg"><img src="img/moe.png" alt=""><img src="img/school.png" alt=""></div>
 <h2 style="font-size:36px;margin:8px 0">شهادة شكر وتقدير</h2><p style="font-size:20px">تتقدّم معلمة الفيزياء بالشكر والتقدير للطالبة</p><div class="nm" id="cn"></div>
 <p style="font-size:20px;line-height:1.9">لإتمامها لعبة <b>«أنقذي حرارة الشاي!»</b> في درس درجة الحرارة والطاقة الحرارية (فيزياء 2) وحصولها على <b id="cs"></b> نقطة،<br>وحافظت على الشاي عند <b id="ct"></b></p>
 <div class="stars" id="cst"></div><p id="cm" style="font-size:22px;font-weight:800;color:var(--teal)"></p>
@@ -97,7 +98,7 @@ function start(){name=$('nm').value.trim();if(!name){$('nm').focus();$('nm').sty
 function tickT(){T=Math.max(25,T-k*(T-25)/40*2);draw()}
 function draw(){$('tv').textContent=T.toFixed(1)+' °C';const c=Math.max(0,Math.min(1,(T-25)/55));$('tea').setAttribute('fill',`rgb(${Math.round(60+c*132)},${Math.round(120-c*63)},${Math.round(200-c*157)})`);$('steam').style.opacity=c}
 const QBG=['mugjug','icehot','irgun','calor','cotton','thermos','materials','digital','beach','building','expo','bag'];
-function show(){document.body.style.backgroundImage=`url(img/${QBG[qi%QBG.length]}.jpg)`;ans=false;const q=Q[qi];$('qn').textContent=`السؤال ${qi+1} من ${Q.length}`;$('qt').textContent=q[0];$('fb').className='fb';$('nx').style.display='none';
+function show(){ans=false;const q=Q[qi];$('qn').textContent=`السؤال ${qi+1} من ${Q.length}`;$('qt').textContent=q[0];$('fb').className='fb';$('nx').style.display='none';
 $('op').innerHTML=q[1].map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${'أبجد'[i]}) ${o}</button>`).join('');left=30;$('tb').style.width='100%';clearInterval(tm);
 tm=setInterval(()=>{left--;$('tb').style.width=(left/30*100)+'%';if(left<=0){clearInterval(tm);if(!ans)fail(null)}},1000)}
 function floatTxt(t,c){const d=document.createElement('div');d.className='float';d.style.color=c;d.textContent=t;d.style.right='45%';d.style.top='35%';document.querySelector('.stage').appendChild(d);setTimeout(()=>d.remove(),1300)}
@@ -111,7 +112,7 @@ function fail(b){ans=true;const q=Q[qi];document.querySelectorAll('.opt')[q[2]].
 fb(false,(b?'💡 ':'⏰ انتهى الوقت! ')+q[3]);draw()}
 function fb(ok,m){const f=$('fb');f.className='fb '+(ok?'ok':'no');f.textContent=m;$('nx').style.display='inline-block'}
 function next(){qi++;play('drop',.6);if(qi<Q.length){show();return}clearInterval(cool);clearInterval(tm);finish()}
-function finish(){document.body.style.backgroundImage='url(img/expo.jpg)';const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
+function finish(){const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
 $('cm').textContent=st===3?'مهندسة عزل حراري متميّزة! 🌟':st===2?'أداء رائع… الشاي ما زال دافئًا 👏':'بداية موفّقة… جرّبي مرة أخرى لتحصلي على 3 نجوم 💪';go('s2');play('applause',.9)}
 draw();
 </script></body></html>

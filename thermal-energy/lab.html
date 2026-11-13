@@ -9,7 +9,7 @@
 :root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--cream:#FBF0DC;--hot:#E0622B;--cold:#2B7BB9;--bg:#EEF5FA}
 *{box-sizing:border-box}
 body{margin:0;font-family:Almarai,sans-serif;color:var(--navy);min-height:100vh}
-body{background:#123 url(img/lab.jpg) center/cover fixed no-repeat;transition:background-image .6s}
+body{background:#123 url(img/bg-lab.jpg) center/cover fixed no-repeat;transition:background-image .6s}
 body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(230,240,250,.18));pointer-events:none;z-index:-1}
 
 header{position:relative;min-height:150px;background:transparent;display:flex;align-items:flex-end}
@@ -22,7 +22,8 @@ header::before{content:"";position:absolute;inset:0;background:linear-gradient(0
 nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 nav button{flex:0 0 auto;border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer}
 nav button.on{background:var(--navy);color:#fff}
-main{max-width:1100px;margin:auto;padding:16px}
+main{max-width:1100px;margin:auto;padding:16px}@media(min-width:1000px){.wrapL{width:60vw;max-width:1000px;margin-left:2vw!important;margin-right:auto!important}}
+body{background-position:right center!important}
 .lab{display:none}
 .lab.on{display:block;animation:fi .4s}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}}
@@ -51,8 +52,8 @@ footer{text-align:center;padding:12px;color:#1E3557;font-size:14px;background:rg
 </head>
 <body>
 <header><div class="hin"><div><h1>🔬 المختبر الافتراضي: درجة الحرارة والطاقة الحرارية</h1><p>فيزياء 2 • الثاني الثانوي • الدرس 6-1 • رحلة STEAM الاستقصائية</p></div><div class="logos"><img src="img/moe.png" alt="وزارة التعليم"><img src="img/school.png" alt="شعار المدرسة"></div></div></header>
-<nav id="nav"></nav>
-<main>
+<nav id="nav" class="wrapL" style="border-radius:14px;margin-top:8px"></nav>
+<main class="wrapL">
 
 <section class="lab" id="particles" data-t="① نموذج الجسيمات">
 <div class="card"><span class="tag">تجربة 1</span><h2>نموذج الجسيمات: جسم ساخن وآخر بارد</h2>
@@ -172,7 +173,7 @@ function f2(x,d=1){return (+x).toFixed(d)}
 const labs=[...document.querySelectorAll('.lab')];
 $('nav').innerHTML=labs.map(s=>`<button data-id="${s.id}">${s.dataset.t}</button>`).join('');
 const BG={particles:'mugjug',balloon:'balloon',equil:'icehot',mass:'materials',cool:'digital',transfer:'irgun',spec:'beach',calor:'calor',insul:'cotton'};
-function show(id){document.body.style.backgroundImage=`url(img/${BG[id]||'lab'}.jpg)`;labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
+function show(id){labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
 $('nav').onclick=e=>{if(e.target.dataset.id){show(e.target.dataset.id);try{history.replaceState(null,'','#'+e.target.dataset.id)}catch(_){}}};
 show(location.hash.slice(1)&&$(location.hash.slice(1))?location.hash.slice(1):'particles');
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if($(h))show(h)});
