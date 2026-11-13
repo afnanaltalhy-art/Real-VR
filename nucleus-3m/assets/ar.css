@@ -1,0 +1,38 @@
+html,body{height:100%;overflow:hidden;background:#0e1630}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:block;z-index:1;touch-action:none}
+#nocam{position:fixed;inset:0;z-index:0;display:none;align-items:flex-end;justify-content:center;padding-bottom:42vh;background:radial-gradient(circle at 50% 40%,#2b3a63,#0b1228 75%)}
+#nocam div{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;font-weight:800;font-size:14px;text-align:center;z-index:3;position:relative;max-width:300px}
+.arbar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(59,74,23,.95),rgba(90,107,43,.92));color:#fff;padding:6px 10px}
+.arbar img{height:30px;background:#fff;border-radius:7px;padding:2px 3px}
+.arbar b{flex:1;font-size:14.5px;line-height:1.3}.arbar small{display:block;font-size:11px;opacity:.9;font-weight:400}
+.arbar a{color:#fff;text-decoration:none;font-size:12px;font-weight:800;background:rgba(255,255,255,.2);border-radius:14px;padding:5px 10px}
+.artabs{position:fixed;top:50px;left:0;right:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:4px 8px;scrollbar-width:none}
+.artabs::-webkit-scrollbar{display:none}
+.artabs button{flex:none;border:none;border-radius:22px;padding:8px 13px;font-weight:800;font-size:13.5px;background:rgba(255,255,255,.88);color:#3B4A17;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.artabs button.on{background:#D4A72C;color:#fff}
+.chips{position:fixed;top:96px;left:0;right:0;z-index:5;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 8px}
+.chips button{border:2px solid rgba(255,255,255,.8);border-radius:18px;padding:6px 11px;font-weight:800;font-size:13px;background:rgba(14,22,48,.6);color:#fff;backdrop-filter:blur(4px)}
+.chips button.on{background:#E2463F;border-color:#E2463F}
+.tools{position:fixed;left:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:8px}
+.tools button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.9);font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.arcard{position:fixed;left:8px;right:8px;bottom:10px;z-index:6;max-width:560px;margin:auto;background:rgba(255,255,255,.95);border-radius:20px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.3);border:3px solid #D4A72C;max-height:42vh;overflow-y:auto;transition:transform .35s}
+.arcard.min{transform:translateY(calc(100% - 46px))}
+.arcard h3{font-size:16.5px;color:#3B4A17;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.arcard h3 button{border:none;background:#EEE8D2;border-radius:12px;padding:3px 10px;font-weight:800;font-family:inherit}
+.arcard p{font-size:14.5px;line-height:1.85;margin-top:4px}
+.arcard .act{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.arcard .act button{border:none;border-radius:14px;padding:9px 12px;font-weight:800;font-size:14px;color:#fff;background:#5A6B2B;box-shadow:0 3px 0 #3B4A17;font-family:inherit}
+.arcard .act button.r{background:#E2463F;box-shadow:0 3px 0 #9b2a24}.arcard .act button.b{background:#2F6FD6;box-shadow:0 3px 0 #1d4a96}.arcard .act button.g{background:#D4A72C;box-shadow:0 3px 0 #9C7712}
+.quiz{margin-top:10px;background:#F6F1DE;border-radius:14px;padding:8px 10px}
+.quiz b{font-size:14px;display:block;margin-bottom:6px}
+.quiz button{display:block;width:100%;text-align:right;margin:5px 0;border:2px solid #E6DDC0;background:#fff;border-radius:12px;padding:8px 10px;font-weight:800;font-size:14px;font-family:inherit;color:#3B4A17}
+.quiz button.ok{border-color:#2E9E5B;background:#e6f7ec}.quiz button.bad{border-color:#D9473B;background:#fdeceb}
+.legend{position:fixed;right:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:6px;background:rgba(14,22,48,.55);border-radius:14px;padding:8px;color:#fff;font-size:12px;font-weight:800;backdrop-filter:blur(4px)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#2b3a63,#0b1228);color:#fff;text-align:center;transition:opacity .6s;padding:20px}
+.splash h1{font-size:28px;margin:10px 0}.splash p{font-size:15px;opacity:.9;line-height:1.8}
+.splash .atom{font-size:80px;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.flash{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(circle,rgba(255,240,180,.85),rgba(255,200,80,0) 60%);opacity:0;transition:opacity .5s}

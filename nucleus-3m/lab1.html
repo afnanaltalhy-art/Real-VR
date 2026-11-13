@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>المختبر الافتراضي ١ – داخل النواة</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+.sim{position:relative;border-radius:20px;overflow:hidden;border:3px solid var(--gd);background:radial-gradient(circle at 50% 45%,#2b3a63,#0e1630 75%)}
+.sim canvas{display:block;touch-action:none}
+.hudl{position:absolute;top:8px;right:8px;left:8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;pointer-events:none}
+.hudl span{background:rgba(255,255,255,.93);border-radius:12px;padding:4px 10px;font-weight:900;font-size:13.5px}
+.ctrl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ctrl .btn{padding:11px 4px;font-size:14.5px}
+.reveal{margin-top:10px}
+.reveal button{width:100%}
+.reveal .ans{display:none;margin-top:8px}
+.reveal.on .ans{display:block;animation:pop .35s}
+.task{display:flex;gap:8px;align-items:flex-start;background:#F3F7E8;border-radius:14px;padding:9px 12px;margin:6px 0;font-size:14.5px;line-height:1.8}
+.task b.k{background:var(--ol);color:#fff;border-radius:50%;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.task.done{background:#e3f5e8}
+.task.done b.k{background:var(--ok)}
+input[type=range]{width:100%;accent-color:var(--ol);height:30px}
+.meter{height:22px;border-radius:12px;background:#eee;overflow:hidden;border:2px solid #ddd}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#8fd16b);transition:width .3s}
+.alarm{animation:flash .5s infinite}
+@keyframes flash{50%{box-shadow:0 0 0 8px rgba(226,70,63,.6)}}
+.lvltag{font-size:12.5px;font-weight:800;border-radius:10px;padding:2px 8px;margin-inline-start:6px}
+.l1{background:#e3f5e8;color:#2E9E5B}.l2{background:#fff3d6;color:#9C7712}.l3{background:#fde7e5;color:#b2342c}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/bg_lab.webp)"></div>
+<script>header('المختبر الافتراضي ١ 🔬 داخل النواة','الجزء الأول • تجارب الكتاب بالمحاكاة: النظائر • القوة النووية • ألفا • كاشف الدخان')</script>
+<div class="wrap">
+<div class="tabs" id="tabs">
+ <button class="on" data-t="t1">① ابني النظير</button>
+ <button data-t="t2">② القوة النووية</button>
+ <button data-t="t3">③ تحلل ألفا</button>
+ <button data-t="t4">④ كاشف الدخان</button>
+</div>
+
+<!-- ① -->
+<section id="t1" class="card">
+ <h2>🧪 تجربة العرض: نموذج نظيري النيتروجين</h2>
+ <p><b>الهدف:</b> توضيح تركيب النظائر. <b>بدل الصمغ والكرات الملوّنة:</b> اضغطي الأزرار لتبني النواة وتضيفي الإلكترونات.</p>
+ <div class="sim" id="s1"><canvas id="c1"></canvas><div class="hudl"><span id="h1a">العنصر: —</span><span id="h1b">Z = 0</span><span id="h1c">A = 0</span></div></div>
+ <div class="ctrl">
+  <button class="btn r" onclick="b1('P',1)">+ بروتون</button><button class="btn b" onclick="b1('N',1)">+ نيوترون</button><button class="btn g" onclick="b1('E',1)">+ إلكترون</button>
+  <button class="btn w" onclick="b1('P',-1)">− بروتون</button><button class="btn w" onclick="b1('N',-1)">− نيوترون</button><button class="btn w" onclick="b1('E',-1)">− إلكترون</button>
+ </div>
+ <div class="row" style="margin-top:8px"><button class="btn w" onclick="preset(7,7,7)">نيتروجين-14 جاهز</button><button class="btn w" onclick="preset(7,8,7)">نيتروجين-15 جاهز</button><button class="btn w" onclick="preset(0,0,0)">↺ تفريغ</button></div>
+ <h3>📋 خطوات التجربة</h3>
+ <div class="task" id="k1"><b class="k">1</b><span>اعملي نموذجًا لذرة <b>النيتروجين-14</b>: <span class="p">7 بروتونات</span> و<span class="n">7 نيوترونات</span> و7 إلكترونات.</span></div>
+ <div class="task" id="k2"><b class="k">2</b><span>الآن اعملي نموذج <b>النيتروجين-15</b>: أضيفي نيوترونًا واحدًا فقط.</span></div>
+ <div class="task" id="k3"><b class="k">3</b><span>جرّبي: أضيفي <b>بروتونًا</b> بدل النيوترون… ماذا حدث لاسم العنصر؟</span></div>
+ <div class="reveal"><button class="btn w">▶ النتائج المتوقعة</button><div class="ans note">النموذجان للعنصر نفسه (7 بروتونات) لكن يختلفان في عدد النيوترونات ← <b>نظيران</b>. أما تغيير عدد البروتونات فيغيّر <b>هوية العنصر</b> (يصبح أكسجين).</div></div>
+ <div class="reveal"><button class="btn w">▶ التقويم: ما العدد الكتلي لكل نظير؟</button><div class="ans note">العدد الكتلي = البروتونات + النيوترونات ← النظير الأول <b>14</b>، والثاني <b>15</b>. ويُستخدم المجموع الكلي للبروتونات والنيوترونات لتحديد كتلة العنصر.</div></div>
+ <div class="note">🎯 <b>تعليم متمايز:</b><span class="lvltag l1">أساسي</span> ابني N-14 و N-15. <span class="lvltag l2">متوسط</span> ابني نظائر الكربون الثلاثة (12، 13، 14) واحسبي النيوترونات. <span class="lvltag l3">متقدّم</span> ابني نواة عددها الكتلي 11 وفيها 6 نيوترونات… ما العنصر؟</div>
+</section>
+
+<!-- ② -->
+<section id="t2" class="card" style="display:none">
+ <h2>🧲 القوة النووية الهائلة</h2>
+ <p>البروتونات موجبة الشحنة فتتنافر كالأقطاب المغناطيسية المتشابهة… فما الذي يبقيها معًا؟ حرّكي المؤشر وقرّبي الجسيمين.</p>
+ <div class="sim"><canvas id="c2"></canvas><div class="hudl"><span id="h2a">المسافة: بعيدة</span><span id="h2b"></span></div></div>
+ <p style="margin-top:10px;font-weight:800">المسافة بين الجسيمين:</p>
+ <input type="range" id="r2" min="0" max="100" value="100">
+ <div class="row"><button class="btn w" id="m2" onclick="toggle2()">الجسيم الثاني: بروتون ⇄ نيوترون</button></div>
+ <div class="reveal"><button class="btn w">▶ ماذا تلاحظين؟</button><div class="ans note">عند المسافات الكبيرة يغلب <b>التنافر الكهربائي</b> بين البروتونين، وعندما يتقاربان جدًا داخل النواة تتغلّب عليه <b>القوة النووية الهائلة</b> فتربط البروتونات والنيوترونات معًا. والنيوترون لا يتنافر لأنه متعادل.</div></div>
+</section>
+
+<!-- ③ -->
+<section id="t3" class="card" style="display:none">
+ <h2>💥 فقدان جسيمات ألفا وتغيير هوية العنصر</h2>
+ <p>الأميريسيوم-241 (95 بروتونًا و146 نيوترونًا) نواة غير مستقرة. أطلقي منها جسيم ألفا وراقبي ما يحدث للعدد الذري.</p>
+ <div class="sim"><canvas id="c3"></canvas><div class="hudl"><span id="h3a">الأميريسيوم-241</span><span id="h3b">بروتونات 95 • نيوترونات 146</span></div></div>
+ <div class="row" style="margin-top:10px;justify-content:center"><button class="btn r" onclick="fire3()">💥 أطلقي جسيم ألفا</button><button class="btn w" onclick="reset3()">↺ إعادة</button></div>
+ <table class="t" style="margin-top:12px"><tr><th></th><th>قبل</th><th>جسيم ألفا</th><th>بعد</th></tr>
+ <tr><td>العدد الذري</td><td>95</td><td>2</td><td id="z3">؟</td></tr><tr><td>العدد الكتلي</td><td>241</td><td>4</td><td id="a3">؟</td></tr><tr><td>العنصر</td><td>أميريسيوم</td><td>(هيليوم)</td><td id="e3">؟</td></tr></table>
+ <div class="reveal"><button class="btn w">▶ لاحظي المجموع!</button><div class="ans note">مجموع الأعداد الكتلية بعد التحلل (237 + 4 = 241) يساوي العدد الكتلي قبله، ومجموع الأعداد الذرية (93 + 2 = 95) كذلك ← جميع الجسيمات باقية رغم التحوّل. التحوّل: <b>تغيّر عنصر إلى آخر عن طريق التحلل الإشعاعي</b>.</div></div>
+ <div class="reveal"><button class="btn w">▶ تصحيح مفهوم شائع</button><div class="ans note">✗ «التحلل الإشعاعي يعني اختفاء العنصر». ✓ العنصر لا يختفي بل <b>يتحوّل إلى عنصر آخر</b>.</div></div>
+</section>
+
+<!-- ④ -->
+<section id="t4" class="card" style="display:none">
+ <h2>🚨 كاشف الدخان: تطبيق عملي للنظائر المشعة</h2>
+ <p>جسيمات ألفا من الأميريسيوم-241 تتحرّك بسرعة كبيرة فتمكّن الهواء من توصيل التيار. أضيفي دخانًا وراقبي!</p>
+ <div class="sim" id="s4"><canvas id="c4"></canvas><div class="hudl"><span id="h4a">الحالة: آمن ✅</span><span>التيار الكهربائي</span></div></div>
+ <div class="meter" style="margin-top:8px"><i id="mt4" style="width:100%"></i></div>
+ <div class="row" style="margin-top:10px;justify-content:center"><button class="btn" onclick="smoke(1)">💨 أضيفي دخانًا</button><button class="btn w" onclick="smoke(0)">🌬 هواء نقي</button></div>
+ <div class="reveal"><button class="btn w">▶ فسّري ما حدث</button><div class="ans note">ما دام التيار متدفّقًا فالكاشف صامت. عندما يدخل الدخان يعترض حركة الجسيمات فينقطع التيار ← <b>ينطلق الإنذار</b>. لذلك نحرص على عدم إطلاق الإنذار خطأً وعلى تغيير البطارية بانتظام 🔋.</div></div>
+ <div class="note">🧠 <b>حقيقة طريفة:</b> عمر النصف للأميريسيوم-241 هو 432 عامًا، بينما للأميريسيوم-243 الأكثر استقرارًا 7500 عام.</div>
+</section>
+</div>
+<script>girl();footer()</script>
+<script>
+document.querySelectorAll('.reveal button').forEach(b=>b.onclick=()=>{b.parentElement.classList.toggle('on');SFX.pop()});
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('section').forEach(s=>s.style.display='none');document.getElementById(b.dataset.t).style.display='block';SFX.click();init(b.dataset.t)});
+let cur='t1';function init(t){cur=t;if(t==='t2')draw2();if(t==='t3')reset3()}
+/* ① */
+let P1=0,N1=0,E1=0,ang=0;const done={};
+function b1(t,d){ac();if(t==='P')P1=Math.max(0,Math.min(10,P1+d));if(t==='N')N1=Math.max(0,Math.min(10,N1+d));if(t==='E')E1=Math.max(0,Math.min(10,E1+d));d>0?SFX.pop():SFX.click();check1()}
+function preset(p,n,e){P1=p;N1=n;E1=e;SFX.pop();check1()}
+function check1(){h1a.textContent='العنصر: '+(P1?(ELEMENTS[P1]+'-'+(P1+N1)):'—');h1b.textContent='Z = '+P1;h1c.textContent='A = '+(P1+N1);
+ const mark=(k,msg)=>{if(!done[k]){done[k]=1;document.getElementById(k).classList.add('done');SFX.ok();confetti(50);say(msg)}};
+ if(P1===7&&N1===7&&E1===7)mark('k1','رائع! هذا النيتروجين-14 ✅');
+ if(done.k1&&P1===7&&N1===8&&E1===7)mark('k2','نيوترون واحد زائد = نظير جديد! 🌟');
+ if(done.k2&&P1===8)mark('k3','لاحظتِ؟ تغيّر العنصر إلى أكسجين! البروتونات تحدد الهوية 💡')}
+function loop1(){if(cur==='t1'){const c=document.getElementById('c1');const {x,w,h}=fitCanvas(c,260);x.clearRect(0,0,w,h);ang+=.012;
+ const cx=w/2,cy=h/2+8;
+ x.strokeStyle='rgba(255,255,255,.12)';for(let r of [70,100]){x.beginPath();x.ellipse(cx,cy,r*1.25,r*.55,0,0,7);x.stroke()}
+ const glow=x.createRadialGradient(cx,cy,5,cx,cy,90);glow.addColorStop(0,'rgba(140,180,255,.45)');glow.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=glow;x.fillRect(0,0,w,h);
+ drawNucleus(x,cx,cy,P1,N1,13,P1*11+N1*5+1);
+ for(let i=0;i<E1;i++){const r=i<2?70:100,n=i<2?Math.min(E1,2):E1-2,k=i<2?i:i-2;const a=ang*(i<2?1.6:1)+k*6.283/n;ball(x,cx+Math.cos(a)*r*1.25,cy+Math.sin(a)*r*.55,7,'E')}}
+ requestAnimationFrame(loop1)}
+loop1();check1();
+/* ② */
+let mode2='P';function toggle2(){mode2=mode2==='P'?'N':'P';m2.textContent='الجسيم الثاني: '+(mode2==='P'?'بروتون':'نيوترون')+' ⇄';SFX.click();draw2()}
+r2.oninput=()=>{draw2();SFX.tick()};
+function arrow(x,x1,y1,x2,y2,col,lw=4){x.strokeStyle=col;x.fillStyle=col;x.lineWidth=lw;x.beginPath();x.moveTo(x1,y1);x.lineTo(x2,y2);x.stroke();const a=Math.atan2(y2-y1,x2-x1);x.beginPath();x.moveTo(x2,y2);x.lineTo(x2-12*Math.cos(a-.5),y2-12*Math.sin(a-.5));x.lineTo(x2-12*Math.cos(a+.5),y2-12*Math.sin(a+.5));x.fill()}
+function draw2(){const c=document.getElementById('c2');const {x,w,h}=fitCanvas(c,220);x.clearRect(0,0,w,h);const v=+r2.value;const d=30+v/100*(w*.6);const cx=w/2,cy=h/2+10;const xa=cx-d/2,xb=cx+d/2;const near=v<14;
+ if(near){const g=x.createRadialGradient(cx,cy,5,cx,cy,80);g.addColorStop(0,'rgba(255,215,90,.75)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h)}
+ ball(x,xa,cy,26,'P');ball(x,xb,cy,26,mode2);
+ const rep=mode2==='P'?Math.min(70,1400/d):0;
+ if(rep&&!near){arrow(x,xa-28,cy,xa-28-rep,cy,'#ff6b6b',5);arrow(x,xb+28,cy,xb+28+rep,cy,'#ff6b6b',5)}
+ if(near){x.strokeStyle='#ffd34d';x.lineWidth=6;x.setLineDash([8,6]);x.beginPath();x.moveTo(xa,cy-34);x.quadraticCurveTo(cx,cy-70,xb,cy-34);x.stroke();x.setLineDash([])}
+ h2a.textContent=near?'المسافة: متلاصقان داخل النواة':v<50?'المسافة: قريبة':'المسافة: بعيدة';
+ h2b.textContent=near?'✨ القوة النووية الهائلة تربطهما':mode2==='P'?'⟵ تنافر كهربائي ⟶':'لا تنافر (النيوترون متعادل)';
+ if(near&&!draw2.k){draw2.k=1;SFX.hum();say('هنا تتغلب القوة النووية الهائلة على التنافر! 🧲')}if(!near)draw2.k=0}
+/* ③ */
+let st3={p:95,n:146,fired:false,t:0},anim3=null;
+function reset3(){st3={p:95,n:146,fired:false,t:0};z3.textContent=a3.textContent=e3.textContent='؟';h3a.textContent='الأميريسيوم-241';h3b.textContent='بروتونات 95 • نيوترونات 146';run3()}
+function fire3(){ac();if(st3.fired)return;st3.fired=true;st3.t=0;SFX.zap();setTimeout(()=>{SFX.boom();st3.p=93;st3.n=144;h3a.textContent='النبتونيوم-237';h3b.textContent='بروتونات 93 • نيوترونات 144';z3.textContent='93';a3.textContent='237';e3.textContent='نبتونيوم';confetti(70);say('تغيّرت هوية العنصر! 95 ← 93 ⚛')},700)}
+function run3(){cancelAnimationFrame(anim3);(function f(){const c=document.getElementById('c3');if(!c||cur!=='t3')return;const {x,w,h}=fitCanvas(c,250);x.clearRect(0,0,w,h);const cx=w*.38,cy=h/2+10;st3.t+=1;
+ const sh=st3.fired&&st3.t<40?4:1.2;const g=x.createRadialGradient(cx,cy,5,cx,cy,110);g.addColorStop(0,st3.fired&&st3.t<40?'rgba(255,200,90,.7)':'rgba(140,180,255,.4)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);
+ drawNucleus(x,cx,cy,20,30,9,5,sh);
+ if(st3.fired){const k=Math.min(1,st3.t/50),ax=cx+40+k*(w*.5),ay=cy-k*30;x.strokeStyle='rgba(220,160,255,.6)';x.lineWidth=3;x.beginPath();x.moveTo(cx+30,cy);x.lineTo(ax,ay);x.stroke();ball(x,ax-7,ay-7,8,'P');ball(x,ax+7,ay-7,8,'N');ball(x,ax-7,ay+7,8,'N');ball(x,ax+7,ay+7,8,'P');x.fillStyle='#fff';x.font='900 14px Almarai';x.fillText('جسيم ألفا (+2)',ax-40,ay-22)}
+ anim3=requestAnimationFrame(f)})()}
+/* ④ */
+let smk=0,cur4=1,ions=[],alarmOn=false;for(let i=0;i<40;i++)ions.push({x:Math.random(),y:Math.random(),v:.004+Math.random()*.006});
+function smoke(v){ac();smk=v;SFX.click();if(!v){alarmOn=false;s4.classList.remove('alarm')}}
+(function loop4(){if(cur==='t4'){const c=document.getElementById('c4');const {x,w,h}=fitCanvas(c,230);x.clearRect(0,0,w,h);
+ x.fillStyle='#c9ced6';x.fillRect(20,30,14,h-60);x.fillRect(w-34,30,14,h-60);x.fillStyle='#fff';x.font='800 12px Almarai';x.fillText('+',24,24);x.fillText('−',w-30,24);
+ ball(x,w/2,h-22,12,'A');x.fillStyle='#fff';x.fillText('Am-241',w/2-22,h-40);
+ cur4+=((smk?0.05:1)-cur4)*.04;mt4.style.width=(cur4*100)+'%';
+ ions.forEach(p=>{p.x+=p.v*(smk?.15:1)*(p.y>.5?1:-1);if(p.x>1)p.x=0;if(p.x<0)p.x=1;x.fillStyle=p.y>.5?'#ffd34d':'#7fd1ff';x.beginPath();x.arc(40+p.x*(w-80),35+p.y*(h-80),3,0,7);x.fill()});
+ if(smk){for(let i=0;i<70;i++){x.fillStyle='rgba(120,120,120,'+(.15+Math.random()*.2)+')';x.beginPath();x.arc(40+Math.random()*(w-80),30+Math.random()*(h-70),8+Math.random()*14,0,7);x.fill()}}
+ if(cur4<.3&&!alarmOn){alarmOn=true;s4.classList.add('alarm');SFX.alarm();say('🚨 الدخان قطع التيار… فانطلق الإنذار!')}
+ h4a.textContent=alarmOn?'الحالة: إنذار! 🚨':'الحالة: آمن ✅'}
+ requestAnimationFrame(loop4)})();
+</script>
+</body>
+</html>

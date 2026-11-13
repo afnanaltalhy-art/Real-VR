@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>الواقع المعزز ١ – داخل النواة ⚛</title>
+<link rel="stylesheet" href="assets/common.css">
+<link rel="stylesheet" href="assets/ar.css">
+<script src="assets/common.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+
+</head>
+<body>
+<video id="cam" autoplay muted playsinline></video>
+<div id="nocam"><div>📷 اسمحي للمتصفح باستخدام الكاميرا لترَي النواة في فصلك!<br><button class="btn g" style="margin-top:8px" onclick="retryCam()">تفعيل الكاميرا</button></div></div>
+<canvas id="gl"></canvas>
+<div id="flash" class="flash"></div>
+<div class="arbar"><img src="assets/img/logo.webp" alt=""><b>الواقع المعزز ١ ⚛ داخل النواة<small>العلوم • ثالث متوسط • المعلمة: فاطمه الزربان • مجمع جو التعليمي</small></b><a href="index.html">⌂</a></div>
+<div class="artabs" id="artabs"></div>
+<div class="chips" id="chips"></div>
+<div class="tools"><button onclick="zoomBy(1.15)">＋</button><button onclick="zoomBy(.87)">－</button><button onclick="toggleSpin()">⟳</button><button onclick="flipCam()">🔄</button><button onclick="snap()">📸</button></div>
+<div class="legend"><span><i style="background:#E2463F"></i>بروتون +</span><span><i style="background:#2F6FD6"></i>نيوترون</span><span><i style="background:#F2C230"></i>إلكترون −</span></div>
+<div class="arcard" id="arcard"></div>
+<div class="splash" id="splash" onclick="this.style.opacity=0;setTimeout(()=>this.remove(),500);ac();SFX.win()"><div class="atom">⚛</div><h1>رحلة إلى داخل النواة</h1><p>وجّهي الكاميرا إلى مكتبك أو سبّورة الفصل…<br>اسحبي بإصبعك للتدوير، وقرّبي بإصبعين للتكبير 🤏</p><button class="btn g" style="margin-top:14px;font-size:18px">ابدئي الرحلة ▶</button></div>
+<script type="module">
+import {THREE,root,makeNucleus,electronCloud,glow,label,MAT,SPH,setUpdater,clock} from './assets/arcore.js';
+import {arUI} from './assets/arui.js';
+const ISO=[['هيدروجين-1',1,0],['هيدروجين-2',1,1],['هيدروجين-3',1,2],['كربون-12',6,6],['كربون-13',6,7],['كربون-14',6,8],['نيتروجين-14',7,7],['نيتروجين-15',7,8]];
+let nuc=null,cloud=null,lab=null;
+function showIso(i,api){const [nm,P,N]=ISO[i];root.clear();nuc=makeNucleus(P,N,{seed:P*7+N});nuc.scale.setScalar(.01);root.add(nuc);cloud=electronCloud(700,3.2);root.add(cloud);lab=label(`${nm} • ${P} بروتون • ${N} نيوترون`,'#fff','rgba(59,74,23,.85)',.9);lab.position.set(0,3.6,0);root.add(lab);
+ api.setText(`<b>${nm}</b>: العدد الذري (Z) = <b class="p">${P}</b> ، عدد النيوترونات = <b class="n">${N}</b> ، العدد الكتلي (A) = ${P} + ${N} = <b>${P+N}</b>.<br>${P===6?'نظائر الكربون الثلاثة لها 6 بروتونات دائمًا، وتختلف في عدد النيوترونات.':P===7?'نظيرا النيتروجين في تجربة العرض: 7 بروتونات مع 7 أو 8 نيوترونات.':'نظائر الهيدروجين: البروتيوم والديوتيريوم والتريتيوم.'}`);
+ SFX.pop();let t0=clock.t;setUpdater((dt,t)=>{const k=Math.min(1,(t-t0)*2.2);nuc.scale.setScalar(1-Math.pow(1-k,3)*(1)+Math.pow(1-k,3)*.01);nuc.rotation.y+=dt*.6;cloud.rotation.y-=dt*.25;cloud.rotation.x+=dt*.07;nuc.userData.meshes.forEach((m,j)=>{m.position.copy(m.userData.home).multiplyScalar(1+Math.sin(t*3+j)*.012)})})}
+const SCENES=[
+{tab:'① النظائر',title:'🔬 ابني النظير وشاهديه',text:'',quiz:{q:'ما الذي يختلف بين نظائر العنصر الواحد؟',o:['عدد النيوترونات','عدد البروتونات','اسم العنصر'],a:0,why:'النظائر = نفس عدد البروتونات وأعداد مختلفة من النيوترونات.'},
+ build(api){api.chipSet(ISO.map(x=>x[0]),i=>showIso(i,api),3);showIso(3,api)},
+ actions:[{l:'💥 فكّكي النواة',c:'r',f(){if(!nuc)return;SFX.zap();let t0=clock.t;const old=nuc;setUpdater((dt,t)=>{const k=Math.min(1,(t-t0)/1.2);old.userData.meshes.forEach(m=>{m.position.copy(m.userData.home).multiplyScalar(1+k*2.2)});old.rotation.y+=dt*.3;cloud.rotation.y-=dt*.2})}},{l:'🧲 أعيديها',c:'g',f(){if(!nuc)return;SFX.hum();let t0=clock.t;setUpdater((dt,t)=>{const k=Math.min(1,(t-t0)/1);nuc.userData.meshes.forEach(m=>m.position.copy(m.userData.home).multiplyScalar(3.2-2.2*k));nuc.rotation.y+=dt*.5;cloud.rotation.y-=dt*.2})}}]},
+{tab:'② حجم النواة',title:'🌌 النواة صغيرة جدًا… والذرة معظمها فراغ',text:'هذه ذرة كربون: النواة الصغيرة في المركز تحمل معظم كتلة الذرة، والإلكترونات تتحرك في سحابة واسعة حولها. لو كانت النواة بحجم حبة بازلاء لكانت الذرة بحجم ملعب كرة قدم! 🏟',
+ quiz:{q:'أين تتركز معظم كتلة الذرة؟',o:['في النواة','في السحابة الإلكترونية','موزعة بالتساوي'],a:0},
+ build(){root.clear();const n=makeNucleus(6,6,{seed:9});n.scale.setScalar(.25);root.add(n);const c=electronCloud(2600,4.6,0x7fc4ff);root.add(c);const l=label('النواة هنا ⬇','#ffe08a','rgba(14,22,48,.7)',.8);l.position.set(0,1.2,0);root.add(l);const es=[];for(let i=0;i<6;i++){const e=new THREE.Mesh(SPH,MAT.E);e.scale.setScalar(.35);root.add(e);es.push(e)}
+  setUpdater((dt,t)=>{c.rotation.y+=dt*.15;n.rotation.y+=dt;es.forEach((e,i)=>{const r=i<2?1.6:3.6,a=t*(i<2?1.8:1)+i*1.05;e.position.set(Math.cos(a)*r,Math.sin(a*1.3+i)*r*.45,Math.sin(a)*r)})})}},
+{tab:'③ القوة النووية',title:'🧲 القوة النووية الهائلة',text:'البروتونات الموجبة تتنافر كالأقطاب المتشابهة، لكن عندما تكون متقاربة جدًا داخل النواة تؤثر فيها <b>قوة رابطة كبيرة</b> تتغلّب على التنافر: إنها <b>القوة النووية الهائلة</b> ✨',
+ quiz:{q:'متى تتغلب القوة النووية الهائلة على التنافر بين البروتونات؟',o:['عندما تكون البروتونات متقاربة جدًا','عندما تكون متباعدة','لا تتغلب أبدًا'],a:0},
+ build(api){root.clear();const a=new THREE.Mesh(SPH,MAT.P),b=new THREE.Mesh(SPH,MAT.P);a.scale.setScalar(1.6);b.scale.setScalar(1.6);root.add(a,b);const g=glow(0xffd34d,5,0);root.add(g);
+  const arrows=[new THREE.ArrowHelper(new THREE.Vector3(-1,0,0),new THREE.Vector3(),1.5,0xff5252,.5,.35),new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),1.5,0xff5252,.5,.35)];arrows.forEach(x=>root.add(x));
+  let l=label('تنافر كهربائي ⟵ ⟶','#fff','rgba(160,30,30,.8)',.8);l.position.set(0,2.4,0);root.add(l);let target=4.5,d=4.5,state='';
+  window._near=()=>{target=1.55;SFX.hum()};window._far=()=>{target=4.5;SFX.click()};
+  setUpdater((dt,t)=>{d+=(target-d)*dt*2.2;a.position.x=-d/2;b.position.x=d/2;const near=d<1.8;arrows[0].position.set(-d/2-.9,0,0);arrows[1].position.set(d/2+.9,0,0);arrows.forEach(x=>x.visible=!near);g.material.opacity=near?.8+Math.sin(t*6)*.15:0;g.scale.setScalar(near?5:.1);
+   const s=near?'near':'far';if(s!==state){state=s;root.remove(l);l=label(near?'✨ القوة النووية الهائلة تربطهما':'تنافر كهربائي ⟵ ⟶','#fff',near?'rgba(156,119,18,.9)':'rgba(160,30,30,.8)',.8);l.position.set(0,2.4,0);root.add(l);if(near){api.flash();SFX.ok()}}})},
+ actions:[{l:'🤏 قرّبيهما',c:'g',f(){window._near&&_near()}},{l:'↔ أبعديهما',f(){window._far&&_far()}}]},
+{tab:'④ تحلل ألفا',title:'💥 الأميريسيوم-241 يطلق جسيم ألفا',text:'نواة الأميريسيوم (95 بروتونًا و146 نيوترونًا) غير مستقرة. اضغطي «أطلقي ألفا» وراقبي جسيم ألفا (بروتونان + نيوترونان) ينطلق نحوك! 🎯<br><small>(النموذج تقريبي: عدد الكرات أقل من العدد الحقيقي)</small>',
+ quiz:{q:'بعد إطلاق جسيم ألفا يصبح العدد الذري للأميريسيوم (95)…',o:['93 (نبتونيوم)','97','95 لا يتغير'],a:0,why:'ألفا يحمل بروتونين: 95 − 2 = 93'},
+ build(api){root.clear();const big=makeNucleus(48,62,{seed:5,glowColor:0xffb36b});root.add(big);let l=label('الأميريسيوم-241 • Z = 95','#fff','rgba(59,74,23,.85)',.9);l.position.set(0,4.2,0);root.add(l);let alpha=null,trail=[],t0=0,fired=false;
+  window._fire=()=>{if(fired)return;fired=true;SFX.zap();alpha=new THREE.Group();[['P',-.5,.5],['N',.5,.5],['N',-.5,-.5],['P',.5,-.5]].forEach(([k,x,y])=>{const m=new THREE.Mesh(SPH,MAT[k]);m.position.set(x,y,0);alpha.add(m)});alpha.add(glow(0xd08bff,4,.9));alpha.position.set(1.8,.5,1);root.add(alpha);t0=clock.t;setTimeout(()=>{api.flash();SFX.boom();root.remove(l);l=label('النبتونيوم-237 • Z = 93','#fff','rgba(46,158,91,.9)',.9);l.position.set(0,4.2,0);root.add(l);api.setText('<b>التحوّل!</b> فقد الأميريسيوم بروتونين فتغيّرت هويته إلى <b>النبتونيوم</b>: العدد الذري 95 ← <b>93</b> ، والعدد الكتلي 241 ← <b>237</b>. مجموع الجسيمات قبل التحلل = مجموعها بعده ✔');confetti(90)},500)};
+  window._reset=()=>{fired=false;if(alpha)root.remove(alpha);alpha=null;trail.forEach(s=>root.remove(s));trail=[];root.remove(l);l=label('الأميريسيوم-241 • Z = 95','#fff','rgba(59,74,23,.85)',.9);l.position.set(0,4.2,0);root.add(l)};
+  setUpdater((dt,t)=>{const sh=fired&&alpha&&t-t0<.5?.12:.02;big.position.set((Math.random()-.5)*sh,(Math.random()-.5)*sh,0);big.rotation.y+=dt*.3;if(alpha){const k=t-t0;alpha.position.set(1.8+k*2.2,.5+k*.4,1+k*3.2);alpha.rotation.z+=dt*4;if(k<3&&Math.random()<.6){const s=glow(0xd08bff,.8,.6);s.position.copy(alpha.position);root.add(s);trail.push(s)}trail.forEach(s=>{s.material.opacity*=.95});if(k>4){root.remove(alpha);alpha=null}}})},
+ actions:[{l:'💥 أطلقي ألفا',c:'r',f(){window._fire&&_fire()}},{l:'↺ إعادة',f(){window._reset&&_reset()}}]}
+];
+arUI(SCENES);
+</script>
+</body>
+</html>

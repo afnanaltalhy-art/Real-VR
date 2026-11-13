@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>الواقع المعزز ٢ – النواة تتغيّر عبر الزمن ⏳</title>
+<link rel="stylesheet" href="assets/common.css">
+<link rel="stylesheet" href="assets/ar.css">
+<script src="assets/common.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+
+</head>
+<body>
+<video id="cam" autoplay muted playsinline></video>
+<div id="nocam"><div>📷 اسمحي للمتصفح باستخدام الكاميرا لترَي التحلل في فصلك!<br><button class="btn g" style="margin-top:8px" onclick="retryCam()">تفعيل الكاميرا</button></div></div>
+<canvas id="gl"></canvas>
+<div id="flash" class="flash"></div>
+<div class="arbar"><img src="assets/img/logo.webp" alt=""><b>الواقع المعزز ٢ ⏳ النواة تتغيّر عبر الزمن<small>العلوم • ثالث متوسط • المعلمة: فاطمه الزربان • مجمع جو التعليمي</small></b><a href="index.html">⌂</a></div>
+<div class="artabs" id="artabs"></div>
+<div class="chips" id="chips"></div>
+<div class="tools"><button onclick="zoomBy(1.15)">＋</button><button onclick="zoomBy(.87)">－</button><button onclick="toggleSpin()">⟳</button><button onclick="flipCam()">🔄</button><button onclick="snap()">📸</button></div>
+<div class="legend"><span><i style="background:#E2463F"></i>بروتون +</span><span><i style="background:#2F6FD6"></i>نيوترون</span><span><i style="background:#F2C230"></i>إلكترون (بيتا)</span></div>
+<div class="arcard" id="arcard"></div>
+<div class="splash" id="splash" onclick="this.style.opacity=0;setTimeout(()=>this.remove(),500);ac();SFX.win()"><div class="atom">⏳</div><h1>النواة تتغيّر عبر الزمن</h1><p>شاهدي تحلل بيتا وعمر النصف والتأريخ بالكربون أمامك في الفصل!<br>اسحبي للتدوير، وقرّبي بإصبعين للتكبير 🤏</p><button class="btn g" style="margin-top:14px;font-size:18px">ابدئي ▶</button></div>
+<script type="module">
+import {THREE,root,makeNucleus,electronCloud,glow,label,MAT,SPH,setUpdater,clock} from './assets/arcore.js';
+import {arUI} from './assets/arui.js';
+const GREEN=new THREE.MeshPhysicalMaterial({color:0x6cff8e,emissive:0x1fbf4a,emissiveIntensity:1.1,roughness:.2,clearcoat:1});
+const GREY=new THREE.MeshStandardMaterial({color:0x9a9a9a,roughness:.7,transparent:true,opacity:.35});
+function setLabel(old,text,bg,y=4.2,s=.9){if(old)root.remove(old);const l=label(text,'#fff',bg,s);l.position.set(0,y,0);root.add(l);return l}
+const SCENES=[
+{tab:'① تحلل بيتا',title:'⚡ نيوترون يتحوّل إلى بروتون… وإلكترون ينطلق!',text:'هذه نواة <b>الكربون-14</b> (6 بروتونات و8 نيوترونات). راقبي النيوترون المتوهّج، ثم اضغطي «ابدئي التحلل».',
+ quiz:{q:'في تحلل بيتا يتغيّر العدد الذري بمقدار…',o:['يزداد 1','يقل 2','لا يتغير'],a:0,why:'نيوترون ← بروتون + إلكترون، فيزداد عدد البروتونات واحدًا.'},
+ build(api){root.clear();let l=setLabel(null,'الكربون-14 • Z = 6','rgba(59,74,23,.85)',3);const n=makeNucleus(6,8,{seed:11});n.scale.setScalar(1.3);root.add(n);const target=n.userData.meshes.find(m=>m.userData.t==='N');const halo=glow(0xffe066,2.2,.9);target.add(halo);let e=null,t0=0,done=false;
+  window._beta=()=>{if(done)return;done=true;t0=clock.t;SFX.zap();setTimeout(()=>{target.material=MAT.P;target.remove(halo);api.flash();SFX.ok();l=setLabel(l,'النيتروجين-14 • Z = 7','rgba(46,158,91,.9)',3);api.setText('<b>تحوّل!</b> النيوترون أصبح بروتونًا ← العدد الذري 6 ← <b>7</b> (نيتروجين)، والعدد الكتلي يبقى <b>14</b> لأن كتلة الإلكترون صغيرة جدًا. الإلكترون المنطلق بطاقة عالية هو <b>جسيم بيتا</b>.');confetti(80)},650);e=new THREE.Mesh(SPH,MAT.E);e.scale.setScalar(.45);e.add(glow(0xffd000,2.2,.9));const wp=new THREE.Vector3();target.getWorldPosition(wp);e.position.copy(root.worldToLocal(wp));root.add(e)};
+  window._breset=()=>{root.clear();SCENES[0].build(api)};
+  setUpdater((dt,t)=>{n.rotation.y+=dt*.4;if(!done)halo.material.opacity=.5+Math.sin(t*6)*.4;if(e){const k=t-t0;const dir=new THREE.Vector3(1,.4,.9).normalize();e.position.addScaledVector(dir,dt*(4+k*6));if(Math.random()<.7){const s=glow(0xffd000,.5,.7);s.position.copy(e.position);root.add(s);setTimeout(()=>root.remove(s),600)}if(k>3){root.remove(e);e=null}}})},
+ actions:[{l:'⚡ ابدئي التحلل',c:'b',f(){window._beta&&_beta()}},{l:'↺ إعادة',f(){window._breset&&_breset()}}]},
+{tab:'② عمر النصف',title:'⏳ 64 نواة من الثوريوم-234 (عمر النصف 24 يومًا)',text:'كل كرة خضراء نواة لم تتحلل. اضغطي «مرّ عمر نصف» وراقبي: يتحلّل نحو نصف المتبقي في كل فترة، ولا نعرف مسبقًا أيّ نواة ستتحلل!',
+ quiz:{q:'بدأنا بـ 64 جم. كم يتبقى بعد 72 يومًا؟',o:['8 جم','16 جم','32 جم'],a:0,why:'72 ÷ 24 = 3 فترات ← 64 ÷ 8 = 8 جم'},
+ build(api){root.clear();const atoms=[];for(let x=0;x<4;x++)for(let y=0;y<4;y++)for(let z=0;z<4;z++){const m=new THREE.Mesh(SPH,GREEN);m.position.set((x-1.5)*1.3,(y-1.5)*1.3,(z-1.5)*1.3);m.userData.alive=true;root.add(m);atoms.push(m)}let days=0,l=setLabel(null,'اليوم 0 • المتبقي 64 نواة','rgba(59,74,23,.85)',3.4);
+  window._half=()=>{const alive=atoms.filter(a=>a.userData.alive);if(alive.length<=1){toast('لم يبقَ ما يكفي! أعيدي التجربة');return}days+=24;SFX.zap();alive.forEach(a=>{if(Math.random()<.5){a.userData.alive=false;a.userData.pop=clock.t;a.material=GREY;const s=glow(0x9cffb0,1.6,.9);s.position.copy(a.position);root.add(s);setTimeout(()=>root.remove(s),400)}});const left=atoms.filter(a=>a.userData.alive).length;const theo=64/2**(days/24);l=setLabel(l,`اليوم ${days} • المتبقي ${left} نواة (المتوقع ${theo})`,'rgba(59,74,23,.85)',3.4);api.setText(`مرّ <b>${days/24}</b> ${days/24===1?'عمر نصف':'أعمار نصف'} (${days} يومًا). المتبقي فعليًا <b>${left}</b> والمتوقع نظريًا 64 ÷ 2<sup>${days/24}</sup> = <b>${theo}</b>. الفرق بسبب العشوائية 🎲`)};
+  window._hreset=()=>{root.clear();SCENES[1].build(api)};
+  setUpdater((dt,t)=>{atoms.forEach((a,i)=>{const s=a.userData.alive?.75+Math.sin(t*4+i)*.05:.4;a.scale.setScalar(s)})})},
+ actions:[{l:'⏩ مرّ عمر نصف (24 يومًا)',c:'g',f(){window._half&&_half()}},{l:'↺ إعادة',f(){window._hreset&&_hreset()}}]},
+{tab:'③ التأريخ بالكربون',title:'🌳 الكربون-14 في الكائن الحي… وبعد موته',text:'النبات الحي يأخذ الكربون (منه الكربون-14) من ثاني أكسيد الكربون، فتبقى كميته ثابتة. اضغطي «انتهت حياة النبات» وراقبي النقاط المضيئة تقلّ مع مرور أعمار النصف (5730 سنة لكل فترة).',
+ quiz:{q:'كم سنة تمرّ حتى يتبقى ربع الكربون-14؟',o:['11460 سنة','5730 سنة','2865 سنة'],a:0,why:'الربع = فترتا عمر نصف = 2 × 5730'},
+ build(api){root.clear();const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.35,.55,3.2,16),new THREE.MeshStandardMaterial({color:0x7a5230,roughness:.8}));trunk.position.y=-1.4;tree.add(trunk);const leafM=new THREE.MeshStandardMaterial({color:0x5FA33A,roughness:.6});[[0,.8,0,1.6],[1,.3,.3,1.1],[-1,.4,-.2,1.2],[.3,1.6,-.4,1.1],[-.4,.2,.9,1]].forEach(([x,y,z,r])=>{const s=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),leafM);s.position.set(x,y,z);tree.add(s)});root.add(tree);
+  const pts=[];for(let i=0;i<60;i++){const s=glow(0x7dffa0,.55,1);s.position.set((Math.random()-.5)*3.6,Math.random()*3-1.6,(Math.random()-.5)*3.6);s.userData.alive=true;root.add(s);pts.push(s)}let dead=false,years=0,l=setLabel(null,'نبات حي • الكربون-14 ثابت','rgba(46,158,91,.9)',3.4);
+  window._die=()=>{if(dead)return;dead=true;SFX.hum();leafM.color.set(0x8a7a4a);l=setLabel(l,'0 سنة منذ انتهاء الحياة • 100%','rgba(59,74,23,.85)',3.4)};
+  window._time=()=>{if(!dead){toast('أولًا: اضغطي «انتهت حياة النبات»');return}years+=5730;SFX.zap();pts.filter(p=>p.userData.alive).forEach(p=>{if(Math.random()<.5){p.userData.alive=false}});const pc=100/2**(years/5730);l=setLabel(l,`${years.toLocaleString('ar-SA')} سنة • المتبقي ${pc}%`,'rgba(59,74,23,.85)',3.4);api.setText(`بعد <b>${years/5730}</b> ${years===5730?'فترة':'فترات'} عمر نصف يتبقى <b>${pc}%</b> من الكربون-14. يقيس العلماء هذه النسبة في الأحفورة فيعرفون متى عاش الكائن.`)};
+  window._treset=()=>{root.clear();SCENES[2].build(api)};
+  setUpdater((dt,t)=>{pts.forEach((p,i)=>{if(p.userData.alive){p.material.opacity=.8+Math.sin(t*3+i)*.2;if(!dead){p.position.y+=dt*.3;if(p.position.y>1.8)p.position.y=-1.6}}else{p.material.opacity*=.93}});tree.rotation.y+=dt*.1})},
+ actions:[{l:'🍂 انتهت حياة النبات',c:'r',f(){window._die&&_die()}},{l:'⏩ مرّت 5730 سنة',c:'g',f(){window._time&&_time()}},{l:'↺',f(){window._treset&&_treset()}}]},
+{tab:'④ المتتبعات المشعة',title:'🩺 اليود-131 يكشف الغدة الدرقية',text:'يتناول المريض اليود-131، فتمتصه الغدة الدرقية مثل اليود العادي. تنطلق منه أشعة جاما نحو الكاميرا الخاصة فتظهر صورة الغدة. اختاري حالة الغدة من الأعلى.',
+ quiz:{q:'لماذا تظهر الغدة النشطة أكثر سطوعًا؟',o:['لأن تركيز اليود المشع فيها أعلى','لأنها أكبر حجمًا فقط','لأنها لا تمتص اليود'],a:0},
+ build(api){root.clear();let mode=0;const N=1400;const geo=new THREE.BufferGeometry();const pos=new Float32Array(N*3),col=new Float32Array(N*3);const base=[];for(let i=0;i<N;i++){const side=i%2?1:-1;const tt=Math.random()*6.283,rr=Math.sqrt(Math.random());const x=side*(1.1+rr*Math.cos(tt)*1.1),y=rr*Math.sin(tt)*2.1,z=(Math.random()-.5)*.8;base.push([x,y,z,rr,Math.random()])}
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));const P=new THREE.Points(geo,new THREE.PointsMaterial({size:.2,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));root.add(P);
+  const isthmus=new THREE.Mesh(new THREE.BoxGeometry(.8,.6,.6),new THREE.MeshStandardMaterial({color:0xff8a65,transparent:true,opacity:.5}));root.add(isthmus);
+  const cam=new THREE.Mesh(new THREE.BoxGeometry(5,.3,2),new THREE.MeshStandardMaterial({color:0xdfe6ee,metalness:.6,roughness:.3}));cam.position.y=3.6;root.add(cam);const cl=label('كاميرا أشعة جاما','#fff','rgba(14,22,48,.8)',.7);cl.position.y=4.3;root.add(cl);
+  const rays=[];for(let i=0;i<14;i++){const g=glow(0xb4ff6b,.35,.9);root.add(g);rays.push({g,x:(Math.random()-.5)*4,y:Math.random()*3,z:(Math.random()-.5)*.6})}
+  const S=['غدة طبيعية','غدة متضخمة','غدة نشطة'];api.chipSet(S,i=>{mode=i;SFX.hum();api.setText(['غدة درقية سليمة تنتج هرمونات تنظّم عمليات الأيض ومعدل نبضات القلب.','غدة متضخمة بسبب نقص اليود في الغذاء؛ تظهر بحجم أكبر.','غدة نشطة: تسرّع الأيض فتسبب فقدان الوزن وزيادة ضربات القلب، وتظهر شديدة السطوع مع مناطق أقل نشاطًا.'][i])},0);
+  setUpdater((dt,t)=>{const s=mode===1?1.4:1;base.forEach((b,i)=>{let v=1-b[3];if(mode===2&&b[4]<.25)v*=.2;const hot=mode===2?Math.min(1,v*1.6):v*.9;pos.set([b[0]*s,b[1]*s,b[2]],i*3);const c=new THREE.Color().setHSL((60-hot*60)/360,1,.3+hot*.35);col.set([c.r,c.g,c.b],i*3)});geo.attributes.position.needsUpdate=true;geo.attributes.color.needsUpdate=true;
+   rays.forEach(r=>{r.y+=dt*(3+(mode===2?3:0));if(r.y>3.5){r.y=0;r.x=(Math.random()-.5)*4*s}r.g.position.set(r.x,r.y,r.z)})})}}
+];
+arUI(SCENES);
+</script>
+</body>
+</html>

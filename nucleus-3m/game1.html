@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>لعبة مصنع النواة ⚛ – الجزء الأول</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+.hud{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.hud .b{background:#fff;border:2px solid #E6DDC0;border-radius:16px;padding:6px 12px;font-weight:900;font-size:15px}
+.hearts{letter-spacing:2px}
+.tbar{height:10px;background:#EEE8D2;border-radius:10px;overflow:hidden;margin:6px 0 10px}
+.tbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--pr),var(--gd),var(--ol));transition:width .25s linear}
+.q{font-size:19px;font-weight:900;line-height:1.7;color:var(--old);margin:4px 0 10px}
+.stage{position:relative;background:radial-gradient(circle at 50% 45%,#2b3a63,#111a33 70%);border-radius:20px;overflow:hidden;border:3px solid var(--gd)}
+.stage canvas{display:block}
+.read{position:absolute;top:8px;right:10px;left:10px;display:flex;justify-content:space-between;color:#fff;font-weight:900;font-size:14px;text-shadow:0 2px 4px #000}
+.sym{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);border-radius:14px;padding:4px 14px;font-weight:900;font-size:18px;color:var(--old);white-space:nowrap}
+.ctrl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ctrl .btn{font-size:16px;padding:12px 6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts button{border:3px solid #E6DDC0;background:#fff;border-radius:18px;padding:14px 10px;font-weight:800;font-size:16px;color:var(--old);min-height:64px;line-height:1.5;transition:.15s}
+.opts button.ok{border-color:var(--ok);background:#e6f7ec}.opts button.bad{border-color:var(--no);background:#fdeceb}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+.start{text-align:center}
+.start h1{font-size:30px;color:var(--old);margin:6px 0}
+.start .big{font-size:70px;animation:bounce 1.6s infinite}
+.lvcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.lvcards button{border:3px solid #E6DDC0;border-radius:20px;background:#fff;padding:14px 6px;font-weight:900;font-size:15px;color:var(--old);line-height:1.6}
+.lvcards button.on{border-color:var(--gd);background:#FFF5D6;transform:scale(1.04)}
+.lvcards span{display:block;font-size:34px}
+.name{font:inherit;font-size:17px;padding:10px;border-radius:14px;border:2px solid #E6DDC0;width:100%;max-width:320px;text-align:center}
+.badge{font-size:84px;animation:bounce 1.4s infinite}
+.hint{font-size:13.5px;color:#6b6f50;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/sc_build.webp)"></div>
+<script>header('لعبة «مصنع النواة» ⚛','الجزء الأول: العدد الذري • النظائر • العدد الكتلي • تحلل ألفا')</script>
+<div class="wrap">
+
+<div id="scrStart" class="card start">
+ <div class="big">⚛</div>
+ <h1>مصنع النواة</h1>
+ <p>أهلًا يا عالمتي الصغيرة! ابني الأنوية، واكتشفي النظائر، وأطلقي جسيمات ألفا… واجمعي النجوم ⭐</p>
+ <input id="nm" class="name" placeholder="اكتبي اسمك هنا ✎" style="margin-top:12px">
+ <div class="lvcards" id="lvc">
+  <button data-l="1" class="on"><span>🌱</span>بذرة<br><small>أبدأ بهدوء</small></button>
+  <button data-l="2"><span>🌿</span>غصن<br><small>أتحدّى نفسي</small></button>
+  <button data-l="3"><span>🌳</span>شجرة<br><small>أنا عالمة!</small></button>
+ </div>
+ <button class="btn g" style="font-size:19px;padding:14px 34px" onclick="startGame()">ابدئي اللعب ▶</button>
+ <p class="hint">10 جولات • 3 قلوب ❤ • كل إجابة صحيحة = 10 نقاط + مكافأة سرعة</p>
+</div>
+
+<div id="scrGame" class="card" style="display:none">
+ <div class="hud"><span class="b">الجولة <span id="rd">1</span>/10</span><span class="b">⭐ <span id="sc">0</span></span><span class="b hearts" id="hp">❤❤❤</span><span class="b">🔥 <span id="st">0</span></span></div>
+ <div class="tbar"><i id="tb"></i></div>
+ <div class="q" id="qt"></div>
+ <div id="area"></div>
+</div>
+
+<div id="scrEnd" class="card start" style="display:none">
+ <div class="badge" id="bdg">🏅</div>
+ <h1 id="endT"></h1>
+ <p id="endP"></p>
+ <div class="row" style="justify-content:center;margin-top:14px"><button class="btn g" onclick="location.reload()">↻ العبي مرة أخرى</button><a class="btn w" href="index.html" style="text-decoration:none">⌂ الحزمة</a></div>
+</div>
+</div>
+<script>girl();footer()</script>
+<script>
+let LV=1,round=0,score=0,lives=3,streak=0,timer=null,tLeft=0,T=30,cur=null,P=0,N=0,locked=false;
+document.querySelectorAll('#lvc button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#lvc button').forEach(x=>x.classList.remove('on'));b.classList.add('on');LV=+b.dataset.l;SFX.click()});
+const BUILD=[ // [Z,A]
+ [6,12],[6,13],[6,14],[7,14],[7,15],[1,1],[1,2],[1,3],[2,4],[2,3],[3,7],[8,16],[8,17],[5,11]];
+function nm(Z){return ELEMENTS[Z]}
+function rq(a){return a[Math.random()*a.length|0]}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const MCQ=[
+ {q:'العدد الذري لعنصر ما يساوي عدد…',o:['البروتونات في النواة','النيوترونات في النواة','البروتونات + النيوترونات','الإلكترونات المفقودة'],a:0},
+ {q:'النظائر ذرات للعنصر نفسه تختلف في عدد…',o:['النيوترونات','البروتونات','الإلكترونات فقط','الأنوية'],a:0},
+ {q:'العدد الكتلي يساوي…',o:['البروتونات + النيوترونات','البروتونات فقط','النيوترونات − البروتونات','الإلكترونات + البروتونات'],a:0},
+ {q:'كم نيوترونًا في نواة كربون-14؟ (العدد الذري للكربون 6)',o:['8','6','14','20'],a:0},
+ {q:'كم نيوترونًا في الثوريوم-234؟ (العدد الذري 90)',o:['144','90','234','324'],a:0},
+ {q:'كم نيوترونًا في اليورانيوم-234؟ (العدد الذري 92)',o:['142','92','234','144'],a:0},
+ {q:'ما الذي يربط البروتونات والنيوترونات معًا في النواة؟',o:['القوة النووية الهائلة','قوة المغناطيس','الجاذبية الأرضية','الشحنات المتشابهة'],a:0},
+ {q:'جسيم ألفا يتكوّن من…',o:['بروتونين ونيوترونين','إلكترون واحد','بروتون واحد','4 بروتونات'],a:0},
+ {q:'شحنة جسيم ألفا…',o:['+2','−1','صفر','+4'],a:0},
+ {q:'الأميريسيوم (95 بروتونًا) يُطلق جسيم ألفا، فيتحوّل إلى عنصر عدده الذري…',o:['93','94','96','97'],a:0},
+ {q:'أي عنصر يُستخدم في كاشف الدخان؟',o:['الأميريسيوم-241','الكربون-12','الهيليوم-4','الأكسجين-16'],a:0},
+ {q:'تغيّر عنصر إلى عنصر آخر عن طريق التحلل الإشعاعي يُسمّى…',o:['التحوّل','التبخّر','الانصهار','التأيّن'],a:0},
+ {q:'الذرات تكون أكثر استقرارًا عندما يكون عدد البروتونات…',o:['مساويًا تقريبًا لعدد النيوترونات','أكبر بكثير من النيوترونات','صفرًا','ضعف الإلكترونات'],a:0},
+ {q:'أيّ نظائر الكربون أكثر استقرارًا؟',o:['كربون-12','كربون-13','كربون-14','كلها غير مستقرة'],a:0},
+ {q:'أثقل العناصر الموجودة في الطبيعة هو…',o:['اليورانيوم (92 بروتونًا)','الهيدروجين','الكربون','الحديد'],a:0},
+ {q:'عند إطلاق جسيم ألفا يقلّ العدد الكتلي بمقدار…',o:['4','2','1','0'],a:0},
+ {q:'خطأ شائع: التحلل الإشعاعي يعني اختفاء العنصر. والصحيح:',o:['يتحوّل العنصر إلى عنصر آخر','يختفي العنصر تمامًا','يتحوّل إلى ماء','يزداد عدد بروتوناته دائمًا'],a:0},
+ {q:'ماذا يحدث في كاشف الدخان عندما يدخل الدخان؟',o:['ينقطع التيار فينطلق الإنذار','يزداد التيار','تختفي جسيمات ألفا','يتحوّل الدخان إلى ذهب'],a:0}
+];
+function plan(){ // 10 جولات متنوعة حسب المستوى
+ const types=LV===1?['b','m','b','m','b','m','a','m','b','m']:LV===2?['b','m','b','a','m','b','m','a','b','m']:['b','a','m','b','a','m','b','a','m','b'];
+ return types}
+let PL=[],usedM=[];
+function startGame(){ac();SFX.win();document.getElementById('scrStart').style.display='none';document.getElementById('scrGame').style.display='block';PL=plan();usedM=shuffle([...Array(MCQ.length).keys()]);say('هيا نبدأ! ركّزي واستمتعي 💚');next()}
+function hud(){rd.textContent=round;sc.textContent=score;hp.textContent='❤'.repeat(lives)+'🤍'.repeat(3-lives);st.textContent=streak}
+function startTimer(){clearInterval(timer);T=LV===1?45:LV===2?35:25;tLeft=T;tb.style.width='100%';timer=setInterval(()=>{tLeft-=.25;tb.style.width=(tLeft/T*100)+'%';if(tLeft<=5&&Math.abs(tLeft-Math.round(tLeft))<.01)SFX.tick();if(tLeft<=0){clearInterval(timer);wrong('⏰ انتهى الوقت!')}},250)}
+function next(){if(lives<=0||round>=10)return end();round++;locked=false;hud();const t=PL[round-1];if(t==='b')build();else if(t==='a')alpha();else mcq();startTimer()}
+function right(){if(locked)return;locked=true;clearInterval(timer);streak++;const bonus=Math.round(tLeft/T*5);score+=10+bonus+(streak>=3?5:0);SFX.ok();confetti(60);toast(['أحسنتِ يا بطلة! 🌟','رائعة! ⚛','عبقرية! 💡','ممتاز! 🎉'][Math.random()*4|0]+(streak>=3?' 🔥 سلسلة!':''));say(rq(['أنتِ عالمة نوويّة صغيرة! 💚','واصلي هكذا 👏','إجابة دقيقة 🌟']));hud();setTimeout(next,1500)}
+function wrong(msg){if(locked)return;locked=true;clearInterval(timer);streak=0;lives--;SFX.no();document.getElementById('scrGame').classList.add('shake');setTimeout(()=>document.getElementById('scrGame').classList.remove('shake'),500);toast(msg||'لا بأس… حاولي في الجولة القادمة 💪',2600);hud();setTimeout(next,2600)}
+/* جولة البناء */
+function build(){const [Z,A]=rq(BUILD);cur={Z,A};P=0;N=0;let q;
+ if(LV===1)q=`ابني نواة فيها <span class="p">${Z} بروتون</span> و<span class="n">${A-Z} نيوترون</span> 🧱`;
+ else if(LV===2)q=`ابني نواة <b>${nm(Z)}-${A}</b> (العدد الذري للـ${nm(Z).replace('ال','')} = ${Z})`;
+ else q=`ابني نظيرًا عدده الكتلي <b>${A}</b> وفيه <span class="n">${A-Z} نيوترون</span>… أيّ عنصر سيكون؟`;
+ qt.innerHTML=q;
+ area.innerHTML=`<div class="stage"><canvas id="cv"></canvas><div class="read"><span>بروتونات: <b id="pp">0</b></span><span>نيوترونات: <b id="nn">0</b></span><span>العدد الكتلي: <b id="aa">0</b></span></div><div class="sym" id="sy">ابدئي بإضافة الجسيمات</div></div>
+ <div class="ctrl"><button class="btn r" onclick="add('P',1)">+ بروتون</button><button class="btn b" onclick="add('N',1)">+ نيوترون</button><button class="btn w" onclick="add('P',-1)">− بروتون</button><button class="btn w" onclick="add('N',-1)">− نيوترون</button></div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" style="font-size:18px;padding:12px 40px" onclick="checkBuild()">✔ تحقّقي</button></div>`;
+ drawB()}
+function add(t,d){if(locked)return;if(t==='P')P=Math.max(0,Math.min(12,P+d));else N=Math.max(0,Math.min(12,N+d));d>0?SFX.pop():SFX.click();drawB(true)}
+function drawB(anim){const cv=document.getElementById('cv');const {x,w,h}=fitCanvas(cv,230);x.clearRect(0,0,w,h);
+ // نجوم الخلفية
+ for(let i=0;i<40;i++){x.fillStyle='rgba(255,255,255,'+(.2+((i*37)%10)/20)+')';x.fillRect((i*97)%w,(i*53)%h,2,2)}
+ const g=x.createRadialGradient(w/2,h/2,10,w/2,h/2,120);g.addColorStop(0,'rgba(120,170,255,.35)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);
+ drawNucleus(x,w/2,h/2-6,P,N,15,P*13+N*7+3);
+ pp.textContent=P;nn.textContent=N;aa.textContent=P+N;
+ sy.innerHTML=P?`${nm(P)||'عنصر ثقيل'}-${P+N} <small>(Z=${P})</small>`:'لا يوجد عنصر بدون بروتونات!'}
+function checkBuild(){if(locked)return;const {Z,A}=cur;if(P===Z&&N===A-Z)right();else{let m='✗ ليست هي… ';if(P!==Z)m+=`العنصر يحدده عدد البروتونات (${Z}). `;else m+=`النيوترونات = العدد الكتلي − العدد الذري = ${A}−${Z} = ${A-Z}`;wrong(m)}}
+/* جولة ألفا */
+function alpha(){const C=rq([[95,241,'الأميريسيوم','النبتونيوم'],[92,238,'اليورانيوم','الثوريوم'],[88,226,'الراديوم','الرادون'],[90,230,'الثوريوم','الراديوم'],[94,239,'البلوتونيوم','اليورانيوم']]);const [Z,A,n1,n2]=C;
+ const ask=LV===3?'العدد الذري والعدد الكتلي للعنصر الناتج':'العدد الذري للعنصر الناتج';
+ qt.innerHTML=`نواة <b>${n1}-${A}</b> (Z=${Z}) أطلقت جسيم ألفا 💥 ما ${ask}؟`;
+ const good=LV===3?`Z=${Z-2} ، A=${A-4} (${n2})`:`${Z-2} (${n2})`;
+ const bad=LV===3?[`Z=${Z-4} ، A=${A-2}`,`Z=${Z+1} ، A=${A}`,`Z=${Z-2} ، A=${A}`]:[`${Z+2}`,`${Z-4}`,`${Z-1}`];
+ renderOpts(shuffle([good,...bad]),good,`ألفا = بروتونان + نيوترونان: يقلّ العدد الذري 2 والكتلي 4`)}
+function mcq(){const i=usedM.pop();const m=MCQ[i];qt.innerHTML=m.q;renderOpts(shuffle(m.o.slice()),m.o[m.a],'الإجابة الصحيحة: '+m.o[m.a])}
+function renderOpts(list,good,explain){area.innerHTML='<div class="opts">'+list.map(o=>`<button>${o}</button>`).join('')+'</div>';
+ area.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(locked)return;if(b.textContent===good){b.classList.add('ok');right()}else{b.classList.add('bad');area.querySelectorAll('button').forEach(x=>{if(x.textContent===good)x.classList.add('ok')});wrong('✗ '+explain)}})}
+function end(){clearInterval(timer);document.getElementById('scrGame').style.display='none';document.getElementById('scrEnd').style.display='block';const n=(document.getElementById('nm').value||'').trim()||'يا بطلة';
+ const b=score>=120?['🏆','وسام العالمة النوويّة']:score>=80?['🥇','وسام صانعة الأنوية']:score>=40?['🥈','وسام المستكشفة']:['🌱','وسام البداية الواعدة'];
+ bdg.textContent=b[0];endT.textContent=`${b[1]} لكِ ${n}!`;endP.innerHTML=`مجموع نقاطك: <b>${score}</b> ⭐ • القلوب المتبقية: ${'❤'.repeat(Math.max(0,lives))||'—'}<br>صوّري الشاشة وأريها معلمتك 📸`;SFX.win();confetti(220)}
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>المختبر الافتراضي ٢ – النواة تتغيّر عبر الزمن</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+.sim{position:relative;border-radius:20px;overflow:hidden;border:3px solid var(--gd);background:radial-gradient(circle at 50% 45%,#2b3a63,#0e1630 75%)}
+.sim canvas{display:block}
+.hudl{position:absolute;top:8px;right:8px;left:8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;pointer-events:none}
+.hudl span{background:rgba(255,255,255,.93);border-radius:12px;padding:4px 10px;font-weight:900;font-size:13.5px}
+.reveal{margin-top:10px}.reveal button{width:100%}.reveal .ans{display:none;margin-top:8px}.reveal.on .ans{display:block;animation:pop .35s}
+.coins{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;max-width:420px;margin:8px auto}
+.coins i{aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6c2,#D4A72C 60%,#8a6608);box-shadow:inset 0 0 0 2px #b48a0a;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:10px;font-weight:900;color:#5a4304;transition:.35s}
+.coins i.h{background:#e4dfcd;box-shadow:none;transform:scale(.55) rotate(180deg);opacity:.5}
+.coins i.flip{animation:flip .5s}
+@keyframes flip{50%{transform:rotateY(90deg) translateY(-10px)}}
+.chartbox{background:#fff;border-radius:16px;border:2px solid #E6DDC0;padding:6px;margin-top:10px}
+input[type=range]{width:100%;accent-color:var(--ol);height:30px}
+.gland{display:flex;gap:8px;justify-content:center;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/bg_domes.webp)"></div>
+<script>header('المختبر الافتراضي ٢ ⏳ النواة تتغيّر عبر الزمن','الجزء الثاني • بيتا • استقصاء القطع النقدية • عمر نصف الثوريوم • التأريخ بالكربون • المتتبعات')</script>
+<div class="wrap">
+<div class="tabs" id="tabs">
+ <button class="on" data-t="t1">① تحلل بيتا</button>
+ <button data-t="t2">② استقصاء القطع النقدية</button>
+ <button data-t="t3">③ رسم عمر النصف</button>
+ <button data-t="t4">④ التأريخ بالكربون</button>
+ <button data-t="t5">⑤ العناصر المتتبعة</button>
+</div>
+
+<section id="t1" class="card">
+ <h2>⚡ فقدان جسيمات بيتا</h2>
+ <p>في نواة غير مستقرة يتحوّل <span class="n">نيوترون</span> إلى <span class="p">بروتون</span> و<b>إلكترون</b>؛ فينطلق الإلكترون بطاقة عالية (جسيم بيتا) ويبقى البروتون داخل النواة.</p>
+ <div class="tabs" id="iso"><button class="on" data-i="0">الهيدروجين-3</button><button data-i="1">الكربون-14</button></div>
+ <div class="sim"><canvas id="c1"></canvas><div class="hudl"><span id="h1a"></span><span id="h1b"></span></div></div>
+ <div class="row" style="margin-top:10px;justify-content:center"><button class="btn b" onclick="fire1()">⚡ ابدئي تحلل بيتا</button><button class="btn w" onclick="reset1()">↺ إعادة</button></div>
+ <table class="t" style="margin-top:12px"><tr><th></th><th>قبل</th><th>بعد</th><th>التغيّر</th></tr><tr><td>العدد الذري</td><td id="b1">1</td><td id="b2">؟</td><td id="b3">؟</td></tr><tr><td>العدد الكتلي</td><td id="b4">3</td><td id="b5">؟</td><td id="b6">؟</td></tr></table>
+ <div class="reveal"><button class="btn w">▶ قارني: ألفا أم بيتا؟</button><div class="ans note">في <b>ألفا</b> يقل العدد الذري 2 والكتلي 4. في <b>بيتا</b> يزداد العدد الذري بمقدار 1 وتبقى الكتلة ثابتة تقريبًا؛ لأن كتلة الإلكترون المفقود صغيرة جدًا (كتلة ألفا ≈ 7344 مرة كتلة بيتا).</div></div>
+</section>
+
+<section id="t2" class="card" style="display:none">
+ <h2>🪙 استقصاء من واقع الحياة: عمر النصف بالقطع النقدية</h2>
+ <p><b>فرضيتنا:</b> كل قطعة نقدية تمثّل ذرة مشعة. القطعة التي تستقر على وجه <b>الصورة</b> = تحلّلت (نزيلها)، وعلى وجه <b>الكتابة</b> = لم تتحلل. كل رمية = عمر نصف واحد.</p>
+ <div class="row"><b>عدد القطع:</b><button class="btn w" onclick="setN(50)">50</button><button class="btn w" onclick="setN(100)">100</button></div>
+ <div class="coins" id="coins"></div>
+ <div class="row" style="justify-content:center"><button class="btn g" id="tossB" onclick="toss()">🪙 ارمي القطع (عمر نصف)</button><button class="btn w" onclick="setN(N2)">↺ من جديد</button></div>
+ <table class="t" style="margin-top:10px" id="tb2"></table>
+ <div class="chartbox"><canvas id="ch2"></canvas></div>
+ <div class="reveal"><button class="btn w">▶ تحليل البيانات</button><div class="ans note">بعد كل رمية يبقى <b>نصف العدد تقريبًا</b> ← العلاقة: المتبقي = البداية ÷ 2<sup>عدد الفترات</sup>. نتائجك قريبة من الخط المنقّط لكنها لا تطابقه تمامًا لأن الأمر <b>احتمالات</b>.</div></div>
+ <div class="reveal"><button class="btn w">▶ هل يمكنك توقّع أي قطعة ستتحلل؟</button><div class="ans note">لا؛ كما لا يمكن توقّع أي ذرة ستتحلل، لكن يمكن توقّع <b>عدد</b> الذرات التي ستتحلل في كل فترة عمر نصف (نصف العينة).</div></div>
+</section>
+
+<section id="t3" class="card" style="display:none">
+ <h2>📈 تجربة: رسم بياني لعمر نصف الثوريوم-234</h2>
+ <p>عمر النصف للثوريوم-234 هو <b>24 يومًا</b>. بدأنا بـ <b>64 جم</b>. أكملي الجدول وشاهدي المنحنى يتكوّن 👇</p>
+ <table class="t" id="tb3"></table>
+ <div class="chartbox"><canvas id="ch3"></canvas></div>
+ <div class="reveal"><button class="btn w">▶ التحليل (1): في أي مرحلة يتحلل معظم الثوريوم؟</button><div class="ans note">خلال فترة الـ 24 يومًا الأولى (يتحلل 32 جم).</div></div>
+ <div class="reveal"><button class="btn w">▶ التحليل (2): كم يتبقى في اليوم 144؟</button><div class="ans note">144 ÷ 24 = 6 فترات ← 64 ÷ 2<sup>6</sup> = <b>1 جم</b>.</div></div>
+</section>
+
+<section id="t4" class="card" style="display:none">
+ <h2>🦴 التأريخ بالكربون-14</h2>
+ <p>المخلوق الحي يحافظ على كمية ثابتة من الكربون-14، وبعد موته تبدأ بالتناقص. عمر النصف للكربون-14 = <b>5730 سنة</b>.</p>
+ <div class="sim"><canvas id="c4"></canvas><div class="hudl"><span id="h4a"></span><span id="h4b"></span></div></div>
+ <p style="margin-top:8px;font-weight:800">السنوات منذ الموت: <span id="yy">0</span></p>
+ <input type="range" id="r4" min="0" max="40110" step="10" value="0">
+ <div class="row"><button class="btn w" onclick="setY(5730)">فترة واحدة</button><button class="btn w" onclick="setY(11460)">فترتان</button><button class="btn w" onclick="setY(17190)">3 فترات</button></div>
+ <div class="reveal"><button class="btn w">▶ مسألة الكتاب: 100 جم من الكربون-14 بعد 17190 سنة؟</button><div class="ans note">17190 ÷ 5730 = 3 فترات ← 100 ÷ 2<sup>3</sup> = 100 ÷ 8 = <b>12.5 جم</b></div></div>
+ <div class="reveal"><button class="btn w">▶ لماذا لا يصلح لعظام الديناصورات؟</button><div class="ans note">لأنها قديمة جدًا (ملايين السنين) فلا يبقى فيها كربون-14 يمكن قياسه. ويستخدم علماء الأرض <b>اليورانيوم-238</b> الذي يتحلل إلى الرصاص-206 وعمر نصفه 4.5 مليارات سنة لتحديد عمر الصخور.</div></div>
+</section>
+
+<section id="t5" class="card" style="display:none">
+ <h2>🩺 العناصر المتتبعة: مسح الغدة الدرقية باليود-131</h2>
+ <p>تمتص الغدة الدرقية اليود ولا تميّز بين المشع وغير المشع، فتلتقط كاميرا أشعة جاما الإشعاع وتحوّله إلى صورة.</p>
+ <div class="gland"><button class="btn w" onclick="g5(0)">غدة طبيعية</button><button class="btn w" onclick="g5(1)">غدة متضخمة</button><button class="btn w" onclick="g5(2)">غدة نشطة</button></div>
+ <div class="sim" style="background:#05070f"><canvas id="c5"></canvas><div class="hudl"><span id="h5a">كاميرا أشعة جاما</span></div></div>
+ <p class="note" id="n5"></p>
+ <div class="reveal"><button class="btn w">▶ لماذا تبدو الغدة النشطة أكثر سطوعًا؟</button><div class="ans note">يعمل النشاط الزائد على تسريع عمليات الأيض، فيتركّز فيها اليود المشع أكثر فتظهر أكثر سطوعًا.</div></div>
+ <div class="note">🌱 <b>استخدامات أخرى:</b> التكنيتيوم-99 (عمر نصفه 6 ساعات) لتتبّع عمليات الجسم • الفوسفور-32 لدراسة امتصاص النبات للأسمدة • النظائر المشعة لتتبّع تلوث المياه والمبيدات.</div>
+</section>
+</div>
+<script>girl();footer()</script>
+<script>
+document.querySelectorAll('.reveal button').forEach(b=>b.onclick=()=>{b.parentElement.classList.toggle('on');SFX.pop()});
+let cur='t1';document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('section').forEach(s=>s.style.display='none');document.getElementById(b.dataset.t).style.display='block';cur=b.dataset.t;SFX.click();({t2:()=>draw2(),t3:()=>draw3(),t4:()=>{},t5:()=>g5(G5)}[cur]||(()=>{}))()});
+/* ① بيتا */
+const ISO=[{n:'الهيدروجين-3',p:1,nn:2,to:'الهيليوم-3',tz:2},{n:'الكربون-14',p:6,nn:8,to:'النيتروجين-14',tz:7}];let I1=0,s1={f:false,t:0};
+document.querySelectorAll('#iso button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#iso button').forEach(x=>x.classList.remove('on'));b.classList.add('on');I1=+b.dataset.i;reset1()});
+function reset1(){s1={f:false,t:0};const o=ISO[I1];h1a.textContent=o.n;h1b.textContent=`${o.p} بروتون • ${o.nn} نيوترون`;b1.textContent=o.p;b4.textContent=o.p+o.nn;b2.textContent=b3.textContent=b5.textContent=b6.textContent='؟'}
+function fire1(){ac();if(s1.f)return;s1.f=true;s1.t=0;SFX.zap();const o=ISO[I1];setTimeout(()=>{h1a.textContent=o.to;h1b.textContent=`${o.tz} بروتون • ${o.nn-1} نيوترون`;b2.textContent=o.tz;b3.textContent='+1';b5.textContent=o.p+o.nn;b6.textContent='ثابت';SFX.ok();confetti(60);say('نيوترون ← بروتون + إلكترون ⚡')},900)}
+(function l1(){if(cur==='t1'){const c=document.getElementById('c1');const {x,w,h}=fitCanvas(c,240);x.clearRect(0,0,w,h);const o=ISO[I1];const cx=w*.36,cy=h/2+12;s1.t++;
+ const g=x.createRadialGradient(cx,cy,5,cx,cy,100);g.addColorStop(0,'rgba(140,180,255,.45)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);
+ const k=s1.f?Math.min(1,s1.t/45):0;const changed=s1.f&&s1.t>45;
+ if(I1===0){ball(x,cx-16,cy,20,'P');ball(x,cx+16,cy-10,20,changed?'P':'N');ball(x,cx+2,cy+18,20,'N');if(s1.f&&!changed){x.strokeStyle='rgba(255,230,120,'+(.5+Math.sin(s1.t*.5)*.5)+')';x.lineWidth=4;x.beginPath();x.arc(cx+16,cy-10,24,0,7);x.stroke()}}
+ else{drawNucleus(x,cx,cy,changed?7:6,changed?7:8,12,9)}
+ if(s1.f){const ex=cx+30+k*w*.55,ey=cy-20-k*40;x.strokeStyle='rgba(242,194,48,.8)';x.lineWidth=3;x.beginPath();x.moveTo(cx+20,cy-15);x.lineTo(ex,ey);x.stroke();ball(x,ex,ey,9,'E');x.fillStyle='#fff';x.font='900 13px Almarai';x.fillText('جسيم بيتا (e⁻)',ex-40,ey-18)}}
+ requestAnimationFrame(l1)})();reset1();
+/* ② القطع النقدية */
+let N2=100,left=[],hist=[];
+function setN(n){N2=n;left=[...Array(n)].map(()=>1);hist=[n];render2();draw2();SFX.click();tossB.disabled=false}
+function toss(){ac();if(hist.length>7)return;const el=document.querySelectorAll('#coins i');let k=0;left=left.map((v,i)=>{if(!v)return 0;el[i].classList.add('flip');if(Math.random()<.5){return 0}k++;return 1});SFX.coin();setTimeout(()=>{hist.push(left.filter(Boolean).length);render2();draw2();if(hist.length>7){tossB.disabled=true;say('انتهت الرميات! قارني نتائجك مع زميلاتك 📊');confetti(80)}},450)}
+function render2(){coins.innerHTML=left.map(v=>`<i class="${v?'':'h'}">${v?'✍':''}</i>`).join('');tb2.innerHTML='<tr><th>رقم الرمية (عمر النصف)</th>'+hist.map((_,i)=>`<th>${i}</th>`).join('')+'</tr><tr><td>القطع المتبقية (كتابة)</td>'+hist.map(v=>`<td><b>${v}</b></td>`).join('')+'</tr>'}
+function chart(cv,xs,ys,theo,xl,yl,maxY){const {x,w,h}=fitCanvas(cv,220);x.clearRect(0,0,w,h);const L=40,B=34,T=12,R=12;const W=w-L-R,H=h-B-T;const mx=Math.max(1,xs.length-1);x.strokeStyle='#999';x.lineWidth=1;x.beginPath();x.moveTo(L,T);x.lineTo(L,T+H);x.lineTo(L+W,T+H);x.stroke();x.fillStyle='#555';x.font='11px Almarai';x.textAlign='center';
+ xs.forEach((v,i)=>x.fillText(v,L+i/mx*W,T+H+14));x.fillText(xl,L+W/2,h-4);x.textAlign='right';[0,.5,1].forEach(f=>x.fillText(Math.round(maxY*f),L-4,T+H-f*H+4));
+ if(theo){x.setLineDash([5,5]);x.strokeStyle='#bbb';x.beginPath();theo.forEach((v,i)=>{const px=L+i/mx*W,py=T+H-v/maxY*H;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.setLineDash([])}
+ x.strokeStyle='#5A6B2B';x.lineWidth=3;x.beginPath();ys.forEach((v,i)=>{if(v==null)return;const px=L+i/mx*W,py=T+H-v/maxY*H;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();ys.forEach((v,i)=>{if(v==null)return;ball(x,L+i/mx*W,T+H-v/maxY*H,5,'P')});x.save();x.translate(10,T+H/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText(yl,0,0);x.restore()}
+function draw2(){if(cur!=='t2')return;const xs=[...Array(8).keys()];chart(ch2,xs,hist,xs.map(i=>N2/2**i),'عدد فترات عمر النصف','القطع المتبقية',N2)}
+setN(100);
+/* ③ الثوريوم */
+const days=[0,24,48,72,96,120,144],ans3=days.map((d,i)=>64/2**i);
+tb3.innerHTML='<tr><th>الأيام</th>'+days.map(d=>`<th>${d}</th>`).join('')+'</tr><tr><td>فترات عمر النصف</td>'+days.map((d,i)=>`<td>${i}</td>`).join('')+'</tr><tr><td>الكتلة المتبقية (جم)</td>'+days.map((d,i)=>i?`<td><input class="box" style="width:46px" data-i="${i}" inputmode="decimal"></td>`:'<td><b>64</b></td>').join('')+'</tr>';
+const vals3=[64,null,null,null,null,null,null];
+tb3.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{const i=+inp.dataset.i,v=parseFloat(inp.value.replace('٫','.').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)));inp.classList.remove('okk','bad');if(isNaN(v)){vals3[i]=null}else if(Math.abs(v-ans3[i])<.01){inp.classList.add('okk');vals3[i]=v;SFX.ok();if(vals3.every(x=>x!=null)){confetti(120);say('اكتمل المنحنى! هذا منحنى التحلل الإشعاعي 📉')}}else{inp.classList.add('bad');vals3[i]=null;if(inp.value.length>=2)SFX.no()}draw3()});
+function draw3(){if(cur!=='t3')return;chart(ch3,days,vals3,ans3,'الزمن (يوم)','الكتلة المتبقية (جم)',64)}
+/* ④ الكربون */
+let Y=0;r4.oninput=()=>setY(+r4.value,true);
+function setY(v,silent){Y=v;r4.value=v;yy.textContent=v.toLocaleString('ar-SA');if(!silent)SFX.click()}
+(function l4(){if(cur==='t4'){const c=document.getElementById('c4');const {x,w,h}=fitCanvas(c,230);x.clearRect(0,0,w,h);const f=Math.pow(.5,Y/5730);
+ // عظمة
+ x.fillStyle='#efe6cf';x.strokeStyle='#b9a77a';x.lineWidth=3;const cx=w*.3,cy=h/2+15;x.beginPath();x.roundRect(cx-70,cy-12,140,24,12);x.fill();x.stroke();[[-70,-12],[-70,12],[70,-12],[70,12]].forEach(([a,b])=>{x.beginPath();x.arc(cx+a,cy+b,16,0,7);x.fill();x.stroke()});
+ const n=64;for(let i=0;i<n;i++){const alive=i/n<f;const a=i*2.4,r=8+((i*37)%55);const px=cx+Math.cos(a)*r*1.4,py=cy+Math.sin(a)*r*.55;x.fillStyle=alive?'rgba(120,255,160,.95)':'rgba(255,255,255,.12)';x.beginPath();x.arc(px,py,alive?4:2.5,0,7);x.fill()}
+ // عداد
+ const bx=w*.66,bw=w*.26;x.fillStyle='rgba(255,255,255,.15)';x.fillRect(bx,40,bw,h-70);x.fillStyle='#7dff9e';x.fillRect(bx,40+(h-70)*(1-f),bw,(h-70)*f);x.fillStyle='#fff';x.font='900 16px Almarai';x.textAlign='center';x.fillText((f*100).toFixed(1)+'%',bx+bw/2,32);x.textAlign='start';
+ h4a.textContent='الكربون-14 المتبقي: '+(f*100).toFixed(1)+'%';h4b.textContent='فترات عمر النصف: '+(Y/5730).toFixed(2)}
+ requestAnimationFrame(l4)})();
+/* ⑤ الغدة */
+let G5=0;const T5=['غدة درقية سليمة تنتج هرمونات تنظّم عمليات الأيض ومعدل نبضات القلب.','غدة متضخمة (تضخّم) بسبب تناول أغذية تحتوي كمية قليلة من اليود؛ فتظهر بحجم أكبر.','غدة نشطة تسرّع عمليات الأيض مما يؤدي إلى فقدان الوزن وزيادة معدل ضربات القلب، وفيها مناطق أقل نشاطًا.'];
+function g5(k){G5=k;SFX.hum();n5.textContent=T5[k];const c=document.getElementById('c5');const {x,w,h}=fitCanvas(c,240);x.fillStyle='#05070f';x.fillRect(0,0,w,h);const cx=w/2,cy=h/2+10,s=k===1?1.35:1;
+ for(let i=0;i<1600;i++){const side=i%2?1:-1;const t=Math.random()*Math.PI*2,rr=Math.sqrt(Math.random());let px=cx+side*(26+rr*Math.cos(t)*30)*s,py=cy+(rr*Math.sin(t)*58)*s-6;if(Math.abs(px-cx)<12&&py<cy+8)continue;let v=1-rr;if(k===2&&((i*7)%11<3))v*=.25;const hot=k===2?Math.min(1,v*1.5):v;x.fillStyle=`hsla(${60-hot*60},100%,${35+hot*30}%,${.25+hot*.5})`;x.fillRect(px,py,3,3)}
+ x.fillStyle='#4a6fa5';x.fillRect(cx-8,cy-6,16,22)}
+g5(0);
+</script>
+</body>
+</html>

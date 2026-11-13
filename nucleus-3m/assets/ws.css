@@ -1,0 +1,14 @@
+.it{background:#FBF8EE;border:2px solid #EEE6CC;border-radius:16px;padding:10px 12px;margin:8px 0;font-size:15.5px;line-height:2.2}
+.it.tf{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.ch{border:2px solid #E6DDC0;background:#fff;border-radius:14px;padding:7px 12px;font-weight:800;font-size:14.5px;color:#3B4A17;margin:3px}
+.ch.sel{border-color:#D4A72C;background:#FFF5D6}.ch.okb{border-color:#2E9E5B;background:#e6f7ec}.ch.badb{border-color:#D9473B;background:#fdeceb}
+.mc{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}@media(max-width:520px){.mc{grid-template-columns:1fr}}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
+.mrow span{font-weight:800}.mrow select{font:inherit;font-size:14px;padding:6px;border-radius:10px;border:2px solid #d8cfae;max-width:62%}
+select.okk{border-color:#2E9E5B;background:#e9f8ef}select.bad{border-color:#D9473B;background:#fdeceb}
+textarea{width:100%;font:inherit;border:2px solid #E6DDC0;border-radius:12px;padding:8px;margin-top:6px}
+details{margin-top:6px;font-size:14.5px;color:#3B4A17}summary{cursor:pointer;font-weight:800;color:#9C7712}
+.prog{height:16px;background:#EEE8D2;border-radius:10px;overflow:hidden;margin:12px auto 6px;max-width:420px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#D4A72C,#5A6B2B);transition:width .6s}
+.stage.done{border-color:#2E9E5B;box-shadow:0 0 0 4px rgba(46,158,91,.2)}
+.stage .pill{font-size:12px}
+@media print{.top,.girlpop,.speech,.btn,.bgimg{display:none!important}.card{box-shadow:none;break-inside:avoid}}

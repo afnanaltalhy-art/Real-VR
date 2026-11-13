@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>لعبة سباق عمر النصف ⏳ – الجزء الثاني</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+.hud{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px}
+.hud .b{background:#fff;border:2px solid #E6DDC0;border-radius:16px;padding:6px 12px;font-weight:900;font-size:15px}
+.tbar{height:10px;background:#EEE8D2;border-radius:10px;overflow:hidden;margin:6px 0 10px}
+.tbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--pr),var(--gd),var(--ol));transition:width .25s linear}
+.q{font-size:19px;font-weight:900;line-height:1.75;color:var(--old);margin:4px 0 10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts button{border:3px solid #E6DDC0;background:#fff;border-radius:18px;padding:14px 10px;font-weight:800;font-size:16px;color:var(--old);min-height:60px;line-height:1.5}
+.opts button.ok{border-color:var(--ok);background:#e6f7ec}.opts button.bad{border-color:var(--no);background:#fdeceb}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+.jar{display:flex;align-items:flex-end;gap:10px;justify-content:center;height:150px;margin:8px 0 14px}
+.jar div{width:46px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,#8fd16b,var(--ol));position:relative;transition:height .6s cubic-bezier(.2,1.3,.4,1);box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
+.jar div b{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:13px;white-space:nowrap}
+.jar div small{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap}
+.sort{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.bin{border:3px dashed #cfc6a6;border-radius:18px;padding:12px;text-align:center;font-weight:900;font-size:17px;min-height:70px}
+.bin.a{border-color:var(--al);color:var(--al);background:#f6eefb}.bin.be{border-color:var(--nt);color:var(--nt);background:#edf3fd}
+.chip{background:#fff;border:3px solid var(--gd);border-radius:16px;padding:14px;font-weight:900;font-size:17px;text-align:center;margin:8px 0;animation:pop .35s}
+.start{text-align:center}.start h1{font-size:30px;color:var(--old);margin:6px 0}.start .big{font-size:70px;animation:bounce 1.6s infinite}
+.lvcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.lvcards button{border:3px solid #E6DDC0;border-radius:20px;background:#fff;padding:14px 6px;font-weight:900;font-size:15px;color:var(--old);line-height:1.6}
+.lvcards button.on{border-color:var(--gd);background:#FFF5D6;transform:scale(1.04)}
+.lvcards span{display:block;font-size:34px}
+.name{font:inherit;font-size:17px;padding:10px;border-radius:14px;border:2px solid #E6DDC0;width:100%;max-width:320px;text-align:center}
+.badge{font-size:84px;animation:bounce 1.4s infinite}
+.atoms{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;max-width:360px;margin:6px auto 12px}
+.atoms i{aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9ff9c,#5FA33A 60%,#2c5b12);transition:.4s;box-shadow:0 0 8px rgba(95,163,58,.6)}
+.atoms i.d{background:#d8d2bd;box-shadow:none;transform:scale(.65)}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/sc_space.webp)"></div>
+<script>header('لعبة «سباق عمر النصف» ⏳','الجزء الثاني: جسيمات بيتا • عمر النصف • التأريخ بالكربون • النظائر المشعة')</script>
+<div class="wrap">
+<div id="scrStart" class="card start">
+ <div class="big">⏳</div>
+ <h1>سباق عمر النصف</h1>
+ <p>النوى غير المستقرة تتحلّل وعقارب الساعة تدور! احسبي ما يتبقى، وصنّفي التحلل، واكشفي أسرار الأحافير ⭐</p>
+ <input id="nm" class="name" placeholder="اكتبي اسمك هنا ✎" style="margin-top:12px">
+ <div class="lvcards" id="lvc">
+  <button data-l="1" class="on"><span>🌱</span>بذرة<br><small>أبدأ بهدوء</small></button>
+  <button data-l="2"><span>🌿</span>غصن<br><small>أتحدّى نفسي</small></button>
+  <button data-l="3"><span>🌳</span>شجرة<br><small>أنا عالمة!</small></button>
+ </div>
+ <button class="btn g" style="font-size:19px;padding:14px 34px" onclick="startGame()">ابدئي السباق ▶</button>
+</div>
+<div id="scrGame" class="card" style="display:none">
+ <div class="hud"><span class="b">الجولة <span id="rd">1</span>/10</span><span class="b">⭐ <span id="sc">0</span></span><span class="b" id="hp">❤❤❤</span><span class="b">🔥 <span id="st">0</span></span></div>
+ <div class="tbar"><i id="tb"></i></div>
+ <div class="q" id="qt"></div>
+ <div id="area"></div>
+</div>
+<div id="scrEnd" class="card start" style="display:none">
+ <div class="badge" id="bdg">🏅</div><h1 id="endT"></h1><p id="endP"></p>
+ <div class="row" style="justify-content:center;margin-top:14px"><button class="btn g" onclick="location.reload()">↻ العبي مرة أخرى</button><a class="btn w" href="index.html" style="text-decoration:none">⌂ الحزمة</a></div>
+</div>
+</div>
+<script>girl();footer()</script>
+<script>
+let LV=1,round=0,score=0,lives=3,streak=0,timer=null,tLeft=0,T=30,locked=false;
+document.querySelectorAll('#lvc button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#lvc button').forEach(x=>x.classList.remove('on'));b.classList.add('on');LV=+b.dataset.l;SFX.click()});
+const rq=a=>a[Math.random()*a.length|0];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const fmt=v=>(Math.round(v*1000)/1000).toString();
+// مسائل عمر النصف [العنصر، عمر النصف، الوحدة، الكتلة، الفترات]
+const HL=[['اليود-131',8,'أيام',4],['الثوريوم-234',24,'يومًا',64],['الكربون-14',5730,'سنة',100],['التريتيوم',12.5,'سنة',20],['الرادون-222',3.8,'أيام',50],['الراديوم-226',1590,'عامًا',10],['التكنيتيوم-99',6,'ساعات',80]];
+const SORT=[['يقلّ العدد الذري بمقدار 2','a'],['يزداد العدد الذري بمقدار 1','b'],['يتحرّر بروتونان ونيوترونان','a'],['يتحوّل نيوترون إلى بروتون وإلكترون','b'],['يقلّ العدد الكتلي بمقدار 4','a'],['تبقى كتلة العنصر ثابتة تقريبًا','b'],['شحنة الجسيم +2','a'],['الجسيم إلكترون ذو طاقة عالية','b'],['يحدث في كاشف الدخان (الأميريسيوم)','a'],['الهيدروجين-3 يتحوّل إلى هيليوم-3','b']];
+const MATCH=[['اليود-131','تشخيص مشكلات الغدة الدرقية'],['الكربون-14','تحديد عمر بقايا الكائنات الحية'],['اليورانيوم-238','تحديد عمر الصخور'],['الفوسفور-32','دراسة امتصاص النبات للأسمدة'],['التكنيتيوم-99','تتبّع عمليات الجسم (عمر نصفه 6 ساعات)'],['الأميريسيوم-241','كاشف الدخان']];
+const MCQ=[
+ {q:'عمر النصف هو الزمن اللازم لـ…',o:['تحلّل نصف كمية العنصر المشع','تحلّل العنصر كله','مضاعفة كمية العنصر','تحلّل ربع الكمية'],a:0},
+ {q:'جسيم بيتا عبارة عن…',o:['إلكترون ذو طاقة عالية يخرج من النواة','بروتونين ونيوترونين','نيوترون حر','فوتون ضوء'],a:0},
+ {q:'من أين يأتي إلكترون بيتا؟',o:['من النواة: نيوترون يتحوّل إلى بروتون وإلكترون','من السحابة الإلكترونية','من الهواء','من جسيم ألفا'],a:0},
+ {q:'في تحلل بيتا يتغيّر العدد الذري…',o:['يزداد بمقدار 1','يقل بمقدار 2','لا يتغير','يقل بمقدار 1'],a:0},
+ {q:'كتلة جسيم ألفا تعادل كتلة جسيم بيتا بحوالي…',o:['7344 مرة','2 مرة','1836 مرة','4 مرات'],a:0},
+ {q:'لماذا لا يُستخدم الكربون-14 لتحديد عمر عظام الديناصورات؟',o:['لأنها قديمة جدًا فتكون كمية الكربون-14 المتبقية ضئيلة جدًا','لأن الديناصورات لا تحتوي كربونًا','لأن عمر نصفه ثانية واحدة','لأنه عنصر مصنّع'],a:0},
+ {q:'هل يمكن التنبؤ بأي ذرة ستتحلل أولًا؟',o:['لا؛ لأن التحلل يحدث عشوائيًا','نعم دائمًا','نعم إذا سخّنّاها','نعم بالمغناطيس'],a:0},
+ {q:'يتأثر معدل التحلل الإشعاعي بالحرارة والضغط…',o:['خطأ؛ يحدث بمعدل ثابت لا يتأثر بالظروف','صح؛ يتسارع بالحرارة','صح؛ يتوقف بالضغط','صح؛ يتأثر بالمغناطيس'],a:0},
+ {q:'العناصر المصنَّعة تُنتج بقذف أنوية بجسيمات سريعة في أجهزة تُسمّى…',o:['المسارعات','المجاهر','المناظير','المكثّفات'],a:0},
+ {q:'كيف يُتخلّص من النفايات المشعة؟',o:['تُطمر في أماكن خاصة تحت الأرض بعيدًا عن الناس','تُرمى في البحر','تُحرق في الهواء','تُخلط بالتربة الزراعية'],a:0},
+ {q:'يُستخدم اليورانيوم-238 لتحديد عمر الصخور لأنه يتحلل إلى الرصاص-206 وعمر نصفه…',o:['4.5 مليارات سنة','8 أيام','5730 سنة','6 ساعات'],a:0}
+];
+function startGame(){ac();SFX.win();scrStart.style.display='none';scrGame.style.display='block';say('السباق بدأ! ⏳ ركّزي');PL=LV===1?['h','m','s','h','x','m','h','s','m','x']:LV===2?['h','s','m','h','x','s','h','m','x','h']:['h','h','s','x','h','m','s','h','x','h'];MQ=shuffle([...MCQ]);next()}
+let PL=[],MQ=[];
+function hud(){rd.textContent=round;sc.textContent=score;hp.textContent='❤'.repeat(Math.max(0,lives))+'🤍'.repeat(3-Math.max(0,lives));st.textContent=streak}
+function startTimer(){clearInterval(timer);T=LV===1?50:LV===2?40:30;tLeft=T;timer=setInterval(()=>{tLeft-=.25;tb.style.width=(tLeft/T*100)+'%';if(tLeft<=5&&Math.abs(tLeft-Math.round(tLeft))<.01)SFX.tick();if(tLeft<=0){clearInterval(timer);wrong('⏰ انتهى الوقت!')}},250)}
+function next(){if(lives<=0||round>=10)return end();round++;locked=false;hud();({h:half,m:mcq,s:sorter,x:match})[PL[round-1]]();startTimer()}
+function right(){if(locked)return;locked=true;clearInterval(timer);streak++;score+=10+Math.round(tLeft/T*5)+(streak>=3?5:0);SFX.ok();confetti(60);toast(rq(['أحسنتِ! ⏳🌟','دقيقة الحساب! 🧮','رائعة جدًا! 🎉'])+(streak>=3?' 🔥':''));hud();setTimeout(next,1500)}
+function wrong(m){if(locked)return;locked=true;clearInterval(timer);streak=0;lives--;SFX.no();scrGame.classList.add('shake');setTimeout(()=>scrGame.classList.remove('shake'),500);toast(m,2800);hud();setTimeout(next,2800)}
+function opts(list,good,exp){area.insertAdjacentHTML('beforeend','<div class="opts">'+list.map(o=>`<button>${o}</button>`).join('')+'</div>');area.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{if(locked)return;if(b.textContent===good){b.classList.add('ok');right()}else{b.classList.add('bad');area.querySelectorAll('.opts button').forEach(x=>x.textContent===good&&x.classList.add('ok'));wrong('✗ '+exp)}})}
+function half(){const [el,h,u,m0]=rq(HL);const k=LV===1?rq([1,2]):LV===2?rq([2,3]):rq([3,4,5]);const t=h*k;const rem=m0/2**k;
+ const g=fmt(rem)+' جم';
+ if(LV===1){qt.innerHTML=`بدأنا بـ <b>${m0} جم</b> من ${el}، وعمر النصف له ${h} ${u}. كم يتبقى بعد <b>${k}</b> ${k===1?'فترة':'فترتين'} من عمر النصف؟`}
+ else qt.innerHTML=`عمر النصف لـ${el} = <b>${h} ${u}</b>. بدأنا بـ <b>${m0} جم</b>. كم يتبقى بعد <b>${t} ${u}</b>؟`;
+ // أعمدة توضيحية
+ let bars='<div class="jar">';for(let i=0;i<=k;i++){const v=m0/2**i;bars+=`<div style="height:${8+v/m0*110}px"><b>${i<k?fmt(v):'؟'}</b><small>${i===0?'البداية':i+'×'}</small></div>`}bars+='</div>';
+ area.innerHTML=(LV<3?bars:'')+(LV===3?`<p class="note">💡 عدد الفترات = المدة ÷ عمر النصف</p>`:'');
+ const bad=[fmt(m0/(2*k))+' جم',fmt(m0/2**(k+1))+' جم',fmt(m0/2**Math.max(0,k-1))+' جم',fmt(m0-m0/2**k)+' جم'].filter(x=>x!==g);
+ opts(shuffle([g,...[...new Set(bad)].slice(0,3)]),g,`عدد الفترات = ${t} ÷ ${h} = ${k} ← ${m0} ÷ 2${k>1?'^'+k:''} = ${fmt(rem)} جم`)}
+function mcq(){const m=MQ.pop();qt.innerHTML=m.q;area.innerHTML='';opts(shuffle(m.o.slice()),m.o[m.a],'الصحيح: '+m.o[m.a])}
+function sorter(){const items=shuffle(SORT.slice()).slice(0,LV===1?3:4);let i=0,errs=0;qt.innerHTML='صنّفي العبارة: هل تخص تحلل <span style="color:var(--al)">ألفا</span> أم <span class="n">بيتا</span>؟ ('+items.length+' عبارات)';
+ const show=()=>{area.innerHTML=`<div class="chip">${items[i][0]}</div><div class="sort"><button class="bin a" data-k="a">🟣 ألفا</button><button class="bin be" data-k="b">🔵 بيتا</button></div><p class="hint" style="text-align:center;margin-top:8px">${i+1} / ${items.length}</p>`;
+ area.querySelectorAll('.bin').forEach(b=>b.onclick=()=>{if(locked)return;if(b.dataset.k===items[i][1]){SFX.coin()}else{errs++;SFX.no();toast('✗ '+items[i][0]+' ← '+(items[i][1]==='a'?'ألفا':'بيتا'),1800)}i++;if(i<items.length)setTimeout(show,errs?900:250);else errs?wrong(`أخطأتِ في ${errs} تصنيف… راجعي الفرق بين ألفا وبيتا`):right()})};show()}
+function match(){const [iso,use]=rq(MATCH);const others=shuffle(MATCH.filter(m=>m[0]!==iso)).slice(0,3).map(m=>m[1]);qt.innerHTML=`🔬 نظير مشع في خدمة الإنسان: <b>${iso}</b> يُستخدم في…`;area.innerHTML='';opts(shuffle([use,...others]),use,`${iso} ← ${use}`)}
+function end(){clearInterval(timer);scrGame.style.display='none';scrEnd.style.display='block';const n=nm.value.trim()||'يا بطلة';const b=score>=120?['🏆','وسام سيّدة الزمن النووي']:score>=80?['🥇','وسام دقيقة الحساب']:score>=40?['🥈','وسام المستكشفة']:['🌱','وسام البداية الواعدة'];bdg.textContent=b[0];endT.textContent=`${b[1]} لكِ ${n}!`;endP.innerHTML=`مجموع نقاطك: <b>${score}</b> ⭐<br>صوّري الشاشة وأريها معلمتك 📸`;SFX.win();confetti(220)}
+</script>
+</body>
+</html>
