@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+<defs><linearGradient id="hb" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff5a1f"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>
+<marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5B3A8E"/></marker></defs>
+<rect width="640" height="360" fill="#f3eefb"/>
+<rect y="280" width="640" height="80" fill="url(#hb)"/>
+<g fill="#ff7a1a"><path d="M120 300 q10 -30 0 -50 q22 20 10 50z"/><path d="M320 300 q10 -34 0 -56 q24 22 10 56z"/><path d="M520 300 q10 -30 0 -50 q22 20 10 50z"/></g>
+<rect x="190" y="110" width="260" height="130" rx="14" fill="#b9b2c8"/>
+<g stroke="#4d3f69" stroke-width="7" fill="none" stroke-linecap="round">
+<path d="M205 140 C260 128 300 152 435 136"/><path d="M205 168 C270 156 310 182 435 164"/><path d="M205 196 C260 184 320 208 435 192"/><path d="M205 222 C270 212 300 232 435 220"/></g>
+<g stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8">
+<path d="M205 154 C270 142 310 166 435 150"/><path d="M205 182 C260 170 320 194 435 178"/><path d="M205 209 C270 198 310 220 435 206"/></g>
+<path d="M60 175 H175" stroke="#5B3A8E" stroke-width="10" marker-end="url(#m)"/>
+<path d="M580 175 H465" stroke="#5B3A8E" stroke-width="10" marker-end="url(#m)"/>
+<path d="M320 20 V95" stroke="#5B3A8E" stroke-width="10" marker-end="url(#m)"/>
+<g font-family="Almarai,sans-serif" font-weight="700" text-anchor="middle">
+<text x="110" y="150" font-size="20" fill="#5B3A8E">ضغط</text><text x="530" y="150" font-size="20" fill="#5B3A8E">ضغط</text>
+<text x="320" y="330" font-size="22" fill="#fff">حرارة 🔥 دون انصهار</text></g>
+</svg>

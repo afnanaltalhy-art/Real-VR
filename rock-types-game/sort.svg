@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+<rect width="640" height="360" fill="#fff6e3"/>
+<g font-family="Almarai,sans-serif" font-weight="700" text-anchor="middle" font-size="22" fill="#fff">
+<rect x="30" y="200" width="170" height="130" rx="16" fill="#D9A21B"/><text x="115" y="300">نارية 🔥</text>
+<rect x="235" y="200" width="170" height="130" rx="16" fill="#3F8A2A"/><text x="320" y="300">رسوبية 🪨</text>
+<rect x="440" y="200" width="170" height="130" rx="16" fill="#5B3A8E"/><text x="525" y="300">متحوّلة 💎</text></g>
+<g><ellipse cx="160" cy="110" rx="52" ry="38" fill="#e9b7b0"/><g fill="#222"><circle cx="140" cy="100" r="6"/><circle cx="170" cy="120" r="5"/><circle cx="182" cy="96" r="4"/></g><g fill="#fff"><circle cx="152" cy="118" r="6"/><circle cx="130" cy="120" r="4"/></g>
+<rect x="268" y="72" width="104" height="76" rx="12" fill="#e8b37a"/><g stroke="#b7744a" stroke-width="5"><path d="M268 96 H372"/><path d="M268 122 H372"/></g>
+<ellipse cx="480" cy="110" rx="54" ry="38" fill="#b9b2c8"/><g stroke="#4d3f69" stroke-width="5" fill="none"><path d="M432 98 C460 90 490 108 530 96"/><path d="M430 120 C470 112 500 128 532 118"/></g></g>
+<text x="320" y="40" font-family="Almarai,sans-serif" font-weight="700" font-size="22" fill="#0E4D45" text-anchor="middle">إلى أيّ سلّة تنتمي؟</text>
+</svg>

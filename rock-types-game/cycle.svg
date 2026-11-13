@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+<defs><marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0E4D45"/></marker></defs>
+<rect width="640" height="360" fill="#eaf5ef"/>
+<g font-family="Almarai,sans-serif" font-weight="700" text-anchor="middle">
+<rect x="230" y="22" width="180" height="56" rx="18" fill="#D9A21B"/><text x="320" y="58" font-size="22" fill="#fff">صخر ناري 🔥</text>
+<rect x="440" y="232" width="180" height="56" rx="18" fill="#3F8A2A"/><text x="530" y="268" font-size="22" fill="#fff">صخر رسوبي 🪨</text>
+<rect x="20" y="232" width="180" height="56" rx="18" fill="#5B3A8E"/><text x="110" y="268" font-size="22" fill="#fff">صخر متحوّل 💎</text>
+<circle cx="320" cy="215" r="48" fill="#C2362B"/><text x="320" y="222" font-size="20" fill="#fff">صهارة</text>
+<g fill="none" stroke="#0E4D45" stroke-width="5">
+<path d="M415 60 Q540 90 540 224" marker-end="url(#c)"/><path d="M436 272 Q320 330 206 272" marker-end="url(#c)"/>
+<path d="M150 228 Q160 200 268 210" marker-end="url(#c)"/><path d="M320 165 L320 86" marker-end="url(#c)"/></g>
+<g font-size="15" fill="#0E4D45"><text x="545" y="120">تجوية وتعرية</text><text x="545" y="140">وترسيب</text>
+<text x="320" y="335">حرارة وضغط</text><text x="190" y="196">انصهار</text><text x="356" y="128">تبريد</text></g></g>
+</svg>
