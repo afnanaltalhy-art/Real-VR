@@ -12,7 +12,7 @@ html,body{height:100%;overflow:hidden;background:#0e1630}
 .artabs button{flex:none;border:none;border-radius:22px;padding:8px 13px;font-weight:800;font-size:13.5px;background:rgba(255,255,255,.88);color:#3B4A17;box-shadow:0 3px 10px rgba(0,0,0,.2)}
 .artabs button.on{background:#D4A72C;color:#fff}
 .chips{position:fixed;top:96px;left:0;right:0;z-index:5;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 8px}
-.chips button{border:2px solid rgba(255,255,255,.8);border-radius:18px;padding:6px 11px;font-weight:800;font-size:13px;background:rgba(14,22,48,.6);color:#fff;backdrop-filter:blur(4px)}
+.chips button{border:2px solid rgba(255,255,255,.8);border-radius:18px;padding:6px 11px;font-weight:800;font-size:13px;background:rgba(14,22,48,.6);color:#fff;}
 .chips button.on{background:#E2463F;border-color:#E2463F}
 .tools{position:fixed;left:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:8px}
 .tools button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.9);font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
@@ -28,7 +28,7 @@ html,body{height:100%;overflow:hidden;background:#0e1630}
 .quiz b{font-size:14px;display:block;margin-bottom:6px}
 .quiz button{display:block;width:100%;text-align:right;margin:5px 0;border:2px solid #E6DDC0;background:#fff;border-radius:12px;padding:8px 10px;font-weight:800;font-size:14px;font-family:inherit;color:#3B4A17}
 .quiz button.ok{border-color:#2E9E5B;background:#e6f7ec}.quiz button.bad{border-color:#D9473B;background:#fdeceb}
-.legend{position:fixed;right:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:6px;background:rgba(14,22,48,.55);border-radius:14px;padding:8px;color:#fff;font-size:12px;font-weight:800;backdrop-filter:blur(4px)}
+.legend{position:fixed;right:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:6px;background:rgba(14,22,48,.55);border-radius:14px;padding:8px;color:#fff;font-size:12px;font-weight:800;}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:14px;height:14px;border-radius:50%;display:inline-block}
 .splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#2b3a63,#0b1228);color:#fff;text-align:center;transition:opacity .6s;padding:20px}
