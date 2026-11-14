@@ -206,6 +206,7 @@ const SC=[
  this.ar.forEach(c=>{const p=(t*.8+c.userData.o)%1;const r=.43+(p<.5?p:1-p)*.35;c.position.set(this.inner.position.x+Math.cos(c.userData.a)*r,-.2+Math.sin(c.userData.a*3)*.3,Math.sin(c.userData.a)*r);c.lookAt(this.inner.position.x,c.position.y,0);c.rotateX(p<.5?-Math.PI/2:Math.PI/2)});
  this.steam.forEach(s=>{const p=(t*.4+s.userData.o)%1;s.visible=k>.5;s.position.set(this.tea.position.x+Math.sin(s.userData.o*20)*.15,.6+p*.7,0);s.material.opacity=(1-p)*.7})}}
 ];
+{const H=new URLSearchParams(location.search).get('h');if(H==='1')SC.splice(6);else if(H==='2')SC.splice(0,6);}
 let cur=0,built=null;
 function load(i){cur=i;while(holder.children.length)holder.remove(holder.children[0]);const s=SC[i];built=Object.create(s);built.build(holder);
 document.getElementById('iT').textContent=s.t;document.getElementById('iP').textContent=s.p;document.getElementById('info').classList.remove('min');
@@ -234,4 +235,6 @@ ring.material.opacity=.5+.3*Math.sin(t*3);ring.scale.setScalar((1+.03*Math.sin(t
 if(built)built.update.call(built,dt,t);R.render(scene,cam);requestAnimationFrame(loop)}
 document.fonts.load('800 52px Almarai').finally(()=>{const h=location.hash.match(/^#s(\d)$/);load(h?+h[1]:0);loop()});
 setTimeout(()=>document.getElementById('hint').style.opacity=0,6000);
-</script></body></html>
+</script><div id="hchip" style="display:none;position:fixed;top:10px;left:10px;z-index:99;background:#E0622B;color:#fff;font:800 15px Almarai,sans-serif;padding:7px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.25)"></div>
+<script>(function(){var h=new URLSearchParams(location.search).get('h');if(h==='1'||h==='2'){var c=document.getElementById('hchip');c.textContent=h==='1'?'📘 الحصة الأولى':'📗 الحصة الثانية';c.style.display='block'}})();</script>
+</body></html>

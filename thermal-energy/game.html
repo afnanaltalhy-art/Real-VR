@@ -48,7 +48,7 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 <button class="mute" id="mute" onclick="toggleMute()">🔊</button>
 <section class="scr on wrapL" id="s0"><div class="hero"><div class="card">
 <h2>مهمتك يا مهندسة الحرارة ☕🔥</h2>
-<p class="lead">كوب شاي ساخن عند <b>80 °C</b> يفقد حرارته كل ثانية بالتوصيل والحمل والإشعاع! أجيبي عن <b>12 سؤالًا</b> (لكل سؤال 30 ثانية). كل إجابة صحيحة تضيف طبقة عزل للحافظة وتنقذ الحرارة، والخاطئة تجعل البخار يتسرّب. حافظي على الشاي دافئًا لتحصلي على 3 نجوم وشهادة شكر باسمك!</p>
+<p class="lead">كوب شاي ساخن عند <b>80 °C</b> يفقد حرارته كل ثانية بالتوصيل والحمل والإشعاع! أجيبي عن <b><span class="qtot">12</span> سؤالًا</b> (لكل سؤال 30 ثانية). كل إجابة صحيحة تضيف طبقة عزل للحافظة وتنقذ الحرارة، والخاطئة تجعل البخار يتسرّب. حافظي على الشاي دافئًا لتحصلي على 3 نجوم وشهادة شكر باسمك!</p>
 <input class="nm" id="nm" placeholder="اكتبي اسمك هنا ✍"><button class="btn" onclick="start()">ابدئي التحدي ◀</button></div>
 <img class="cover" src="img/bag.jpg" alt=""></div></section>
 
@@ -63,7 +63,7 @@ input.nm{font:inherit;font-size:20px;width:100%;padding:12px;border-radius:14px;
 </svg>
 <div class="temp" id="tv">80.0 °C</div>
 <div class="layers" id="lyr"></div>
-<div class="hud"><span>⭐ <b id="sc">0</b></span><span>✔ <b id="ok">0</b>/12</span></div></div>
+<div class="hud"><span>⭐ <b id="sc">0</b></span><span>✔ <b id="ok">0</b>/<span class="qtot">12</span></span></div></div>
 <div class="qcard"><div class="bar"><i id="tb"></i></div><div class="qn" id="qn"></div><div class="qt" id="qt"></div><div class="opts" id="op"></div><div class="fb" id="fb"></div>
 <p style="text-align:left;margin:12px 0 0"><button class="btn t" id="nx" style="display:none" onclick="next()">التالي ◀</button></p></div></div></section>
 
@@ -88,6 +88,13 @@ const Q=[
 ['احسبي Q لتسخين 0.5 kg ماء بمقدار 20 °C (C = 4180):',['4180 J','20900 J','41800 J','83600 J'],2,'Q = 0.5 × 4180 × 20 = 41800 J'],
 ['إذا كانت Q سالبة فإن الجسم:',['اكتسب حرارة','فقد حرارة','في اتزان','زادت كتلته'],1,'Q سالبة تعني أن الجسم فقد حرارة وبرد.'],
 ['في المسعر المعزول:',['Q المفقودة + Q المكتسبة = 0','Q المفقودة = 0','الطاقة تزداد','Q المكتسبة أكبر دائمًا'],0,'حفظ الطاقة: ما يفقده الساخن يكتسبه البارد.']];
+const H=new URLSearchParams(location.search).get('h');
+const QX=[['الحرارة النوعية هي كمية الحرارة اللازمة لرفع درجة حرارة:',['1 kg من المادة بمقدار 1 K','المادة كلها بمقدار 1 K','1 kg حتى الغليان','1 m³ من المادة'],0,'C = Q ÷ (m ΔT): لكل 1 kg ولكل 1 K.'],
+['حافظة بدأت عند 70°C وبعد 10 دقائق أصبحت 55°C. الفقد الحراري ΔT:',['5 °C','15 °C','55 °C','125 °C'],1,'ΔT = 70 − 55 = 15 °C'],
+['أي تصميم للحافظة أفضل عزلًا خلال الزمن نفسه؟',['ΔT = 22 °C','ΔT = 12 °C','ΔT = 9 °C','ΔT = 6 °C'],3,'الأقل انخفاضًا في درجة الحرارة يعني فقدًا أقل للطاقة: عزل أفضل.'],
+['وحدة الحرارة النوعية C هي:',['J','J/kg·K','K/J','kg·K'],1,'من Q = mCΔT نجد C = Q ÷ (mΔT) ووحدتها J/kg·K.']];
+if(H==='1')Q.splice(8);else if(H==='2'){Q.splice(0,8);Q.push(...QX)}
+document.querySelectorAll('.qtot').forEach(e=>e.textContent=Q.length);
 const LAY=['قطن','غطاء محكم','رقائق ألمنيوم','قماش','فلين','طبقة هواء','كرتون','صوف','غطاء ثانٍ','بطانة فضية','عازل مزدوج','حافظة ذكية ✨'];
 const $=id=>document.getElementById(id);let name='',qi=0,score=0,okN=0,T=80,k=.06,left=30,tm=null,cool=null,ans=false,muted=false;
 const S={};['applause','knock','drop','hiss','bubble'].forEach(n=>{S[n]=new Audio('snd/'+n+'.mp3')});
@@ -115,4 +122,6 @@ function next(){qi++;play('drop',.6);if(qi<Q.length){show();return}clearInterval
 function finish(){const st=T>=60&&okN>=10?3:T>=45&&okN>=7?2:1;$('cn').textContent=name;$('cs').textContent=score;$('ct').textContent=T.toFixed(1)+' °C';$('cst').textContent='★'.repeat(st)+'☆'.repeat(3-st);
 $('cm').textContent=st===3?'مهندسة عزل حراري متميّزة! 🌟':st===2?'أداء رائع… الشاي ما زال دافئًا 👏':'بداية موفّقة… جرّبي مرة أخرى لتحصلي على 3 نجوم 💪';go('s2');play('applause',.9)}
 draw();
-</script></body></html>
+</script><div id="hchip" style="display:none;position:fixed;top:10px;left:10px;z-index:99;background:#E0622B;color:#fff;font:800 15px Almarai,sans-serif;padding:7px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.25)"></div>
+<script>(function(){var h=new URLSearchParams(location.search).get('h');if(h==='1'||h==='2'){var c=document.getElementById('hchip');c.textContent=h==='1'?'📘 الحصة الأولى':'📗 الحصة الثانية';c.style.display='block'}})();</script>
+</body></html>

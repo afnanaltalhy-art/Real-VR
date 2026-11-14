@@ -170,12 +170,13 @@ function rv(id){const e=$(id);e.style.display=e.style.display==='block'?'none':'
 function fill(sel,arr,def){sel.innerHTML=arr.map(k=>`<option ${k===def?'selected':''}>${k}</option>`).join('')}
 function f2(x,d=1){return (+x).toFixed(d)}
 // nav
-const labs=[...document.querySelectorAll('.lab')];
+const H=new URLSearchParams(location.search).get('h');const PH={'1':['particles','balloon','equil','mass','cool','transfer'],'2':['spec','calor','insul']}[H];
+const labs=[...document.querySelectorAll('.lab')].filter(s=>!PH||PH.includes(s.id));
 $('nav').innerHTML=labs.map(s=>`<button data-id="${s.id}">${s.dataset.t}</button>`).join('');
 const BG={particles:'mugjug',balloon:'balloon',equil:'icehot',mass:'materials',cool:'digital',transfer:'irgun',spec:'beach',calor:'calor',insul:'cotton'};
 function show(id){labs.forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===id));}
 $('nav').onclick=e=>{if(e.target.dataset.id){show(e.target.dataset.id);try{history.replaceState(null,'','#'+e.target.dataset.id)}catch(_){}}};
-show(location.hash.slice(1)&&$(location.hash.slice(1))?location.hash.slice(1):'particles');
+show(location.hash.slice(1)&&labs.some(s=>s.id===location.hash.slice(1))?location.hash.slice(1):labs[0].id);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if($(h))show(h)});
 function col(T){const t=Math.max(0,Math.min(1,(T+20)/120));return `rgb(${Math.round(43+t*181)},${Math.round(123-t*25)},${Math.round(185-t*142)})`}
 // 1 particles
@@ -263,5 +264,7 @@ const cols=['#E0622B','#1F7A80','#A8741A','#2B7BB9','#8E44AD','#2E8B57'];inRows.
 if(inRows.length){const best=inRows.reduce((a,b)=>(a.T[0]-a.T[5])<(b.T[0]-b.T[5])?a:b);$('inO').innerHTML=`الأقل فقدًا للحرارة: <b>${best.n}</b> (ΔT = ${f2(best.T[0]-best.T[5])} °C)`}else $('inO').textContent=''}
 function tick(){const id=document.querySelector('.lab.on')?.id;({particles:loop1,balloon:loop2,equil:loop3,transfer:loop6,spec:loop7,calor:loop8})[id]?.();requestAnimationFrame(tick)}tick();
 </script>
+<div id="hchip" style="display:none;position:fixed;top:10px;left:10px;z-index:99;background:#E0622B;color:#fff;font:800 15px Almarai,sans-serif;padding:7px 14px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.25)"></div>
+<script>(function(){var h=new URLSearchParams(location.search).get('h');if(h==='1'||h==='2'){var c=document.getElementById('hchip');c.textContent=h==='1'?'📘 الحصة الأولى':'📗 الحصة الثانية';c.style.display='block'}})();</script>
 </body>
 </html>
