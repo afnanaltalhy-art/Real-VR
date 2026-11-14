@@ -20,6 +20,8 @@ img{max-width:100%}
 .top .sp{flex:1}
 .prog{position:absolute;bottom:0;right:0;height:4px;background:var(--g);width:0;transition:width .2s}
 .navl{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.navl a{color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:5px 10px;border-radius:10px;white-space:nowrap}.navl a:hover{background:rgba(255,255,255,.18)}@media(max-width:1100px){.navl{display:none}}
+@media(max-width:520px){.top>b{display:none}}
+.tname{background:var(--g);color:#fff;border-radius:12px;padding:3px 12px;font-weight:700;font-size:15px;white-space:nowrap}
 .menu-btn{background:var(--g);color:#fff;border:none;border-radius:10px;padding:6px 12px;font:700 15px Almarai;cursor:pointer}
 nav.toc{position:fixed;top:52px;right:0;bottom:0;width:270px;background:rgba(255,255,255,.95);z-index:49;transform:translateX(105%);transition:transform .3s;overflow:auto;padding:12px;box-shadow:-4px 0 18px rgba(0,0,0,.2)}
 nav.toc.on{transform:none}
@@ -108,7 +110,7 @@ footer{text-align:center;color:#fff;font-weight:700;padding:16px;background:rgba
 </head>
 <body>
 <div class="bgfix"></div>
-<div class="top"><img src="assets/moe.png" alt="وزارة التعليم"><b>المعادن – جواهر الأرض</b><span class="sp"></span><div class="navl"><a href="#what">المعدن</a><a href="#form">التشكّل</a><a href="#props">الخصائص</a><a href="#hard">القساوة</a><a href="#gems">الأحجار والخامات</a><a href="#nafs">نافس</a><a href="#play">الألعاب</a></div><button class="menu-btn" onclick="toggleToc()">☰ المحتويات</button><div class="prog" id="prog"></div></div>
+<div class="top"><img src="assets/moe.png" alt="وزارة التعليم"><b>المعادن – جواهر الأرض</b><span class="tname">د. أفنان الطلحي</span><span class="sp"></span><div class="navl"><a href="#what">المعدن</a><a href="#form">التشكّل</a><a href="#props">الخصائص</a><a href="#hard">القساوة</a><a href="#gems">الأحجار والخامات</a><a href="#nafs">نافس</a><a href="#play">الألعاب</a></div><button class="menu-btn" onclick="toggleToc()">☰ المحتويات</button><div class="prog" id="prog"></div></div>
 <nav class="toc" id="toc">
  <a href="#start">🏠 البداية</a><a href="#goals">🎯 الأهداف والمفردات</a><a href="#hook">🔎 التهيئة</a><a href="#what">💎 ما المعدن؟</a>
  <a href="#form">🌋 كيف تتشكّل المعادن؟</a><a href="#crystal">🔷 الشكل البلوري</a><a href="#props">🧪 خصائص المعادن</a>
@@ -121,11 +123,11 @@ footer{text-align:center;color:#fff;font-weight:700;padding:16px;background:rgba
 <section id="start">
  <div class="hero">
   <div class="in">
+   <p class="who" style="margin:0 0 6px;font-size:20px;color:var(--t)">👩‍🏫 المعلمة: د. أفنان الطلحي</p>
    <span class="tag">العلوم • الصف الأول المتوسط • الفصل الخامس: الصخور والمعادن</span>
    <h1>المعادن – جواهر الأرض 💎</h1>
    <p class="sub">الدرس الأول • درس إلكتروني تفاعلي</p>
    <p>الفكرة العامة: تشكّل أعداد قليلة فقط من المعادن معظم صخور الأرض، ولكل معدن خواص فيزيائية تميّزه وتُستخدم في تعرّفه.</p>
-   <p class="who">إعداد: د. أفنان الطلحي</p>
    <div class="stats"><span>⏱ حصة واحدة</span><span>🧪 3 مختبرات افتراضية</span><span>📊 8 أسئلة نافس</span><span>🎮 لعبة وواقع معزّز</span></div>
    <a class="btn g" href="#goals" style="margin-top:14px">ابدئي الرحلة ✨</a>
   </div>
