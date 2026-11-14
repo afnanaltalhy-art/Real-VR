@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>درس إلكتروني: المعادن – جواهر الأرض | د. أفنان الطلحي</title>
+<style>
+@font-face{font-family:Almarai;src:url(assets/Almarai-Regular.ttf);font-weight:400;font-display:swap}
+@font-face{font-family:Almarai;src:url(assets/Almarai-Bold.ttf);font-weight:700;font-display:swap}
+:root{--t:#0E4D45;--p:#5B3A8E;--g:#D9A21B;--gr:#3F8A2A;--r:#C2362B;--ink:#1F2A2A;--card:rgba(255,255,255,.72);--card2:rgba(255,255,255,.55)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Almarai,Tahoma,sans-serif;color:var(--ink);line-height:1.9;font-size:18px;
+ background:#8a6a52 url(assets/rock-bg.jpg) center/cover fixed}
+img{max-width:100%}
+/* top bar */
+.top{position:sticky;top:0;z-index:50;background:rgba(14,77,69,.92);color:#fff;display:flex;align-items:center;gap:10px;padding:6px 14px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.top img{height:38px;background:#fff;border-radius:8px;padding:2px 6px}
+.top b{font-size:16px}
+.top .sp{flex:1}
+.prog{position:absolute;bottom:0;right:0;height:4px;background:var(--g);width:0;transition:width .2s}
+.menu-btn{background:var(--g);color:#fff;border:none;border-radius:10px;padding:6px 12px;font:700 15px Almarai;cursor:pointer}
+nav.toc{position:fixed;top:52px;right:0;bottom:0;width:270px;background:rgba(255,255,255,.95);z-index:49;transform:translateX(105%);transition:transform .3s;overflow:auto;padding:12px;box-shadow:-4px 0 18px rgba(0,0,0,.2)}
+nav.toc.on{transform:none}
+nav.toc a{display:block;padding:8px 12px;margin:4px 0;border-radius:10px;color:var(--t);text-decoration:none;font-weight:700;background:#eef6f1}
+nav.toc a:hover{background:var(--t);color:#fff}
+/* layout */
+main{max-width:1050px;margin:0 auto;padding:18px 14px 60px}
+section{margin:26px 0;scroll-margin-top:70px}
+.panel{background:var(--card);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border-radius:22px;padding:22px;box-shadow:0 8px 24px rgba(40,25,10,.25);border:1px solid rgba(255,255,255,.6)}
+.tag{display:inline-block;background:var(--p);color:#fff;border-radius:20px;padding:2px 14px;font-size:14px;font-weight:700;margin-bottom:6px}
+h2{color:var(--t);font-size:30px;margin-bottom:10px}
+h3{color:var(--p);font-size:21px;margin:10px 0 6px}
+p{margin:6px 0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.box{background:var(--card2);border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.7)}
+.box h4{color:var(--t);font-size:19px;margin-bottom:4px}
+.def{background:rgba(91,58,142,.88);color:#fff;border-radius:16px;padding:14px 18px;font-weight:700;font-size:19px}
+.def b{color:#FFE38A}
+.btn{display:inline-block;border:none;border-radius:14px;padding:10px 18px;font:700 17px Almarai;cursor:pointer;color:#fff;background:var(--t);box-shadow:0 4px 0 #083530;transition:transform .1s;text-decoration:none}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #083530}
+.btn.p{background:var(--p);box-shadow:0 4px 0 #3d2563}.btn.g{background:var(--g);box-shadow:0 4px 0 #a87a0c}.btn.gr{background:var(--gr);box-shadow:0 4px 0 #2c6a1c}
+.reveal{display:none;margin-top:8px;background:rgba(63,138,42,.9);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700}
+.reveal.on{display:block;animation:pop .35s}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+/* hero */
+.hero{position:relative;border-radius:26px;overflow:hidden;min-height:420px;background:url(assets/bg_desert.jpg) center/cover;display:flex;align-items:flex-end;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.hero .in{margin:18px;background:rgba(255,255,255,.7);border-radius:20px;padding:18px 22px;max-width:560px}
+.hero h1{font-size:44px;color:var(--t);line-height:1.3}
+.hero .sub{color:var(--p);font-weight:700}
+.hero .who{margin-top:8px;font-weight:700}
+.girl{position:absolute;left:10px;bottom:0;height:92%;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35))}
+@media(max-width:720px){.girl{display:none}.hero h1{font-size:34px}}
+/* sort */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:#fff;border-radius:14px;padding:10px 14px;font-weight:700;cursor:pointer;border:2px solid var(--t);transition:.2s}
+.chip.ok{background:var(--gr);color:#fff;border-color:var(--gr)}.chip.no{background:var(--r);color:#fff;border-color:var(--r)}
+.chip small{display:block;font-size:13px;font-weight:400}
+/* conditions */
+.cond{background:var(--card2);border-radius:16px;padding:12px;text-align:center;cursor:pointer;min-height:132px;border:2px dashed var(--g);transition:.25s}
+.cond .ic{font-size:38px}
+.cond .tx{display:none;font-size:15px}
+.cond.on{background:rgba(14,77,69,.9);color:#fff;border-style:solid}.cond.on .tx{display:block}
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.tabs button{border:none;border-radius:12px;padding:8px 14px;font:700 16px Almarai;background:#fff;color:var(--t);cursor:pointer}
+.tabs button.on{background:var(--t);color:#fff}
+.tabp{display:none}.tabp.on{display:block;animation:pop .3s}
+.scene{background:#fff7ec;border-radius:16px;overflow:hidden}
+svg text{font-family:Almarai}
+/* lab */
+.lab{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.lab{grid-template-columns:1fr}}
+select{font:700 17px Almarai;padding:8px;border-radius:10px;border:2px solid var(--t);width:100%;background:#fff}
+.result{min-height:60px;border-radius:14px;padding:12px;font-weight:700;background:#fff}
+.plate{height:120px;background:#fbfbf7;border-radius:12px;position:relative;overflow:hidden;border:2px solid #ddd}
+.streak{position:absolute;top:50px;right:20px;height:18px;width:0;border-radius:9px;transition:width 1.2s}
+table.mohs{width:100%;border-collapse:collapse;background:rgba(255,255,255,.8);border-radius:12px;overflow:hidden;font-weight:700}
+table.mohs th{background:var(--t);color:#fff;padding:6px}table.mohs td{padding:5px 8px;border-bottom:1px solid #dfe8e4;text-align:center}
+.bar{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--g),var(--p))}
+/* quran */
+.quran{font-size:28px;color:var(--t);text-align:center;font-weight:700;line-height:2}
+/* quiz */
+.q{background:var(--card2);border-radius:16px;padding:14px;margin:10px 0}
+.q .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:8px}
+.q button{border:2px solid var(--p);background:#fff;border-radius:12px;padding:10px;font:700 16px Almarai;cursor:pointer;text-align:right}
+.q button.ok{background:var(--gr);color:#fff;border-color:var(--gr)}.q button.no{background:var(--r);color:#fff;border-color:var(--r)}
+.q .why{display:none;margin-top:8px;font-weight:700;color:var(--t)}
+.score{font-size:22px;font-weight:700;color:var(--p)}
+.nafs{height:70px;vertical-align:middle;background:#fff;border-radius:12px;padding:4px}
+.qr{background:#fff;border-radius:16px;padding:12px;text-align:center}
+.qr img{width:180px;height:180px}
+textarea{width:100%;font:16px Almarai;border-radius:12px;border:2px solid var(--p);padding:8px;min-height:70px}
+.stars span{font-size:30px;cursor:pointer;filter:grayscale(1);opacity:.5}.stars span.on{filter:none;opacity:1}
+footer{text-align:center;color:#fff;font-weight:700;padding:16px;background:rgba(14,77,69,.9);border-radius:16px}
+.badge{display:none;text-align:center;background:linear-gradient(135deg,#fff8dc,#f3e8ff);border-radius:20px;padding:18px;border:3px solid var(--g)}
+.badge.on{display:block;animation:pop .5s}
+.cave-note{font-size:14px;color:#555}
+</style>
+</head>
+<body>
+<div class="top"><img src="assets/moe.png" alt="وزارة التعليم"><b>المعادن – جواهر الأرض</b><span class="sp"></span><button class="menu-btn" onclick="toggleToc()">☰ المحتويات</button><div class="prog" id="prog"></div></div>
+<nav class="toc" id="toc">
+ <a href="#start">🏠 البداية</a><a href="#goals">🎯 الأهداف والمفردات</a><a href="#hook">🔎 التهيئة</a><a href="#what">💎 ما المعدن؟</a>
+ <a href="#form">🌋 كيف تتشكّل المعادن؟</a><a href="#crystal">🔷 الشكل البلوري</a><a href="#props">🧪 خصائص المعادن</a>
+ <a href="#hard">💪 القساوة ومقياس موهس</a><a href="#streak">✏️ المخدش واللمعان</a><a href="#special">🧲 خواص خاصة</a>
+ <a href="#common">🪨 المعادن الشائعة</a><a href="#gems">💍 الأحجار الكريمة والخامات</a><a href="#links">🕌 الربط بالدين والوطن</a>
+ <a href="#nafs">📊 تدريبات نافس</a><a href="#review">📝 مراجعة الدرس</a><a href="#play">🎮 الألعاب والواقع المعزّز</a><a href="#exit">✍️ بطاقة الخروج</a>
+</nav>
+<main>
+
+<section id="start">
+ <div class="hero">
+  <div class="in">
+   <span class="tag">العلوم • الصف الأول المتوسط • الفصل الخامس: الصخور والمعادن</span>
+   <h1>المعادن – جواهر الأرض 💎</h1>
+   <p class="sub">الدرس الأول • درس إلكتروني تفاعلي</p>
+   <p>الفكرة العامة: تشكّل أعداد قليلة فقط من المعادن معظم صخور الأرض، ولكل معدن خواص فيزيائية تميّزه وتُستخدم في تعرّفه.</p>
+   <p class="who">إعداد: د. أفنان الطلحي</p>
+   <a class="btn g" href="#goals" style="margin-top:8px">ابدئي الرحلة ✨</a>
+  </div>
+ </div>
+</section>
+
+<section id="goals" class="panel">
+ <span class="tag">الأهداف</span><h2>🎯 في هذا الدرس</h2>
+ <div class="grid g2">
+  <div class="box"><h4>الأهداف</h4><p>✔ تحدّدين الفرق بين المعدن والصخر.</p><p>✔ تصفين الخصائص المستخدمة في تحديد المعادن.</p></div>
+  <div class="box"><h4>الأهمية</h4><p>المعادن مواد أساسية في الطبيعة يستخدمها الإنسان في أغراض مختلفة.</p></div>
+ </div>
+ <h3>المفردات (انقري الكلمة)</h3>
+ <div class="chips" id="vocab"></div>
+ <div class="reveal" id="vocabDef"></div>
+</section>
+
+<section id="hook" class="panel">
+ <span class="tag">التهيئة</span><h2>🔎 أين تبحثين عن المعادن؟</h2>
+ <p>افترضي أنك تخطّطين للبحث عن المعادن… هل تبحثين عنها داخل كهف أم تخترقين أعماق منجم؟ في الواقع يمكنك إيجادها بسهولة في بيتك!</p>
+ <div class="grid g3" style="margin-top:8px">
+  <div class="box"><h4>🧂 علبة الملح</h4><button class="btn p" onclick="rv(this)">ما المعدن؟</button><div class="reveal">الهاليت (الملح الصخري)</div></div>
+  <div class="box"><h4>✏️ قلم الرصاص</h4><button class="btn p" onclick="rv(this)">ما المعدن؟</button><div class="reveal">الجرافيت، وليس عنصر الرصاص!</div></div>
+  <div class="box"><h4>🥛 الأواني الزجاجية</h4><button class="btn p" onclick="rv(this)">ما المعدن؟</button><div class="reveal">الكوارتز يُستخدم في صناعة الزجاج</div></div>
+ </div>
+ <p style="margin-top:10px">📒 <b>دفتر العلوم:</b> لاحظي صخرة أو عيّنة معدن، وصِفي ثلاثًا من خواصّها (مثل: اللون، والتركيب، والقساوة، والكثافة).</p>
+</section>
+
+<section id="what" class="panel">
+ <span class="tag">المفهوم</span><h2>💎 ما المعدن؟</h2>
+ <div class="def"><b>المعدن:</b> مادة صلبة غير عضوية موجودة في الطبيعة، لها تركيب كيميائي محدد، وترتيب ذري منتظم.</div>
+ <h3>انقري كل بطاقة لتكشفي الشرط</h3>
+ <div class="grid g4" id="conds"></div>
+ <p style="margin-top:10px">يُعرف حتى الآن أكثر من <b>4000</b> معدن، ولكل معدن خصائص مميزة يمكنك بواسطتها تعرّفه.</p>
+ <div class="grid g2" style="margin-top:12px">
+  <div class="box" style="background:url(assets/bg_granite.jpg) center/cover;min-height:220px;display:flex;align-items:flex-end"><div style="background:rgba(255,255,255,.75);border-radius:12px;padding:8px 12px;font-weight:700">🪨 <b>الصخر</b> يتكوّن من معدن واحد أو أكثر؛ فالجرانيت يتكوّن من الكوارتز والفلسبار والميكا.</div></div>
+  <div class="box"><h4>🎮 نشاط: معدن أم ليس معدنًا؟</h4><p>انقري كل بطاقة:</p><div class="chips" id="sort"></div><p class="cave-note">تنبيه: الأوبال يعدّه بعضهم معدنًا نفيسًا، لكنه <b>شبه معدن</b>؛ لأن تركيبه مرتب جزئيًّا فقط.</p></div>
+ </div>
+</section>
+
+<section id="form" class="panel">
+ <span class="tag">محاكاة</span><h2>🌋 كيف تتشكّل المعادن؟</h2>
+ <div class="tabs" id="formTabs">
+  <button class="on" data-t="f1">🔥 تبريد بطيء</button><button data-t="f2">🌋 تبريد سريع</button><button data-t="f3">☀️ التبخّر</button><button data-t="f4">💧 الترسيب</button>
+ </div>
+ <div class="tabp on" id="f1"><div class="scene"><svg viewBox="0 0 600 220" width="100%"><rect width="600" height="220" fill="#5a3b2a"/><ellipse cx="300" cy="120" rx="240" ry="80" fill="#e8642a"/><g id="bigX" fill="#f4e9ff" stroke="#8d6bbf" stroke-width="3"></g><text x="300" y="210" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">في باطن الأرض: الصهارة تبرد ببطء ← ذرّات منتظمة وبلورات كبيرة</text></svg></div><button class="btn" onclick="grow('bigX',6,34)">▶ ابدئي التبريد</button></div>
+ <div class="tabp" id="f2"><div class="scene"><svg viewBox="0 0 600 220" width="100%"><rect width="600" height="220" fill="#8fc3e8"/><path d="M150 200 L280 60 L320 60 L450 200Z" fill="#6b4a3a"/><ellipse cx="300" cy="190" rx="200" ry="20" fill="#ff7a1a"/><g id="smallX" fill="#3d3d3d"></g><text x="300" y="30" text-anchor="middle" fill="#0E4D45" font-size="18" font-weight="700">على السطح: اللابة تبرد بسرعة ← بلورات صغيرة</text></svg></div><button class="btn" onclick="grow('smallX',40,7)">▶ ابدئي التبريد</button></div>
+ <div class="tabp" id="f3"><div class="scene"><svg viewBox="0 0 600 220" width="100%"><rect width="600" height="220" fill="#ffe9a8"/><circle cx="520" cy="50" r="30" fill="#ffb300"/><rect id="water" x="150" y="90" width="300" height="100" fill="#4fa3d9"/><rect x="150" y="190" width="300" height="10" fill="#c79b6d"/><g id="saltX" fill="#fff" stroke="#bbb"></g><text x="300" y="40" text-anchor="middle" fill="#0E4D45" font-size="18" font-weight="700">يتبخّر ماء البحر ← تتشكّل بلورات الهاليت والجبس</text></svg></div><button class="btn" onclick="evap()">▶ شغّلي الشمس</button></div>
+ <div class="tabp" id="f4"><div class="scene"><svg viewBox="0 0 600 220" width="100%"><rect width="600" height="220" fill="#1f5f8b"/><rect y="180" width="600" height="40" fill="#3a2a22"/><g id="nod" fill="#2b2b2b"></g><text x="300" y="40" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">الماء يحمل مواد ذائبة… يترسّب ما يفيض عنها ← عُقيدات المنجنيز (حتى 25 سم)</text></svg></div><button class="btn" onclick="nodules()">▶ ابدئي الترسيب</button></div>
+ <div class="box" style="margin-top:12px"><b>🔍 أدلة تشكّل المعدن:</b> البلورات المعدنية الكبيرة المترابطة دليل على تكوّن الصخر من <b>تبريد بطيء للصهارة</b>، والبلورات الكبيرة مكتملة الشكل تعني أن المعدن توافر له حيّز كافٍ لينمو، كما في فجوة داخل الصخور.</div>
+</section>
+
+<section id="crystal" class="panel">
+ <span class="tag">المفهوم</span><h2>🔷 الشكل البلوري</h2>
+ <div class="def">جميع المعادن تتركّب من ذرّات مرتبة بشكل منتظم ومتكرر، وتُسمّى المادة الصلبة التي تحتوي ذرّات بهذا الشكل <b>بلّورات</b>. وتحتوي البلورات أحيانًا سطوحًا ملساء تُسمّى <b>السطوح البلورية</b>.</div>
+ <div class="grid g2" style="margin-top:12px">
+  <div class="box"><h4>✅ ماذا قرأت؟</h4><p>ما الذي يميّز البلورات عن الأنواع الأخرى من المواد الصلبة؟</p><button class="btn p" onclick="rv(this)">الإجابة</button><div class="reveal">النظام الداخلي لترتيب الذرّات.</div></div>
+  <div class="box"><h4>⚠️ مفهوم شائع غير صحيح</h4><p>«المعدن بلوري فقط إذا ظهر له شكل بلوري مثل بلورة الملح».</p><button class="btn p" onclick="rv(this)">التصحيح</button><div class="reveal">التركيب البلوري يرجع إلى الترتيب الداخلي للذرات؛ فقد يكون المعدن بلوريًّا داخليًّا حتى لو لم يظهر له شكل بلوري.</div></div>
+ </div>
+ <p style="margin-top:8px">💡 معدن <b>البيريت</b> يتكوّن عادة من بلورات سداسية الأوجه، لونه ذهبي ولمعانه فلزي؛ لذلك يبدو كالذهب.</p>
+</section>
+
+<section id="props" class="panel" style="background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)),url(assets/bg_granite.jpg) center/cover">
+ <span class="tag">المفهوم</span><h2>🧪 خصائص المعادن</h2>
+ <p>كما تعرفين صديقتك بين الناس من لون شعرها وشكل عينيها، تتميّز المعادن بخصائص فيزيائية تميّز كل معدن من غيره.</p>
+ <div class="tabs" id="propTabs">
+  <button class="on" data-t="p1">🔷 الشكل البلوري</button><button data-t="p2">🔨 الانفصام والمكسر</button><button data-t="p3">🎨 اللون</button>
+ </div>
+ <div class="tabp on box" id="p1"><p>البلورات منتظمة الشكل؛ فالهاليت (الملح الصخري) بلوراته مكعبة، والبيريت بلوراته سداسية الأوجه.</p></div>
+ <div class="tabp box" id="p2">
+  <p><b>الانفصام:</b> انفصال المعدن لدى تجزئته إلى قطع ذات سطوح ناعمة ومنتظمة وعاكسة للضوء؛ بسبب وجود مناطق ضعف داخل ترتيب الذرات.</p>
+  <p><b>المكسر:</b> تكسّر المعدن إلى قطع ذات سطوح خشنة أو منحنية.</p>
+  <div class="grid g3"><div class="box">📄 <b>الميكا:</b> انفصام في اتجاه واحد؛ تنفصل إلى صفائح رقيقة.</div><div class="box">🧊 <b>الهاليت:</b> ثلاثة اتجاهات انفصام متعامدة؛ شكل مكعب.</div><div class="box">💠 <b>الكوارتز:</b> ليس له انفصام؛ له مكسر.</div></div>
+  <p>🍰 تشبيه: الانفصام يشبه فصل طبقات الكعكة عند طبقة الكريمة الضعيفة.</p>
+ </div>
+ <div class="tabp box" id="p3">
+  <p>اللون الذهبي المحمرّ في بعض قطع النقد يشير إلى احتوائها على النحاس، ويتميّز الكبريت بلونه الأصفر اللامع. لكن <b>قد يكون اللون خادعًا</b>: فالبيريت أصفر لامع مثل الذهب ويُسمّى «ذهب المغفّلين»، والكالسيت يظهر بألوان مختلفة بسبب الشوائب.</p>
+ </div>
+</section>
+
+<section id="hard" class="panel">
+ <span class="tag">مختبر افتراضي</span><h2>💪 القساوة ومقياس موهس</h2>
+ <p><b>القساوة:</b> مقاومة المعدن للخدش. في عام 1822م صنّف الجيولوجي موهس المعادن حسب قساوتها من 1 إلى 10. <b>المعدن الأقسى يخدش الأقل قساوة.</b></p>
+ <div class="lab" style="margin-top:10px">
+  <div>
+   <h3>🔬 اختبري بنفسك</h3>
+   <label>المعدن:</label><select id="hm"></select>
+   <label>الأداة:</label><select id="ht"></select>
+   <p style="margin-top:8px"><button class="btn g" onclick="scratch()">✋ اخدشي</button></p>
+   <div class="result" id="hres">اختاري معدنًا وأداة ثم اخدشي.</div>
+  </div>
+  <div><table class="mohs" id="mohs"><tr><th>المعدن</th><th>القساوة</th><th>مواد معروفة</th></tr></table></div>
+ </div>
+ <div class="box" style="margin-top:12px">
+  <h4>🧮 تطبيق العلوم: ما مدى قساوة هذه المعادن؟</h4>
+  <p>خُدشت خمسة معادن بالظفر وقطعة النقد والسكين والفولاذ: الجرافيت خدشته كل الأدوات، والهاليت لم يخدشه الظفر فقط، والتركواز خدشه السكين والفولاذ فقط، والياقوت والزمرد لم تخدشهما أي أداة.</p>
+  <p>1) هل يمكن ترتيبها جميعًا من الأقسى إلى الأقل قساوة؟</p><button class="btn p" onclick="rv(this)">الإجابة</button><div class="reveal">لا؛ الجرافيت الأقل قساوة، يليه الهاليت ثم التركواز، لكن لا يمكن معرفة أيهما أقسى: الياقوت أم الزمرد؛ لأن لهما نتائج الاختبار نفسها.</div>
+  <p style="margin-top:8px">2) كيف نحدّد الأقسى: الياقوت أم الزمرد؟</p><button class="btn p" onclick="rv(this)">الإجابة</button><div class="reveal">نخدش الياقوت بالزمرد، والزمرد بالياقوت؛ الذي يخدش الآخر هو الأقسى (الياقوت).</div>
+ </div>
+</section>
+
+<section id="streak" class="panel" style="background:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),url(assets/bg_streak.jpg) center/cover">
+ <span class="tag">مختبر افتراضي</span><h2>✏️ المخدش واللمعان</h2>
+ <div class="def"><b>المخدش:</b> الفتات الناعم الملوّن الذي ينتج عن حكّ المعدن بلوح الخدش (قطعة خزف بيضاء سطحها خشن). ولون المخدش ليس بالضرورة لون المعدن؛ والاعتماد عليه أفضل من الاعتماد على اللون.</div>
+ <div class="lab" style="margin-top:12px">
+  <div class="box"><h4>اختاري معدنًا ثم احكّيه على لوح الخدش</h4>
+   <div class="chips" id="streakChips"></div>
+   <div class="plate" style="margin-top:10px"><div class="streak" id="stk"></div></div>
+   <div class="result" id="sres" style="margin-top:8px">…</div>
+  </div>
+  <div class="box"><h4>✨ اللمعان (البريق)</h4><p>يصف كيفية انعكاس الضوء عن سطح المعدن:</p><p>• <b>فلزي:</b> يلمع كالفلزات، مثل البيريت.</p><p>• <b>غير فلزي:</b> لؤلؤي، أو زجاجي، أو باهت، أو ترابي.</p><p>💡 حقيقة: تمتاز المعادن الفلزية بأن لها مخدشًا داكن اللون.</p></div>
+ </div>
+</section>
+
+<section id="special" class="panel" style="background:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),url(assets/bg_magnet.jpg) center/cover">
+ <span class="tag">تجربة افتراضية</span><h2>🧲 خواص خاصة: تصنيف المعادن</h2>
+ <p>تُظهر بعض المعادن خواص غير عادية، منها <b>المغناطيسية</b> و<b>التفاعل مع الأحماض</b>. 🥽 السلامة: النظارات الواقية ومعطف المختبر.</p>
+ <div class="grid g4" id="samples" style="margin-top:8px"></div>
+ <p style="margin-top:8px"><button class="btn" onclick="tool='mag';msg('اختاري عيّنة لتقرّبي منها المغناطيس')">🧲 قرّبي المغناطيس</button> <button class="btn p" onclick="tool='acid';msg('اختاري عيّنة لتضعي عليها قطرة حمض')">🧪 قطرة حمض مخفّف</button></p>
+ <div class="result" id="xres">اختاري الأداة ثم العيّنة.</div>
+ <div class="box" style="margin-top:10px"><h4>🗣️ شفهيًّا: أيّ الخصائص تميّز الكوارتز عن الكالسيت؟</h4><button class="btn p" onclick="rv(this)">الإجابة</button><div class="reveal">القساوة، والتفاعل مع الحمض (الكالسيت)، والانفصام: للكالسيت انفصام، أما الكوارتز فليس له انفصام.</div></div>
+</section>
+
+<section id="common" class="panel">
+ <span class="tag">المفهوم</span><h2>🪨 المعادن الشائعة</h2>
+ <div class="grid g2">
+  <div class="box"><h4>المعادن المكوّنة للصخور</h4><p>على الرغم من وجود أكثر من 4000 معدن فإن المعادن المكوّنة للصخور قليلة جدًّا (نحو 24 معدنًا).</p></div>
+  <div class="box"><h4>المعادن السيليكاتية</h4><p>تتكوّن من السيليكون والأكسجين؛ فالكوارتز سيليكا نقية (SiO₂).</p></div>
+  <div class="box"><h4>الكربونات</h4><p>تتكوّن من الكربون والأكسجين، وتدخل في تركيب الحجر الجيري المستخدم في البناء.</p></div>
+  <div class="box"><h4>الجبس والهاليت</h4><p>تكوّنا في قيعان البحار القديمة المتبخّرة، والجبس متوافر بكثرة في مناطق عديدة.</p></div>
+ </div>
+ <p style="margin-top:8px">✅ <b>ماذا قرأت؟</b> ما أهمية معدن الفلسبار السيليكاتي؟ <button class="btn p" onclick="rv(this)">الإجابة</button></p><div class="reveal">تشكّل أنواع الفلسبار أكثر من نصف معادن القشرة الأرضية.</div>
+</section>
+
+<section id="gems" class="panel">
+ <span class="tag">المفهوم</span><h2>💍 الأحجار الكريمة والخامات</h2>
+ <div class="grid g2">
+  <div class="box"><h4>💎 الحجر الكريم</h4><p>معدن نادر قابل للقص والصقل، مما يعطيه مظهرًا جميلًا يجعله مثاليًّا لصناعة الحُلي. ويجب أن يكون نقيًّا خاليًا من الشقوق والعيوب، جميل اللمعان واللون.</p></div>
+  <div class="box"><h4>🌋 كيف يتكوّن الماس؟</h4><p>يتكوّن من عنصر الكربون تحت ضغوط مرتفعة جدًّا في الستار، ثم يخرج إلى السطح بثوران بركاني يُرغم الصهارة على الصعود بسرعة حاملة معها قطع الماس.</p></div>
+  <div class="box"><h4>⛏️ الخامات</h4><p>يُسمّى المعدن <b>خامًا</b> إذا احتوى ما يكفي من مادة مفيدة يمكن بيعها وتحقيق أرباح منها: الحديد للفولاذ من الهيماتيت، والرصاص للبطاريات من الجالينا، والماغنسيوم للفيتامينات من الدولوميت. ويتم استخراجها بطريقة تُسمّى <b>التعدين</b>.</p></div>
+  <div class="box"><h4>🔥 معالجة الخامات</h4><p>بعد استخراج الخام يجب معالجته؛ فللحصول على النحاس يُصهر الخام ثم يُنقّى من المعادن غير المرغوب فيها، ويُستخدم النحاس في التوصيلات الكهربائية في المنازل والسيارات والأجهزة.</p></div>
+ </div>
+</section>
+
+<section id="links" class="panel">
+ <span class="tag">الربط بالدين والوطن</span><h2>🕌 ألوان الجبال… من آيات الخالق</h2>
+ <p class="quran">﴿ وَمِنَ الْجِبَالِ جُدَدٌ بِيضٌ وَحُمْرٌ مُّخْتَلِفٌ أَلْوَانُهَا وَغَرَابِيبُ سُودٌ ﴾ <span style="font-size:18px">[فاطر: 27]</span></p>
+ <p style="text-align:center"><audio controls preload="none" src="assets/quran-fatir27.mp3"></audio></p>
+ <p style="text-align:center">تختلف ألوان الجبال باختلاف المعادن المكوّنة لصخورها.</p>
+ <div class="box" style="margin-top:10px"><h4>🇸🇦 وطني</h4><p>تتميّز دول الخليج بوجود معادن أو صخور أو أحجار كريمة خاصة بها؛ فالمملكة العربية السعودية مثلًا تشتهر بوجود معدن <b>الذهب</b>. هل تتميّز منطقتك بمعدن أو صخر أو حجر كريم خاص؟</p></div>
+</section>
+
+<section id="nafs" class="panel">
+ <span class="tag">تدريبات نافس</span><h2><img class="nafs" src="assets/nafs.png" alt="نافس"> نحو نافس</h2>
+ <p>اختاري الإجابة الصحيحة… الدرجة: <span class="score" id="nscore">0</span> / <span id="ntot"></span></p>
+ <div id="nafsQ"></div>
+</section>
+
+<section id="review" class="panel">
+ <span class="tag">تقويم ختامي</span><h2>📝 مراجعة الدرس (ص 138)</h2>
+ <div id="rev"></div>
+</section>
+
+<section id="play" class="panel">
+ <span class="tag">تعلّم باللعب</span><h2>🎮 الألعاب والواقع المعزّز</h2>
+ <div class="grid g2">
+  <div class="qr"><h3>💎 لعبة «مغامرة كهف الجواهر»</h3><img src="assets/qr-game.png" alt="باركود اللعبة"><p><a class="btn g" href="../rocks-game/" target="_blank">ابدئي اللعب</a></p></div>
+  <div class="qr"><h3>🔬 مختبر الصخور والمعادن (واقع معزّز)</h3><img src="assets/qr-lab.png" alt="باركود المختبر"><p><a class="btn" href="../rocks/" target="_blank">افتحي المختبر</a></p><p class="cave-note">📷 اختاري «السماح» لاستخدام الكاميرا.</p></div>
+ </div>
+</section>
+
+<section id="exit" class="panel">
+ <span class="tag">بطاقة الخروج</span><h2>✍️ قبل أن تغادري</h2>
+ <p>أهم شيء تعلّمتُه اليوم عن المعادن:</p><textarea id="exitT" placeholder="اكتبي هنا…"></textarea>
+ <p style="margin-top:8px">قيّمي فهمك:</p><div class="stars" id="stars"><span data-v="1">⭐</span><span data-v="2">⭐</span><span data-v="3">⭐</span></div>
+ <p style="margin-top:10px"><button class="btn gr" onclick="finish()">🏅 أنهيت الدرس</button></p>
+ <div class="badge" id="badge"><div style="font-size:60px">🏅💎</div><h2>وسام «خبيرة المعادن»</h2><p id="bmsg"></p><p>العلوم • أول متوسط • د. أفنان الطلحي</p></div>
+</section>
+
+<footer>المعادن – جواهر الأرض • العلوم • الصف الأول المتوسط • إعداد: د. أفنان الطلحي</footer>
+</main>
+
+<script>
+/* ===== sound effects only (no music) ===== */
+let AC;function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC}
+function tone(f,d,type='sine',v=.15,slide){try{const a=ac(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;if(slide)o.frequency.exponentialRampToValueAtTime(slide,a.currentTime+d);g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+d)}catch(e){}}
+function noise(d,v=.2,hp=800){try{const a=ac(),b=a.createBuffer(1,a.sampleRate*d,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*(1-i/c.length);const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=a.createGain();g.gain.value=v;s.connect(f);f.connect(g);g.connect(a.destination);s.start()}catch(e){}}
+const sfx={ok(){tone(880,.15,'triangle');setTimeout(()=>tone(1320,.2,'triangle'),110)},no(){tone(220,.25,'square',.06,160)},tap(){tone(660,.05,'sine',.08)},
+ scratch(){noise(.45,.25,2500)},fizz(){for(let i=0;i<8;i++)setTimeout(()=>noise(.06,.12,4000),i*70)},clink(){tone(1800,.12,'triangle',.12);setTimeout(()=>tone(2400,.15,'triangle',.08),60)},drip(){tone(900,.12,'sine',.12,300)},rumble(){noise(1,.18,60)}};
+/* ===== ui ===== */
+function toggleToc(){document.getElementById('toc').classList.toggle('on');sfx.tap()}
+document.querySelectorAll('#toc a').forEach(a=>a.onclick=()=>document.getElementById('toc').classList.remove('on'));
+addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+function rv(b){const r=b.nextElementSibling&&b.nextElementSibling.classList.contains('reveal')?b.nextElementSibling:b.parentElement.nextElementSibling;r.classList.toggle('on');sfx.clink()}
+function tabs(id){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b));
+ const p=b.parentElement.parentElement;p.querySelectorAll('.tabp').forEach(t=>t.classList.toggle('on',t.id===b.dataset.t));sfx.tap()})}
+tabs('formTabs');tabs('propTabs');
+/* vocab */
+const V=[['المعدن','مادة صلبة غير عضوية موجودة في الطبيعة، لها تركيب كيميائي محدد وترتيب ذري منتظم.'],['الصخر','مادة صلبة تتكوّن من معدن واحد أو أكثر.'],['البلورات','مادة صلبة ذرّاتها مرتبة بشكل منتظم ومتكرر.'],['الحجر الكريم','معدن نادر قابل للقص والصقل، جميل المظهر.'],['الخام','معدن يحتوي ما يكفي من مادة مفيدة يمكن بيعها وتحقيق أرباح منها.'],['الخصائص الفيزيائية (مراجعة)','خصائص للمادة يمكن ملاحظتها دون أن يؤدي ذلك إلى تغيّر في ماهيتها.']];
+const vb=document.getElementById('vocab');V.forEach(([w,d])=>{const c=document.createElement('span');c.className='chip';c.textContent=w;c.onclick=()=>{const r=document.getElementById('vocabDef');r.innerHTML='<b>'+w+':</b> '+d;r.classList.add('on');sfx.clink()};vb.appendChild(c)});
+/* conditions */
+const C=[['🪨','صلب','له شكل وحجم ثابتان.'],['🌍','طبيعي','يتكوّن في الطبيعة ولا يصنعه الإنسان.'],['🚫🌿','غير عضوي','لم ينشأ من نبات أو حيوان.'],['⚗️','تركيب كيميائي محدد','تركيبه الكيميائي ثابت.'],['🔷','ترتيب ذري منتظم','ذرّاته مرتبة بترتيب دوري منتظم.']];
+const cd=document.getElementById('conds');C.forEach(([i,t,x])=>{const d=document.createElement('div');d.className='cond';d.innerHTML='<div class="ic">'+i+'</div><b>'+t+'</b><div class="tx">'+x+'</div>';d.onclick=()=>{d.classList.toggle('on');sfx.clink()};cd.appendChild(d)});
+/* sort */
+const S=[['الكوارتز',1,'طبيعي صلب غير عضوي'],['الفحم',0,'عضوي من بقايا النباتات'],['الهاليت',1,'بلورات مكعبة منتظمة'],['الزجاج',0,'مصنوع وغير منتظم الذرات'],['البيريت',1,'بلورات منتظمة'],['الأوبال',0,'شبه معدن'],['الجرانيت',0,'صخر من عدة معادن'],['الجرافيت',1,'في قلم الرصاص']];
+const so=document.getElementById('sort');S.forEach(([n,m,w])=>{const c=document.createElement('span');c.className='chip';c.innerHTML=n;c.onclick=()=>{if(c.dataset.d)return;c.dataset.d=1;c.className='chip '+(m?'ok':'no');c.innerHTML=n+' '+(m?'✔ معدن':'✖ ليس معدنًا')+'<small>'+w+'</small>';m?sfx.ok():sfx.no()};so.appendChild(c)});
+/* formation sims */
+const NS='http://www.w3.org/2000/svg';
+function grow(id,n,size){const g=document.getElementById(id);g.innerHTML='';sfx.rumble();for(let i=0;i<n;i++)setTimeout(()=>{const r=document.createElementNS(NS,'polygon');const cx=id==='bigX'?120+(i%3)*180+Math.random()*30:110+Math.random()*380,cy=id==='bigX'?80+Math.floor(i/3)*70:150+Math.random()*40,s=size;
+ r.setAttribute('points',[0,1,2,3,4,5].map(k=>(cx+s*Math.cos(k*Math.PI/3))+','+(cy+s*Math.sin(k*Math.PI/3))).join(' '));r.style.opacity=0;r.style.transition='opacity .5s';g.appendChild(r);requestAnimationFrame(()=>r.style.opacity=1);sfx.tap()},i*(id==='bigX'?600:60))}
+function evap(){const w=document.getElementById('water'),g=document.getElementById('saltX');g.innerHTML='';let h=100;sfx.drip();const t=setInterval(()=>{h-=5;w.setAttribute('y',190-h);w.setAttribute('height',Math.max(h,0));if(h%20===0){const r=document.createElementNS(NS,'rect');r.setAttribute('x',170+Math.random()*250);r.setAttribute('y',172-Math.random()*10);r.setAttribute('width',16);r.setAttribute('height',16);g.appendChild(r);sfx.clink()}if(h<=0){clearInterval(t);for(let i=0;i<10;i++){const r=document.createElementNS(NS,'rect');r.setAttribute('x',160+i*28);r.setAttribute('y',174);r.setAttribute('width',16);r.setAttribute('height',16);g.appendChild(r)}}},180)}
+function nodules(){const g=document.getElementById('nod');g.innerHTML='';[100,190,280,370,460].forEach((x,i)=>{const c=document.createElementNS(NS,'circle');c.setAttribute('cx',x);c.setAttribute('cy',176);c.setAttribute('r',2);g.appendChild(c);let r=2;const t=setInterval(()=>{r+=1;c.setAttribute('r',r);c.setAttribute('cy',180-r*.6);if(r>=18)clearInterval(t)},120+i*20)});sfx.drip()}
+/* hardness lab */
+const M=[['التلك',1],['الجبس',2],['الكالسيت',3],['الفلوريت',4],['الأباتيت',5],['الفلسبار',6],['الكوارتز',7],['التوباز',8],['الكوروندم',9],['الماس',10]];
+const T=[['الظفر',2.5],['قطعة النقد',3],['مسمار الحديد',4.5],['الزجاج',5.5],['المبرد الفولاذي',6.5],['لوح الحكاكة',7]];
+const hm=document.getElementById('hm'),ht=document.getElementById('ht'),mt=document.getElementById('mohs');
+M.forEach(([n,h],i)=>{hm.add(new Option(n+' ('+h+')',i));const t=T[i]?T[i][0]+' '+T[i][1]:'';mt.insertAdjacentHTML('beforeend','<tr><td>'+n+'</td><td><div class="bar" style="width:'+h*10+'%"></div>'+h+'</td><td>'+t+'</td></tr>')});
+T.forEach(([n,h],i)=>ht.add(new Option(n+' ('+h+')',i)));hm.value=3;ht.value=1;
+function scratch(){const [mn,mh]=M[hm.value],[tn,th]=T[ht.value];const r=document.getElementById('hres');sfx.scratch();
+ if(th>mh){r.style.background='#e3f3dc';r.innerHTML='✔ '+tn+' ('+th+') <b>يخدش</b> '+mn+' ('+mh+')؛ لأن الأداة أقسى من المعدن. يتكوّن أخدود على سطح المعدن.'}
+ else if(th<mh){r.style.background='#fde4e1';r.innerHTML='✖ '+tn+' ('+th+') <b>لا يخدش</b> '+mn+' ('+mh+')؛ بل قد يخدش المعدنُ الأداةَ ويبقى مسحوقها على سطحه.'}
+ else{r.style.background='#fff4cc';r.innerHTML='= القساوة متقاربة؛ قد يخدش كلٌّ منهما الآخر.'}}
+/* streak lab */
+const ST=[['الهيماتيت','#8B3A2B','لونه أحمر أو رمادي أو فلزي، لكن مخدشه بنّي محمرّ داكن.'],['البيريت','#2f3a2a','لونه أصفر لامع كالذهب، لكن مخدشه أخضر مسودّ أو بنّي مسودّ.'],['الذهب','#E2B007','لونه أصفر ومخدشه أصفر أيضًا.']];
+const sc=document.getElementById('streakChips');ST.forEach(([n,c,t])=>{const b=document.createElement('span');b.className='chip';b.textContent=n;b.onclick=()=>{const s=document.getElementById('stk');s.style.transition='none';s.style.width='0';s.style.background=c;void s.offsetWidth;s.style.transition='width 1.2s';s.style.width='70%';sfx.scratch();document.getElementById('sres').innerHTML='<b>'+n+':</b> '+t};sc.appendChild(b)});
+/* special properties */
+let tool='';const X=[['الكوارتز','💠',0,0,'لا ينجذب، ولا يتفاعل مع الحمض. أقسى من الزجاج، وليس له انفصام.'],['الكالسيت','🧊',0,1,'تتكوّن فقاعات مع الحمض! وله ثلاثة اتجاهات انفصام.'],['الهورنبلند','⬛',0,0,'لا ينجذب ولا يتفاعل؛ أسود اللون وله انفصام في اتجاهين.'],['المغنتيت','🧲',1,0,'ينجذب إلى المغناطيس! ويخدش الزجاج وحكاكته سوداء.']];
+const sm=document.getElementById('samples');X.forEach(([n,i,mag,acid,t])=>{const b=document.createElement('div');b.className='cond';b.innerHTML='<div class="ic">'+i+'</div><b>'+n+'</b>';b.onclick=()=>{if(!tool){msg('اختاري الأداة أولًا: المغناطيس أو الحمض');sfx.no();return}
+ if(tool==='mag'){mag?(sfx.clink(),msg('🧲 '+n+': '+t),b.animate([{transform:'translateY(0)'},{transform:'translateY(-14px)'},{transform:'translateY(0)'}],{duration:500})):(sfx.tap(),msg('🧲 '+n+': لا ينجذب إلى المغناطيس.'))}
+ else{acid?(sfx.fizz(),msg('🫧 '+n+': '+t)):(sfx.drip(),msg('🧪 '+n+': لا تتكوّن فقاعات.'))}};sm.appendChild(b)});
+function msg(t){document.getElementById('xres').innerHTML=t}
+/* nafs */
+const NQ=[['أيٌّ مما يأتي يُعدّ معدنًا؟',['الفحم','الزجاج','الكوارتز','الأوبال'],2,'الكوارتز مادة صلبة طبيعية غير عضوية تركيبها محدد وذرّاتها منتظمة.'],
+['صخر فيه بلورات معدنية كبيرة مترابطة؛ ماذا تستنتجين عن تكوّنه؟',['تبريد سريع للّابة','تبريد بطيء للصهارة','تبخّر الماء','الترسيب السريع'],1,'البلورات الكبيرة دليل على تبريد بطيء للصهارة.'],
+['معدن قساوته 5 على مقياس موهس، أيّ الأدوات تخدشه؟',['الظفر (2.5)','قطعة النقد (3)','مسمار الحديد (4.5)','المبرد الفولاذي (6.5)'],3,'لا يخدش المعدنَ إلا ما هو أقسى منه.'],
+['أفضل خاصية لتمييز البيريت عن الذهب:',['اللون','المخدش','اللمعان','الحجم'],1,'لونهما متشابه، لكن مخدش البيريت أخضر مسودّ ومخدش الذهب أصفر.'],
+['معدن ينفصل إلى صفائح رقيقة في اتجاه واحد:',['الهاليت','الكوارتز','الميكا','البيريت'],2,'للميكا انفصام في اتجاه واحد.'],
+['وُضع حمض مخفّف على عيّنة فتكوّنت فقاعات؛ العيّنة غالبًا:',['الكالسيت','الكوارتز','المغنتيت','الهورنبلند'],0,'الكالسيت يتفاعل مع الحمض.'],
+['يتكوّن الماس من عنصر:',['السيليكون','الكربون','الحديد','الكالسيوم'],1,'يتكوّن من الكربون تحت ضغوط مرتفعة في الستار.'],
+['أنتج بلد 2340000 طن نحاس عام 1996م و2440000 طن عام 1997م. نسبة الزيادة تقريبًا:',['1%','4.3%','10%','24%'],1,'100000 ÷ 2340000 × 100 ≈ 4.3%']];
+let ns=0;document.getElementById('ntot').textContent=NQ.length;const nq=document.getElementById('nafsQ');
+NQ.forEach(([q,o,a,w],k)=>{const d=document.createElement('div');d.className='q';d.innerHTML='<b>'+(k+1)+') '+q+'</b><div class="opts">'+o.map((x,i)=>'<button data-i="'+i+'">'+'أبجد'[i]+') '+x+'</button>').join('')+'</div><div class="why">💡 '+w+'</div>';
+ d.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(d.dataset.done)return;d.dataset.done=1;const i=+b.dataset.i;d.querySelectorAll('button')[a].classList.add('ok');if(i===a){ns++;sfx.ok()}else{b.classList.add('no');sfx.no()}d.querySelector('.why').style.display='block';document.getElementById('nscore').textContent=ns});nq.appendChild(d)});
+/* review */
+const R=[['وضّحي الفرق بين المعدن والصخر، واذكري أسماء خمسة معادن تدخل في تكوين الصخور.','المعدن مادة صلبة طبيعية غير عضوية لها تركيب كيميائي محدد وترتيب ذري منتظم، أما الصخر فيتكوّن عادة من معدنين أو أكثر. مثل: الكوارتز، والفلسبار، والكالسيت، والجبس، والهاليت.'],
+['اكتبي قائمة تتضمّن خمس خواص تُستخدم في تعرّف المعادن.','اللون، واللمعان، والحكاكة (المخدش)، والقساوة، والانفصام، والمغناطيسية.'],
+['صِفي الظاهرة التي تدفع الماس إلى سطح الأرض. أين يتكوّن الماس؟','يتكوّن الماس في الستار تحت ضغوط عالية، ويصعد إلى السطح مع المقذوفات البركانية.'],
+['قارني: ما الفرق بين لون المعدن وحكاكته؟ اذكري مثالًا.','لون المعدن هو اللون الظاهري له، أما الحكاكة فهي لون فتات المعدن الناتج عن حكّه بلوح الحكاكة؛ فالبيريت لونه أصفر لامع لكن حكاكته خضراء أو بنية مسودّة.'],
+['التفكير الناقد: هل توافقين على السكن بالقرب من منجم ذهب يجري العمل فيه؟ فسّري.','تختلف الإجابات: قد يرى بعضهم ذلك إيجابيًّا لتوافر فرص العمل، وقد يخاف آخرون من الأضرار البيئية التي تسبّبها المناجم.'],
+['تطبيق الرياضيات: ما النسبة المئوية للزيادة في إنتاج النحاس من 2340000 إلى 2440000 طن؟','الزيادة = 100000 طن، والنسبة = 100000 ÷ 2340000 × 100 ≈ 4.3%']];
+const rv0=document.getElementById('rev');R.forEach(([q,a],k)=>rv0.insertAdjacentHTML('beforeend','<div class="q"><b>'+(k+1)+') '+q+'</b><br><button class="btn p" style="margin-top:6px" onclick="rv(this)">الإجابة</button><div class="reveal">'+a+'</div></div>'));
+/* exit */
+let stars=0;document.querySelectorAll('#stars span').forEach(s=>s.onclick=()=>{stars=+s.dataset.v;document.querySelectorAll('#stars span').forEach(x=>x.classList.toggle('on',+x.dataset.v<=stars));sfx.tap()});
+function finish(){const b=document.getElementById('badge');document.getElementById('bmsg').textContent='أحسنتِ! درجتك في نافس: '+ns+' من '+NQ.length+(stars?' • تقييمك الذاتي: '+'⭐'.repeat(stars):'');b.classList.add('on');sfx.ok();setTimeout(sfx.clink,300);b.scrollIntoView({behavior:'smooth',block:'center'})}
+</script>
+</body>
+</html>
