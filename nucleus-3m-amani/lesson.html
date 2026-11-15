@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>درس النواة التفاعلي ⚛ – علوم ثالث متوسط</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+html{scroll-behavior:smooth}
+.nav{position:sticky;top:54px;z-index:19;display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:rgba(251,246,233,.92);border-bottom:2px solid #E6DDC0;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;text-decoration:none;color:var(--old);font-weight:800;font-size:13.5px;background:#fff;border:2px solid #E6DDC0;border-radius:20px;padding:6px 12px}
+.nav a.on{background:var(--ol);color:#fff;border-color:var(--ol)}
+.prog{position:fixed;top:0;right:0;height:5px;background:linear-gradient(90deg,var(--gd),var(--ol));z-index:30;width:0}
+.score{position:fixed;left:10px;top:120px;z-index:21;background:var(--old);color:#fff;border-radius:18px;padding:8px 12px;font-weight:900;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+section.sec{scroll-margin-top:110px;padding-top:8px}
+.sec>.card{background-size:cover;background-position:center}
+.hero{text-align:center;padding:26px 14px;background:rgba(255,255,255,.82)}
+.hero h1{font-size:40px;color:var(--old);margin:6px 0}
+.hero .meta{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.hero .meta span{background:#fff;border:2px solid var(--gd);border-radius:14px;padding:6px 12px;font-weight:800;font-size:14px}
+.tag{display:inline-block;background:var(--ol);color:#fff;border-radius:14px;padding:3px 12px;font-size:12.5px;font-weight:800;margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.box{background:rgba(255,255,255,.88);border:2px solid #E6DDC0;border-radius:16px;padding:12px;line-height:1.85;font-size:15.5px}
+.box h4{color:var(--pr);font-size:16.5px;margin-bottom:4px}
+.law{background:#fff;border:3px solid var(--pr);border-radius:16px;padding:12px;text-align:center;font-weight:900;font-size:18px;color:var(--old)}
+.warn{background:#FFF7DC;border-right:5px solid var(--pr);border-radius:12px;padding:10px 12px;font-size:14.5px;line-height:1.8;margin-top:10px}
+.flip{perspective:900px;height:150px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;backface-visibility:hidden;font-weight:800;border:3px solid var(--gd)}
+.flip .f{background:linear-gradient(135deg,var(--old),var(--ol));color:#fff;font-size:19px}
+.flip .f small{font-size:11.5px;opacity:.85;margin-top:6px}
+.flip .b{background:#fff;color:var(--old);transform:rotateY(180deg);font-size:14.5px;line-height:1.7}
+.flip .b b{color:var(--pr);font-size:15.5px}
+.qa{margin:8px 0}
+.qa .q{background:#fff;border:2px solid #E6DDC0;border-radius:14px;padding:10px 12px;font-weight:800;line-height:1.7}
+.qa .rv{margin-top:6px}
+.qa .a{display:none;background:#e9f5e1;border:2px solid var(--ok);border-radius:12px;padding:8px 12px;margin-top:6px;font-weight:700;line-height:1.7}
+.qa.on .a{display:block;animation:pop .35s}
+.mc{margin:10px 0}
+.mc .q{font-weight:900;margin-bottom:6px;line-height:1.7}
+.mc .o{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.mc .o{grid-template-columns:1fr}}
+.mc button{border:3px solid #E6DDC0;background:#fff;border-radius:14px;padding:10px;font-weight:800;font-size:15px;color:var(--old);text-align:right}
+.mc button.ok{border-color:var(--ok);background:#e6f7ec}.mc button.no{border-color:var(--no);background:#fdeceb}
+.tf{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:2px solid #E6DDC0;border-radius:14px;padding:8px 12px;margin:6px 0;font-weight:800;line-height:1.7}
+.tf .bt{display:flex;gap:6px;flex:none}
+.tf button{border:2px solid #E6DDC0;background:#fff;border-radius:12px;padding:6px 12px;font-weight:900}
+.tf button.ok{background:#e6f7ec;border-color:var(--ok)}.tf button.no{background:#fdeceb;border-color:var(--no)}
+.tf .ex{display:none;font-size:13.5px;color:var(--ok);font-weight:700}
+iframe.sim{width:100%;border:0;border-radius:18px;min-height:520px;background:transparent;display:block}
+.simbtn{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0 6px;flex-wrap:wrap}
+.calc{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;background:#fff;border:2px dashed var(--gd);border-radius:16px;padding:12px;font-weight:800}
+.calc input{width:80px;font:inherit;font-size:18px;font-weight:900;text-align:center;border:2px solid #d8cfae;border-radius:12px;padding:6px}
+.calc output{font-size:20px;color:var(--pr);min-width:120px;text-align:center}
+.lv{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.lvc{border-radius:18px;overflow:hidden;border:3px solid;background:#fff}
+.lvc h4{color:#fff;padding:8px;text-align:center;font-size:17px}
+.lvc .t{padding:10px;font-weight:800;line-height:1.8;min-height:86px}
+.lvc .row{display:flex;gap:6px;padding:0 10px 10px}
+.lvc .row button{flex:1;border:none;border-radius:12px;padding:8px;font-weight:800;color:#fff}
+.lvc .h,.lvc .a{display:none;margin:0 10px 10px;border-radius:12px;padding:8px;font-weight:700;line-height:1.7}
+.lvc .h{background:#FFF7DC}.lvc .a{background:#e9f5e1}
+.ayah{background:#1B2547;color:#F8E7A6;border:3px solid var(--gd);border-radius:18px;padding:16px;text-align:center;font-size:23px;line-height:2.1;font-weight:800}
+audio{width:100%;margin-top:8px}
+.link3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.link3 .c{border-radius:18px;color:#fff;padding:14px;line-height:1.8;font-weight:700}
+.link3 .c h4{font-size:19px;margin-bottom:4px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tiles a{display:block;text-decoration:none;color:var(--old);background:#fff;border:3px solid #E6DDC0;border-radius:20px;padding:14px 8px;text-align:center;font-weight:900;box-shadow:0 4px 0 #E6DDC0}
+.tiles a span{display:block;font-size:38px}
+.tiles a.ar{background:linear-gradient(135deg,#1b2547,#2f3f7a);color:#fff;border-color:var(--gd)}
+.face{display:flex;gap:6px}
+.face button{border:2px solid #ddd;background:#fff;border-radius:12px;font-size:22px;padding:2px 8px}
+.face button.on{border-color:var(--ok);background:#e6f7ec}
+.cert{display:none;text-align:center;border:4px double var(--gd);border-radius:20px;padding:18px;background:#fffdf3}
+table.t td,table.t th{font-size:15px}
+.hid{color:transparent;background:#d6e4ff!important;cursor:pointer;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="bgimg" id="bg" style="background-image:url(assets/img/sc_museum.webp);transition:background-image .6s"></div>
+<script>header('درس النواة التفاعلي ⚛','العلوم • ثالث متوسط • الفصل 3: تركيب الذرة • الدرس 2')</script>
+<nav class="nav" id="nav"></nav>
+<div class="score">⭐ <span id="pts">0</span></div>
+<div class="wrap">
+
+<section class="sec" id="start" data-t="البداية" data-bg="sc_museum">
+<div class="card hero">
+ <img src="assets/img/girl.webp" alt="" style="height:150px">
+ <h1>النواة ⚛</h1>
+ <p style="font-size:17px;font-weight:800">رحلة تفاعلية إلى قلب الذرة: من البروتون الصغير إلى ساعة الكربون النووية</p>
+ <div class="meta"><span>👩‍🏫 المعلمة: أ. أماني مجممي</span><span>🏫 مدرسة ابتدائية ومتوسطة قائم الدرب</span><span>👑 قائدة المدرسة: أ. حليمة الدربي</span></div>
+ <p class="note" style="max-width:560px;margin:10px auto">🇸🇦 طالباتي الجميلات… لنقف جميعًا ونردّد السلام الملكي، ثم نبدأ رحلتنا. كل إجابة صحيحة تمنحكِ نجومًا ⭐ في العدّاد.</p>
+ <a class="btn g" href="#goals" style="text-decoration:none;display:inline-block;font-size:18px">ابدئي الدرس ▶</a>
+</div>
+</section>
+
+<section class="sec" id="goals" data-t="الأهداف" data-bg="bg_lab">
+<div class="card"><span class="tag">🎯 الأهداف</span><h2>في نهاية الدرس ستكونين قادرة على أن:</h2>
+<div class="grid2">
+<div class="box"><h4>أولًا: ما داخل النواة؟</h4>1. تعرّفي العدد الذري وأنه يحدد هوية العنصر.<br>2. توضّحي النظائر وتمثّليها.<br>3. تحسبي العدد الكتلي وعدد النيوترونات.<br>4. تفسّري دور القوة النووية الهائلة.<br>5. تصفي التحلل الإشعاعي وجسيمات ألفا.</div>
+<div class="box"><h4>ثانيًا: النواة تتغيّر عبر الزمن</h4>6. تصفي جسيمات بيتا وتقارنيها بألفا.<br>7. توضّحي عمر النصف وتحسبي المتبقي.<br>8. تشرحي التأريخ بالكربون-14.<br>9. تصفي العناصر المصنّعة والمتتبّعة.<br>10. تربطي النظائر بحياتنا ووطننا.</div>
+</div></div>
+</section>
+
+<section class="sec" id="review" data-t="مراجعة" data-bg="bg_models">
+<div class="card"><span class="tag">🔁 مراجعة ما سبق</span><h2>نماذج الذرة عبر التاريخ: اقلبي البطاقة</h2>
+<div class="grid3" id="revCards"></div></div>
+</section>
+
+<section class="sec" id="vocab" data-t="المفردات" data-bg="bg_screen">
+<div class="card"><span class="tag">📖 المفردات</span><h2>مفردات الدرس: اضغطي البطاقة لتنقلب</h2>
+<div class="grid3" id="vocCards"></div></div>
+</section>
+
+<section class="sec" id="hook" data-t="فكّري" data-bg="bg_arch">
+<div class="card"><span class="tag">💭 التهيئة</span><h2>فكّري: مادة مشعة في بيتك! 🚨</h2>
+<div class="qa"><div class="q">يوجد في كثير من بيوتنا ومدارسنا جهاز صغير على السقف ينقذ الأرواح… وفي داخله كمية صغيرة جدًا من عنصر مشع! ما هذا الجهاز؟</div><div class="rv"><button class="btn r">▶ اكشفي الجهاز</button></div><div class="a">إنه كاشف الدخان 🔔 يحتوي على الأميريسيوم-241 الذي يطلق جسيمات ألفا. سنعرف سرّه في هذا الدرس!</div></div>
+<h3 style="margin-top:14px">❓ ماذا أعرف؟ صح أم خطأ</h3><div id="pre"></div></div>
+</section>
+
+<section class="sec" id="s1" data-t="العدد الذري والنظائر" data-bg="sc_cloud">
+<div class="card"><span class="tag">⚛ القسم 1</span><h2>العدد الذري والنظائر والعدد الكتلي</h2>
+<div class="grid2">
+<div class="box"><h4>العدد الذري (Z)</h4>عدد البروتونات في نواة الذرة؛ وهو بطاقة هوية العنصر: الهيدروجين 1، الكربون 6، النيتروجين 7، اليورانيوم 92 (أثقل العناصر في الطبيعة).</div>
+<div class="box"><h4>النظائر</h4>ذرات للعنصر نفسه تحتوي أعدادًا مختلفة من النيوترونات: كربون-12 (6 نيوترونات) • كربون-13 (7) • كربون-14 (8).</div>
+</div>
+<div class="law" style="margin-top:10px">العدد الكتلي (A) = البروتونات + النيوترونات &nbsp;•&nbsp; النيوترونات = A − Z</div>
+<h3 style="margin-top:12px">🧮 حاسبة النيوترونات</h3>
+<div class="calc">العدد الكتلي A <input id="cA" type="number" value="14"> العدد الذري Z <input id="cZ" type="number" value="6"> <output id="cO"></output></div>
+<div class="simbtn"><h3>🔬 محاكاة: ابني النظير (تجربة نموذجي النيتروجين 14 و15)</h3></div>
+<iframe class="sim" data-lab="lab1.html#t1" loading="lazy"></iframe>
+<div class="qa"><div class="q">نشاط: الثوريوم-234 (Z = 90) واليورانيوم-234 (Z = 92): كم نيوترونًا في كل منهما؟</div><div class="rv"><button class="btn w">▶ الحل</button></div><div class="a">الثوريوم: 234 − 90 = 144 • اليورانيوم: 234 − 92 = 142. لهما العدد الكتلي نفسه لكنهما عنصران مختلفان!</div></div>
+<div class="warn">⚠ انتبهي: الأرقام (12، 13، 14) في أسماء النظائر تعني العدد الكتلي، وليست عدد النيوترونات.</div>
+</div>
+</section>
+
+<section class="sec" id="s2" data-t="القوة والتحلل" data-bg="sc_space">
+<div class="card"><span class="tag">🧲 القسم 2</span><h2>القوة النووية الهائلة والتحلل الإشعاعي</h2>
+<div class="grid2">
+<div class="box"><h4>القوة النووية الهائلة</h4>البروتونات الموجبة تتنافر، لكن عندما تتقارب جدًا داخل النواة تربطها قوة كبيرة تتغلّب على التنافر.</div>
+<div class="box"><h4>التحلل الإشعاعي والتحوّل</h4>الأنوية غير المستقرة تُطلق جسيمات وطاقة (التحلل الإشعاعي)، فإن تغيّر عدد بروتوناتها صارت عنصرًا آخر (التحوّل).</div>
+</div>
+<iframe class="sim" data-lab="lab1.html#t2" loading="lazy"></iframe>
+<div class="warn">⚠ مفهوم شائع غير صحيح: «التحلل الإشعاعي يعني اختفاء العنصر» ✘ — والصحيح: العنصر يتحوّل إلى عنصر آخر ✔</div>
+</div>
+</section>
+
+<section class="sec" id="s3" data-t="ألفا" data-bg="sc_cloud">
+<div class="card"><span class="tag">💥 القسم 3</span><h2>جسيمات ألفا وكاشف الدخان</h2>
+<div class="box"><h4>جسيم ألفا</h4>بروتونان ونيوترونان (شحنته +2). عند فقده: يقل العدد الذري 2 ويقل العدد الكتلي 4. مثال: الأميريسيوم-241 (95) ← النبتونيوم-237 (93) + ألفا.</div>
+<iframe class="sim" data-lab="lab1.html#t3" loading="lazy"></iframe>
+<h3>🚨 كاشف الدخان</h3>
+<iframe class="sim" data-lab="lab1.html#t4" loading="lazy"></iframe>
+<h3>✎ ماذا قرأتِ؟</h3><div id="wr1"></div>
+</div>
+</section>
+
+<section class="sec" id="s4" data-t="بيتا" data-bg="sc_space">
+<div class="card"><span class="tag">⚡ القسم 4</span><h2>جسيمات بيتا</h2>
+<div class="box"><h4>جسيم بيتا</h4>إلكترون ذو طاقة عالية يأتي من النواة: نيوترون ← بروتون (يبقى) + إلكترون (يخرج). يزداد العدد الذري 1 ويبقى العدد الكتلي ثابتًا تقريبًا. مثال: الكربون-14 ← النيتروجين-14.</div>
+<iframe class="sim" data-lab="lab2.html#t1" loading="lazy"></iframe>
+<h3>▦ جدول المقارنة: اضغطي الخلية الزرقاء لتنكشف</h3>
+<table class="t" id="cmp"><tr><th>وجه المقارنة</th><th>جسيم ألفا</th><th>جسيم بيتا</th></tr></table>
+</div>
+</section>
+
+<section class="sec" id="s5" data-t="عمر النصف" data-bg="bg_domes">
+<div class="card"><span class="tag">⏳ القسم 5</span><h2>معدّل التحلل وعمر النصف</h2>
+<div class="box"><h4>عمر النصف</h4>الزمن اللازم لتحلّل نصف كمية العنصر المشع. التحلل عشوائي (لا نعرف أيّ نواة ستتحلل) لكنه يحدث بمعدل ثابت لا يتأثر بالحرارة أو الضغط.</div>
+<div class="law" style="margin-top:10px">عدد الفترات = المدة ÷ عمر النصف &nbsp;•&nbsp; المتبقي = البداية ÷ 2<sup>عدد الفترات</sup></div>
+<h3 style="margin-top:12px">🧮 حاسبة عمر النصف</h3>
+<div class="calc">الكتلة الابتدائية <input id="hM" type="number" value="100"> جم • عمر النصف <input id="hH" type="number" value="5730"> • المدة <input id="hT" type="number" value="17190"> <output id="hO"></output></div>
+<h3>🪙 استقصاء: عمر النصف بالقطع النقدية</h3>
+<iframe class="sim" data-lab="lab2.html#t2" loading="lazy"></iframe>
+<h3>📈 تجربة: منحنى الثوريوم-234</h3>
+<iframe class="sim" data-lab="lab2.html#t3" loading="lazy"></iframe>
+<h3>✍ مسائل تدريبية (ص 99)</h3><div id="prac"></div>
+<h3>✎ ماذا قرأتِ؟</h3><div id="wr2"></div>
+</div>
+</section>
+
+<section class="sec" id="s6" data-t="في خدمتنا" data-bg="bg_peach">
+<div class="card"><span class="tag">🔬 القسم 6</span><h2>النظائر المشعة في خدمتنا</h2>
+<h3>🦴 التأريخ بالكربون-14</h3><iframe class="sim" data-lab="lab2.html#t4" loading="lazy"></iframe>
+<h3>🩺 العناصر المتتبّعة</h3><iframe class="sim" data-lab="lab2.html#t5" loading="lazy"></iframe>
+<div class="grid2" style="margin-top:10px">
+<div class="box"><h4>⚙ العناصر المصنّعة</h4>تُصنع بقذف الأنوية بجسيمات تسرّعها أجهزة تُسمّى المسارعات؛ أعدادها الذرية 93 – 112، و114. والنفايات المشعة تُعزل وتُطمر عميقًا تحت الأرض.</div>
+<div class="box"><h4>🌱 في البيئة والزراعة</h4>الفوسفور-32 لدراسة امتصاص النبات للأسمدة، وتتبّع المبيدات وتلوث المياه، والبحث عن المياه في المناطق الجافة.</div>
+<div class="box"><h4>🏅 العلم والتاريخ</h4>بيكريل اكتشف الإشعاع (1896م)، وماري كوري اكتشفت البولونيوم والراديوم وفازت بنوبل مرتين، ورذرفورد حدّد أنواع الإشعاع.</div>
+</div></div>
+</section>
+
+<section class="sec" id="diff" data-t="متمايز" data-bg="bg_frame">
+<div class="card"><span class="tag">🌱 تعليم متمايز</span><h2>اختاري مستواكِ… وكل مستوى له نجومه</h2><div class="lv" id="lv"></div></div>
+</section>
+
+<section class="sec" id="links" data-t="الربط" data-bg="bg_blue">
+<div class="card"><span class="tag">🔗 الربط</span><h2>درسنا يرتبط بديننا ووطننا والعلوم الأخرى</h2>
+<h3>🕌 الربط بالدين</h3>
+<div class="ayah">﴿ ... وَمَا يَعْزُبُ عَن رَّبِّكَ مِن مِّثْقَالِ ذَرَّةٍ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَلَا أَصْغَرَ مِن ذَٰلِكَ وَلَا أَكْبَرَ إِلَّا فِي كِتَابٍ مُّبِينٍ ﴾<br><small>سورة يونس: 61</small></div>
+<audio controls preload="none" src="assets/audio/010061.mp3"></audio>
+<p class="note">الذرة من أصغر ما يعرفه الناس، وقد اكتشف العلماء ما هو أصغر منها: النواة ومكوّناتها ﴿وَلَا أَصْغَرَ مِن ذَٰلِكَ﴾.</p>
+<div class="ayah" style="margin-top:10px">﴿ فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ ۝ وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ ﴾<br><small>سورة الزلزلة: 7 – 8</small></div>
+<audio controls preload="none" id="z1" src="assets/audio/099007.mp3"></audio>
+<p class="note">كما يبقى أثر الكربون-14 في الأحافير آلاف السنين، يبقى أثر أعمالنا مهما صغرت.</p>
+<h3 style="margin-top:12px">🇸🇦 الربط بالوطن • 🔬 العلوم الأخرى</h3>
+<div class="link3">
+<div class="c" style="background:var(--pr)"><h4>🇸🇦 الوطن</h4>مدينة الملك عبدالله للطاقة الذرية والمتجددة • الطب النووي في مستشفيات المملكة • رؤية 2030 وجيل العالمات.</div>
+<div class="c" style="background:var(--nt)"><h4>🧮 الرياضيات</h4>النيوترونات = A − Z • القسمة والأسس في عمر النصف • قراءة المنحنى.</div>
+<div class="c" style="background:var(--ol)"><h4>🩺 الأحياء والصحة</h4>الكربون أساس المخلوقات • اليود-131 والغدة الدرقية.</div>
+<div class="c" style="background:var(--gdd)"><h4>🏛 التاريخ واللغة</h4>نماذج الذرة وماري كوري • «الذرة» في لغة العرب أدقّ الهباء.</div>
+<div class="c" style="background:var(--al)"><h4>🌍 علوم الأرض</h4>اليورانيوم-238 (4.5 مليارات سنة) لتحديد أعمار الصخور.</div>
+</div></div>
+</section>
+
+<section class="sec" id="nafs" data-t="نافس" data-bg="bg_screen">
+<div class="card"><span class="tag">🏆 نافس</span><h2>تدريبات نافس</h2><div id="nf"></div></div>
+</section>
+
+<section class="sec" id="play" data-t="العبي" data-bg="sc_build">
+<div class="card"><span class="tag">🎮 التقنية</span><h2>العبي وجرّبي بنفسك</h2>
+<div class="tiles">
+<a href="game.html"><span>🎮</span>لعبة رحلة داخل النواة</a>
+<a href="lab.html"><span>🔬</span>المختبر الكامل</a>
+<a href="ws.html"><span>🧩</span>ورقة العمل التفاعلية</a>
+<a class="ar" href="ar1.html"><span>📱</span>واقع معزز: داخل النواة</a>
+<a class="ar" href="ar2.html"><span>📱</span>واقع معزز: التحلل</a>
+</div></div>
+</section>
+
+<section class="sec" id="end" data-t="الخروج" data-bg="sc_gold">
+<div class="card"><span class="tag">🎟 التقويم الختامي</span><h2>بطاقة الخروج</h2><div id="exit"></div>
+<h3>🪞 أقيّم نفسي</h3><div id="self"></div>
+<h3 style="margin-top:12px">🗺 الخلاصة</h3>
+<div class="grid3">
+<div class="box"><h4>العدد الذري</h4>عدد البروتونات، ويحدد العنصر.</div>
+<div class="box"><h4>النظائر والعدد الكتلي</h4>تختلف في النيوترونات • N = A − Z</div>
+<div class="box"><h4>ألفا وبيتا</h4>ألفا: Z−2 و A−4 • بيتا: Z+1</div>
+<div class="box"><h4>عمر النصف</h4>المتبقي = البداية ÷ 2<sup>n</sup></div>
+<div class="box"><h4>في خدمتنا</h4>الكربون-14 • اليود-131 • كاشف الدخان</div>
+</div>
+<div style="text-align:center;margin-top:14px"><input id="nm" class="box" placeholder="اكتبي اسمك ✎" style="font:inherit;text-align:center;max-width:260px"> <button class="btn g" onclick="showCert()">🏅 احصلي على شهادتك</button></div>
+<div class="cert" id="cert"><div style="font-size:60px">🏅</div><h2 style="justify-content:center" id="certT"></h2><p id="certP"></p></div>
+</div>
+</section>
+</div>
+<script>girl();footer()</script>
+<script>
+let PTS=0;const done=new Set();
+function award(id,n=10){if(done.has(id))return;done.add(id);PTS+=n;document.getElementById('pts').textContent=PTS;SFX.ok();confetti(40)}
+const $=s=>document.querySelector(s);
+/* بطاقات قابلة للقلب */
+function flips(el,list){$(el).innerHTML=list.map(([t,d])=>`<div class="flip"><div class="in"><div class="f">${t}<small>اضغطي ⟵</small></div><div class="b"><b>${t}</b>${d}</div></div></div>`).join('');$(el).querySelectorAll('.flip').forEach(f=>f.onclick=()=>{f.classList.toggle('on');SFX.pop()})}
+flips('#revCards',[['دالتون','الذرة كرة صلبة مصمتة لا تتجزأ.'],['طومسون','كرة موجبة تنتشر فيها الإلكترونات؛ اكتشف الإلكترون بأشعة المهبط.'],['رذرفورد','معظم الكتلة والشحنة الموجبة في نواة صغيرة جدًا (رقائق الذهب).'],['النموذج الحديث','نواة من بروتونات ونيوترونات تحيط بها سحابة إلكترونية.']]);
+flips('#vocCards',[['العدد الذري','عدد البروتونات في النواة.'],['النظائر','ذرات العنصر نفسه بأعداد مختلفة من النيوترونات.'],['العدد الكتلي','البروتونات + النيوترونات.'],['القوة النووية الهائلة','تربط مكونات النواة.'],['التحلل الإشعاعي','تحرّر جسيمات وطاقة من نواة غير مستقرة.'],['التحوّل','تغيّر عنصر إلى آخر بالتحلل.'],['جسيم ألفا','بروتونان ونيوترونان (+2).'],['جسيم بيتا','إلكترون عالي الطاقة من النواة.'],['عمر النصف','زمن تحلّل نصف الكمية.'],['التأريخ بالكربون','قياس الكربون-14 المتبقي.'],['العناصر المصنّعة','تُصنع بالمسارعات.'],['العناصر المتتبّعة','نظائر تُتتبّع في الجسم والبيئة.']]);
+/* كشف الإجابات */
+document.addEventListener('click',e=>{const b=e.target.closest('.qa .rv button');if(b){b.closest('.qa').classList.toggle('on');SFX.click()}});
+function qas(el,list){$(el).innerHTML=list.map(([q,a])=>`<div class="qa"><div class="q">${q}</div><div class="rv"><button class="btn w">▶ الإجابة</button></div><div class="a">${a}</div></div>`).join('')}
+/* صح أم خطأ */
+function tfs(el,list){$(el).innerHTML=list.map(([q,a,ex],i)=>`<div class="tf" data-a="${a}" data-i="${el}${i}"><div>${i+1}) ${q}<div class="ex">${ex}</div></div><div class="bt"><button data-v="1">✔ صح</button><button data-v="0">✘ خطأ</button></div></div>`).join('');
+ $(el).querySelectorAll('.tf').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{r.querySelectorAll('button').forEach(x=>x.classList.remove('ok','no'));const ok=b.dataset.v===r.dataset.a;b.classList.add(ok?'ok':'no');r.querySelector('.ex').style.display='block';ok?award(r.dataset.i,5):SFX.no()}))}
+tfs('#pre',[['تختلف العناصر بعدد البروتونات في أنويتها.',1,'✔ العدد الذري يحدد هوية العنصر.'],['جميع ذرات الكربون فيها العدد نفسه من النيوترونات.',0,'✘ للكربون نظائر بـ 6 و7 و8 نيوترونات.'],['النيوترونات موجبة الشحنة.',0,'✘ النيوترون متعادل.'],['التحلل الإشعاعي يعني اختفاء العنصر.',0,'✘ العنصر يتحوّل إلى عنصر آخر.'],['يمكن التنبؤ بأي ذرة ستتحلل أولًا.',0,'✘ التحلل عشوائي.']]);
+/* اختيار من متعدد */
+function mcs(el,list){$(el).innerHTML=list.map(([q,o,a],i)=>`<div class="mc" data-a="${a}" data-i="${el}${i}"><div class="q">${i+1}) ${q}</div><div class="o">${o.map((x,k)=>`<button data-k="${k}">${'أبجد'[k]}) ${x}</button>`).join('')}</div></div>`).join('');
+ $(el).querySelectorAll('.mc').forEach(m=>m.querySelectorAll('button').forEach(b=>b.onclick=()=>{const ok=b.dataset.k===m.dataset.a;b.classList.add(ok?'ok':'no');if(ok)award(m.dataset.i);else SFX.no()}))}
+mcs('#nf',[['العدد الذري لعنصر ما يساوي عدد:',['البروتونات','النيوترونات','البروتونات والنيوترونات','الإلكترونات والنيوترونات'],0],['ذرة عددها الكتلي 23 وعددها الذري 11، عدد النيوترونات فيها:',['11','12','23','34'],1],['إذا كان عمر النصف لعنصر 10 أيام وبدأنا بـ 80 جم، فالمتبقي بعد 30 يومًا:',['40 جم','20 جم','10 جم','5 جم'],2],['عند تحلل نواة بإطلاق جسيم بيتا فإن عددها الذري:',['يزداد 1','يقل 1','يقل 2','لا يتغير'],0]]);
+qas('#wr1',[['ما الذي يحدد هوية العنصر؟ وما الذي يختلف بين نظائره؟','عدد البروتونات يحدد الهوية، والنظائر تختلف في عدد النيوترونات.'],['ذرة فيها 8 بروتونات و9 نيوترونات: ما عددها الكتلي؟ وما العنصر؟','17 ، الأكسجين-17.'],['عدد البروتونات في الأميريسيوم والنبتونيوم؟ وأين ذهب الفرق؟','95 ثم 93؛ البروتونان المفقودان جزء من جسيم ألفا.']]);
+qas('#wr2',[['ما الفرق بين جسيمات بيتا وأشعة المهبط؟','بيتا تتشكّل في النواة وطاقتها أكبر، وأشعة المهبط تنطلق من المهبط.'],['هل لجميع العناصر عمر نصف؟ لماذا؟','لا؛ لأن بعض النظائر مستقرة.'],['عيّنتان 25 جم و50 جم: هل تفقدان الكمية نفسها في عمر النصف الأول؟','لا؛ الـ 50 جم تفقد 25 جم، والـ 25 جم تفقد 12.5 جم.']]);
+qas('#prac',[['الكربون-14 عمر نصفه 5730 سنة. من 100 جم، كم يتبقى بعد 17190 سنة؟','17190 ÷ 5730 = 3 فترات ← 100 ÷ 8 = 12.5 جم'],['الرادون-222 عمر نصفه 3.8 أيام. من 50 جم، كم يتبقى بعد 19 يومًا؟','19 ÷ 3.8 = 5 فترات ← 50 ÷ 32 ≈ 1.6 جم'],['مثال محلول: التريتيوم عمر نصفه 12.5 سنة؛ من 20 جم بعد 50 سنة؟','50 ÷ 12.5 = 4 فترات ← 20 ÷ 16 = 1.25 جم']]);
+/* جدول المقارنة */
+[['مكوّناته','بروتونان + نيوترونان','إلكترون ذو طاقة عالية'],['شحنته','+2','−1'],['العدد الذري','يقل بمقدار 2','يزداد بمقدار 1'],['العدد الكتلي','يقل بمقدار 4','ثابت تقريبًا'],['مثال','الأميريسيوم ← النبتونيوم','الهيدروجين-3 ← الهيليوم-3']].forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td><b>${r[0]}</b></td><td class="hid">${r[1]}</td><td class="hid">${r[2]}</td>`;$('#cmp').appendChild(tr)});
+document.querySelectorAll('#cmp .hid').forEach(c=>c.onclick=()=>{c.classList.remove('hid');SFX.pop()});
+/* الحاسبات */
+function nCalc(){const A=+cA.value,Z=+cZ.value;cO.textContent=(A>=Z&&Z>0)?`النيوترونات = ${A-Z} • ${ELEMENTS[Z]||'عنصر'}-${A}`:'تحققي من الأرقام'}cA.oninput=cZ.oninput=nCalc;nCalc();
+function hCalc(){const m=+hM.value,h=+hH.value,t=+hT.value;if(!(m>0&&h>0&&t>=0)){hO.textContent='—';return}const n=t/h,r=m/2**n;hO.textContent=`الفترات = ${+n.toFixed(2)} • المتبقي ≈ ${+r.toFixed(3)} جم`}hM.oninput=hH.oninput=hT.oninput=hCalc;hCalc();
+/* متمايز */
+const LV=[['🌱 بذرة • أساسي','var(--ok)','كربون-12 فيه 6 بروتونات، فكم نيوترونًا فيه؟','العدد الكتلي 12 = بروتونات + نيوترونات','6 نيوترونات'],['🌿 غصن • متوسط','var(--gd)','اليود-131 عمر نصفه 8 أيام. من 80 جم، كم يتبقى بعد 24 يومًا؟','عدد الفترات = 24 ÷ 8','3 فترات ← 80 ÷ 8 = 10 جم'],['🌳 شجرة • متقدم','var(--pr)','أطلق الراديوم-226 (Z = 88) ألفا، ثم أطلق الناتج ألفا آخر. ما Z و A النهائيان؟','في كل مرة: Z − 2 و A − 4','Z = 84 ، A = 218']];
+$('#lv').innerHTML=LV.map((l,i)=>`<div class="lvc" style="border-color:${l[1]}"><h4 style="background:${l[1]}">${l[0]}</h4><div class="t">${l[2]}</div><div class="row"><button style="background:var(--gdd)" data-x="h">💡 مساعدة</button><button style="background:${l[1]}" data-x="a">▶ الإجابة</button></div><div class="h">${l[3]}</div><div class="a">${l[4]}</div></div>`).join('');
+$('#lv').querySelectorAll('.lvc').forEach((c,i)=>c.querySelectorAll('button').forEach(b=>b.onclick=()=>{c.querySelector('.'+b.dataset.x).style.display='block';SFX.pop();if(b.dataset.x==='a')award('lv'+i,5*(i+1))}));
+/* الخروج */
+qas('#exit',[['احسبي النيوترونات في نيتروجين-15 (Z = 7).','15 − 7 = 8'],['أطلق الراديوم-226 (Z = 88) جسيم ألفا؛ ما Z و A للناتج؟','Z = 86 ، A = 222 (الرادون-222)'],['ماذا يحدث للعدد الذري في تحلل بيتا؟','يزداد 1، والكتلي ثابت تقريبًا.'],['الراديوم-226 عمر نصفه 1590 عامًا؛ من 10 جم كم يتبقى بعد 1590 عامًا؟','5 جم']]);
+$('#self').innerHTML=['أحسب عدد النيوترونات','أفسّر النظائر','أميّز ألفا من بيتا','أحسب عمر النصف','أذكر استخدامات النظائر'].map(t=>`<div class="tf"><div>${t}</div><div class="face"><button>😀</button><button>🙂</button><button>🤔</button></div></div>`).join('');
+$('#self').querySelectorAll('.face').forEach(f=>f.querySelectorAll('button').forEach(b=>b.onclick=()=>{f.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');SFX.pop()}));
+function showCert(){const n=nm.value.trim()||'...........';const c=$('#cert');c.style.display='block';certT.textContent=`شهادة إتمام درس النواة 🏅`;certP.innerHTML=`تُمنح للطالبة <b>${n}</b> لإتمامها الدرس التفاعلي وجمعها <b>${PTS}</b> نجمة ⭐<br>المعلمة: أ. أماني مجممي • ${new Date().toLocaleDateString('ar-SA')}`;SFX.win();confetti(220);c.scrollIntoView({behavior:'smooth',block:'center'})}
+/* قرآن: الآية 8 بعد 7 */
+$('#z1').addEventListener('ended',e=>{if(!e.target.dataset.n){e.target.dataset.n=1;e.target.src='assets/audio/099008.mp3';e.target.play()}else{e.target.dataset.n='';e.target.src='assets/audio/099007.mp3'}});
+/* المحاكاة المضمّنة: تحميل عند الاقتراب */
+const sims=[...document.querySelectorAll('iframe.sim')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!e.target.src){const [p,h]=e.target.dataset.lab.split('#');e.target.src=p+'?embed#'+h}}),{rootMargin:'400px'});sims.forEach(f=>io.observe(f));
+addEventListener('message',e=>{const f=sims.find(x=>x.contentWindow===e.source);if(f&&e.data&&e.data.h)f.style.height=(e.data.h+10)+'px'});
+/* الشريط والتنقل والخلفية */
+const fixNav=()=>{const t=document.querySelector('.top');if(t)$('#nav').style.top=t.offsetHeight+'px'};fixNav();addEventListener('resize',fixNav);
+const secs=[...document.querySelectorAll('section.sec')];
+$('#nav').innerHTML=secs.map(s=>`<a href="#${s.id}">${s.dataset.t}</a>`).join('');
+const navs=[...document.querySelectorAll('#nav a')];
+addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';let cur=secs[0];secs.forEach(s=>{if(s.getBoundingClientRect().top<160)cur=s});navs.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur.id));const bg='url(assets/img/'+cur.dataset.bg+'.webp)';if(document.getElementById('bg').style.backgroundImage.indexOf(cur.dataset.bg)<0)document.getElementById('bg').style.backgroundImage=bg},{passive:true});
+</script>
+</body>
+</html>
