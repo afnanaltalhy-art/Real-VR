@@ -151,5 +151,11 @@ function smoke(v){ac();smk=v;SFX.click();if(!v){alarmOn=false;s4.classList.remov
  h4a.textContent=alarmOn?'الحالة: إنذار! 🚨':'الحالة: آمن ✅'}
  requestAnimationFrame(loop4)})();
 </script>
+<script>
+(function(){if(!/embed/.test(location.search))return;document.documentElement.classList.add('embed');
+const st=document.createElement('style');st.textContent='.embed .top,.embed .tabs,.embed .foot,.embed .girlpop,.embed #speech,.embed .bgimg{display:none!important}.embed body,.embed html{background:transparent!important}.embed .wrap{padding:4px 2px 20px}';document.head.appendChild(st);
+const t=(location.hash||'#t1').slice(1);const b=document.querySelector('#tabs button[data-t="'+t+'"]');if(b)b.click();
+setInterval(()=>parent.postMessage({h:document.documentElement.scrollHeight},'*'),400)})();
+</script>
 </body>
 </html>

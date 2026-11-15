@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>المختبر الافتراضي – درس النواة 🔬</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script>
+<style>
+.grp{font-weight:900;font-size:13px;color:#fff;border-radius:12px;padding:3px 10px;flex:none;align-self:center}
+#frame{width:100%;border:0;display:block;min-height:600px;background:transparent}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/bg_lab.webp)"></div>
+<script>header('المختبر الافتراضي 🔬 درس النواة كاملًا','تسع تجارب بالمحاكاة: من تركيب النواة إلى عمر النصف والنظائر في خدمتنا')</script>
+<div class="wrap">
+<div class="card" style="padding:10px 12px">
+ <div class="tabs" id="tabs">
+  <span class="grp" style="background:var(--ol)">ما داخل النواة؟</span>
+  <button class="on" data-s="lab1.html#t1">① ابني النظير</button>
+  <button data-s="lab1.html#t2">② القوة النووية</button>
+  <button data-s="lab1.html#t3">③ تحلل ألفا</button>
+  <button data-s="lab1.html#t4">④ كاشف الدخان</button>
+  <span class="grp" style="background:var(--nt)">النواة تتغيّر عبر الزمن</span>
+  <button data-s="lab2.html#t1">⑤ تحلل بيتا</button>
+  <button data-s="lab2.html#t2">⑥ القطع النقدية</button>
+  <button data-s="lab2.html#t3">⑦ منحنى الثوريوم</button>
+  <button data-s="lab2.html#t4">⑧ التأريخ بالكربون</button>
+  <button data-s="lab2.html#t5">⑨ العناصر المتتبعة</button>
+ </div>
+</div>
+<iframe id="frame" src="lab1.html?embed#t1" allow="autoplay"></iframe>
+</div>
+<script>girl();footer()</script>
+<script>
+const F=document.getElementById('frame');
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');SFX.click();const [p,h]=b.dataset.s.split('#');F.src=p+'?embed&r='+Date.now()+'#'+h;window.scrollTo({top:0,behavior:'smooth'})});
+addEventListener('message',e=>{if(e.data&&e.data.h)F.style.height=(e.data.h+10)+'px'});
+</script>
+</body>
+</html>
