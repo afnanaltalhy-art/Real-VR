@@ -38,6 +38,9 @@ html,body{height:100%;overflow:hidden;background:#0e1630}
 .flash{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(circle,rgba(255,240,180,.85),rgba(255,200,80,0) 60%);opacity:0;transition:opacity .5s}
 
 .arbar,.artabs,.chips{transition:transform .35s ease,top .35s ease}
-body.nobar .arbar{transform:translateY(-110%)}
-body.nobar .artabs{top:max(6px,env(safe-area-inset-top))}
-body.nobar .chips{top:52px}
+.legend,.arcard,.tools button{transition:opacity .35s ease,transform .35s ease}
+body.nobar .arbar,body.nobar .artabs,body.nobar .chips{transform:translateY(-160%);opacity:0;pointer-events:none}
+body.nobar .legend{transform:translateX(130%);opacity:0;pointer-events:none}
+body.nobar .arcard{transform:translateY(130%);opacity:0;pointer-events:none}
+body.nobar .tools button:not(#barT):not([onclick="snap()"]){opacity:0;transform:scale(.4);pointer-events:none}
+#barT{background:#E0B43A!important}
