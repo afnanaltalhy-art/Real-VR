@@ -14,9 +14,10 @@
 <div id="nocam"><div>📷 اسمحي للمتصفح باستخدام الكاميرا لترَي الكشّاف الكهربائي في فصلك!<br><button class="btn g" style="margin-top:8px" onclick="retryCam()">تفعيل الكاميرا</button></div></div>
 <canvas id="gl"></canvas>
 <div id="flash" class="flash"></div>
+<div class="arbar"><img src="assets/img/logo.webp" alt=""><b>الواقع المعزز ⚡ القوة الكهربائية وطرق الشحن<small>فيزياء 3 • ثالث ثانوي • المعلمة: حصة السبيعي</small></b><a href="index.html">⌂</a></div>
 <div class="artabs" id="artabs"></div>
 <div class="chips" id="chips"></div>
-<div class="tools"><button onclick="zoomBy(1.15)">＋</button><button onclick="zoomBy(.87)">－</button><button onclick="toggleSpin()">⟳</button><button onclick="flipCam()">🔄</button><button onclick="snap()">📸</button></div>
+<div class="tools"><button id="barT" title="إخفاء/إظهار الشريط العلوي" onclick="toggleBar()">▲</button><button onclick="zoomBy(1.15)">＋</button><button onclick="zoomBy(.87)">－</button><button onclick="toggleSpin()">⟳</button><button onclick="flipCam()">🔄</button><button onclick="snap()">📸</button></div>
 <div class="legend"><span><i style="background:#E2463F"></i>شحنة موجبة +</span><span><i style="background:#2F6FD6"></i>إلكترون −</span><span><i style="background:#E0B43A"></i>ورقتان فلزيتان</span></div>
 <div class="arcard" id="arcard"></div>
 <div class="splash" id="splash" onclick="this.style.opacity=0;setTimeout(()=>this.remove(),500);ac();SFX.win()"><div class="atom">⚡</div><h1>القوة الكهربائية وطرق الشحن</h1><p>الكشّاف الكهربائي والقضبان المشحونة والبرق… أمامك في الفصل!<br>اسحبي للتدوير، وقرّبي بإصبعين للتكبير 🤏</p><button class="btn g" style="margin-top:14px;font-size:18px">ابدئي ▶</button></div>
@@ -145,6 +146,10 @@ const SCENES=[
  actions:[{l:'☁ اشحني الغيمة',c:'b',f(){_st.charge()}},{l:'🏙 مانعة الصواعق',c:'g',f(){_st.rod()}},{l:'⚡ أطلقي الصاعقة',f(b,api){_st.strike();api.setText('تنتقل الصاعقة بسرعة 500,000 km/h تقريبًا على المسار الموصل، فتُفرَّغ شحنات الغيمة. ﴿هُوَ الَّذِي يُرِيكُمُ الْبَرْقَ خَوْفًا وَطَمَعًا﴾')}}]}
 ];
 arUI(SCENES);
+</script>
+<script>
+function toggleBar(){const h=document.body.classList.toggle('nobar');document.getElementById('barT').textContent=h?'▼':'▲';try{localStorage.setItem('ef_nobar',h?'1':'0')}catch(e){}}
+try{if(localStorage.getItem('ef_nobar')==='1'){document.body.classList.add('nobar');document.getElementById('barT').textContent='▼'}}catch(e){}
 </script>
 </body>
 </html>

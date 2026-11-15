@@ -7,11 +7,11 @@ html,body{height:100%;overflow:hidden;background:#0e1630}
 .arbar img{height:30px;background:#fff;border-radius:7px;padding:2px 3px}
 .arbar b{flex:1;font-size:14.5px;line-height:1.3}.arbar small{display:block;font-size:11px;opacity:.9;font-weight:400}
 .arbar a{color:#fff;text-decoration:none;font-size:12px;font-weight:800;background:rgba(255,255,255,.2);border-radius:14px;padding:5px 10px}
-.artabs{position:fixed;top:max(6px,env(safe-area-inset-top));left:0;right:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:4px 8px;scrollbar-width:none}
+.artabs{position:fixed;top:50px;left:0;right:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:4px 8px;scrollbar-width:none}
 .artabs::-webkit-scrollbar{display:none}
 .artabs button{flex:none;border:none;border-radius:22px;padding:8px 13px;font-weight:800;font-size:13.5px;background:rgba(255,255,255,.88);color:#26306B;box-shadow:0 3px 10px rgba(0,0,0,.2)}
 .artabs button.on{background:#E0B43A;color:#fff}
-.chips{position:fixed;top:52px;left:0;right:0;z-index:5;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 8px}
+.chips{position:fixed;top:96px;left:0;right:0;z-index:5;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 8px}
 .chips button{border:2px solid rgba(255,255,255,.8);border-radius:18px;padding:6px 11px;font-weight:800;font-size:13px;background:rgba(14,22,48,.6);color:#fff;}
 .chips button.on{background:#E2463F;border-color:#E2463F}
 .tools{position:fixed;left:8px;top:40%;z-index:5;display:flex;flex-direction:column;gap:8px}
@@ -36,3 +36,8 @@ html,body{height:100%;overflow:hidden;background:#0e1630}
 .splash .atom{font-size:80px;animation:spin 3s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .flash{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(circle,rgba(255,240,180,.85),rgba(255,200,80,0) 60%);opacity:0;transition:opacity .5s}
+
+.arbar,.artabs,.chips{transition:transform .35s ease,top .35s ease}
+body.nobar .arbar{transform:translateY(-110%)}
+body.nobar .artabs{top:max(6px,env(safe-area-inset-top))}
+body.nobar .chips{top:52px}
