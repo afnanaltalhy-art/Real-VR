@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المختبر الافتراضي | التداخل</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#2B2A6B;--gold:#A8741A;--teal:#1F7A80;--cream:#F3ECFB;--hot:#C2185B;--vio:#6A3FB5}
+*{box-sizing:border-box}
+body{margin:0;font-family:Almarai,sans-serif;color:var(--navy);min-height:100vh;background:#223 url(img/bg-lab.jpg) right center/cover fixed no-repeat}
+header{position:relative;min-height:150px;display:flex;align-items:flex-end}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(43,42,107,.88),rgba(43,42,107,.15))}
+.hin{position:relative;padding:18px 20px;color:#fff;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.hin h1{margin:0;font-size:clamp(22px,4vw,34px)}.hin p{margin:6px 0 0;opacity:.92}
+.logos img{height:58px;background:#fff;border-radius:10px;padding:4px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;border-radius:14px;margin-top:8px}
+nav button{flex:0 0 auto;border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--navy);color:#fff}
+main{max-width:1100px;margin:auto;padding:16px}
+@media(min-width:1000px){.wrapL{width:62vw;max-width:1000px;margin-left:2vw!important;margin-right:auto!important}}
+.lab{display:none}.lab.on{display:block;animation:fi .4s}@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.card{background:rgba(255,255,255,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(43,42,107,.1);margin-bottom:14px}
+h2{margin:0 0 6px;font-size:24px}
+.q{background:rgba(243,236,251,.9);border-right:5px solid var(--vio);padding:10px 12px;border-radius:10px;margin:8px 0;line-height:1.8}
+.row{display:flex;gap:14px;flex-wrap:wrap}.col{flex:1 1 300px}
+canvas{direction:ltr;width:100%;background:rgba(250,250,255,.9);border-radius:12px;border:1px solid #d7d2ea;display:block}
+canvas.dark{background:#0d0b1e}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input[type=range]{width:100%;accent-color:var(--vio)}
+select,input[type=number]{font:inherit;padding:6px;border-radius:8px;border:1px solid #a9a3c8;width:100%}
+.btn{border:0;background:var(--teal);color:#fff;font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;cursor:pointer;margin:6px 0 0 6px}
+.btn.gold{background:var(--gold)}.btn.hot{background:var(--hot)}.btn.vio{background:var(--vio)}
+.out{font-size:18px;font-weight:800;color:var(--teal);margin-top:8px;line-height:1.8}
+table{border-collapse:collapse;width:100%;margin-top:8px}td,th{border:1px solid #cfc8e6;padding:6px;text-align:center}th{background:var(--navy);color:#fff}
+.reveal{display:none;background:#E7F5EF;border-right:5px solid #2E8B57;padding:10px;border-radius:10px;margin-top:6px;line-height:1.9}
+.tag{display:inline-block;background:var(--vio);color:#fff;border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:6px}
+.ltr{direction:ltr;unicode-bidi:embed;display:inline-block}
+.chips button{border:2px solid var(--navy);background:#fff;font:inherit;padding:6px 10px;border-radius:10px;margin:3px;cursor:pointer}
+.chips button.on{background:var(--navy);color:#fff}
+.chips button.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.chips button.no{background:#c0392b;color:#fff;border-color:#c0392b}
+.warn{background:#FFF3E0;border-right:5px solid #E65100;padding:8px 12px;border-radius:10px;margin:8px 0}
+footer{text-align:center;padding:12px;font-size:14px;background:rgba(255,255,255,.75);margin:0 16px 16px;border-radius:12px}
+</style>
+</head>
+<body>
+<header><div class="hin"><div><h1>🔬 المختبر الافتراضي: التداخل</h1><p>فيزياء 3 • الفصل 7: التداخل والحيود • الدرس 7-1 • أ. أفنان الطلحي</p></div><div class="logos"><img src="img/moe.png" alt="وزارة التعليم"></div></div></header>
+<nav id="nav" class="wrapL"></nav>
+<main class="wrapL">
+
+<section class="lab" id="coh" data-t="① مترابط أم غير مترابط؟">
+<div class="card"><span class="tag">تجربة 1</span><h2>الضوء المترابط والضوء غير المترابط</h2>
+<div class="q">قارني بين مقدمات الموجة الصادرة عن مصباح عادي ومقدمات الموجة الصادرة عن مصدر نقطي أو ليزر. في أيهما تظهر مقدمات موجة منتظمة؟</div>
+<canvas id="cohC" class="dark" width="900" height="380"></canvas>
+<div class="chips"><button id="cb0" onclick="setCoh(0)">💡 مصباح عادي (غير مترابط)</button><button id="cb1" onclick="setCoh(1)">• مصدر نقطي (مترابط)</button><button id="cb2" onclick="setCoh(2)">🔴 ليزر (مترابط)</button></div>
+<div class="out" id="cohO"></div>
+<button class="btn gold" onclick="rv('r1')">▶ اكشفي الاستنتاج</button>
+<div class="reveal" id="r1"><b>الضوء غير المترابط</b>: ضوء مقدمات موجاته غير متزامنة، مثل ضوء المصباح؛ فلا يظهر نمط منتظم. <b>الضوء المترابط</b>: ضوء ناتج عن تراكب موجات من مصدر أو أكثر تكوّن مقدمات موجة منتظمة، كالمصدر النقطي (مقدمات دائرية) والليزر (مقدمات مستقيمة). والتداخل يحدث بين موجات مترابطة فقط.</div></div>
+</section>
+
+<section class="lab" id="sup" data-t="② البنّاء والهدّام">
+<div class="card"><span class="tag">تجربة 2</span><h2>مبدأ التراكب: التداخل البنّاء والهدّام</h2>
+<div class="q">حرّكي مؤشر «فرق المسار» بين موجتين متماثلتين، وراقبي الموجة المحصلة. متى تكون أكبر ما يمكن؟ ومتى تتلاشى؟</div>
+<canvas id="supC" width="900" height="420"></canvas>
+<label>فرق المسار بين الموجتين: <b id="supV">0.00</b> λ</label><input type="range" id="supR" min="0" max="2" step="0.05" value="0">
+<div class="chips"><button onclick="setSup(0)">0</button><button onclick="setSup(.5)">λ/2</button><button onclick="setSup(1)">λ</button><button onclick="setSup(1.5)">3λ/2</button><button onclick="setSup(2)">2λ</button></div>
+<div class="out" id="supO"></div>
+<button class="btn gold" onclick="rv('r2')">▶ ما القاعدة؟</button>
+<div class="reveal" id="r2">إذا كان فرق المسار عددًا صحيحًا من الأطوال الموجية (0، λ، 2λ…) تصل الموجتان متفقتين في الطور فيحدث <b>تداخل بنّاء</b> (هدب مضيء). وإذا كان عددًا فرديًّا من أنصاف الطول الموجي (λ/2، 3λ/2…) تصلان متعاكستين فيحدث <b>تداخل هدّام</b> (هدب معتم).</div></div>
+</section>
+
+<section class="lab" id="young" data-t="③ تجربة شقّي يونج">
+<div class="card"><span class="tag">تجربة 3</span><h2>تجربة شقّي يونج</h2>
+<div class="q">غيّري الطول الموجي λ، والمسافة بين الشقين d، والمسافة إلى الشاشة L، وراقبي المسافة x بين الهدب المركزي والهدب المضيء الأول.</div>
+<div class="warn">⚠ تحذير: لا تنظري مباشرة إلى أشعة الليزر.</div>
+<canvas id="yC" class="dark" width="900" height="360"></canvas>
+<canvas id="yS" class="dark" width="900" height="130" style="margin-top:8px"></canvas>
+<div class="row"><div class="col">
+<div class="chips" id="yCol"><button onclick="setL(450)">🔵 أزرق 450 nm</button><button onclick="setL(532)">🟢 أخضر 532 nm</button><button onclick="setL(650)">🔴 أحمر 650 nm</button><button onclick="setWhite()">⚪ أبيض</button></div>
+<label>الطول الموجي λ = <b id="lV">650</b> nm</label><input type="range" id="lR" min="400" max="700" value="650"></div>
+<div class="col"><label>المسافة بين الشقين d = <b id="dV">0.250</b> mm</label><input type="range" id="dR" min="0.100" max="0.500" step="0.005" value="0.250">
+<label>المسافة بين الشقين والشاشة L = <b id="LV">1.00</b> m</label><input type="range" id="LR" min="0.50" max="2.00" step="0.05" value="1.00"></div></div>
+<div class="out" id="yO"></div>
+<button class="btn gold" onclick="rv('r3')">▶ ماذا تلاحظين؟</button>
+<div class="reveal" id="r3">من المعادلة <span class="ltr">λ = xd / L</span> نجد <span class="ltr">x = λL / d</span>: تزداد المسافة بين الأهداب بزيادة الطول الموجي (الأحمر أوسع من الأزرق) وبزيادة L، وتقل بزيادة d. وفي الضوء الأبيض يبقى الهدب المركزي أبيض (تداخل بنّاء لجميع الأطوال الموجية) وتظهر حوله أطياف ملوّنة.</div></div>
+</section>
+
+<section class="lab" id="meas" data-t="④ قياس الطول الموجي">
+<div class="card"><span class="tag">تجربة 4</span><h2>مختبر البيانات: قيسي الطول الموجي لليزر مجهول</h2>
+<div class="q">اختاري ليزرًا مجهولًا، ثم قيسي بالمسطرة المسافة x من مركز الهدب المركزي إلى مركز الهدب المضيء الأول (حرّكي المؤشر الأصفر إلى مركز الهدب الأول)، ثم احسبي λ.</div>
+<div class="chips" id="mCh"><button onclick="setM(0)">ليزر A</button><button onclick="setM(1)">ليزر B</button><button onclick="setM(2)">ليزر C</button></div>
+<canvas id="mC" class="dark" width="900" height="200"></canvas>
+<label>موضع المؤشر x = <b id="xV">0.0</b> mm</label><input type="range" id="xR" min="0" max="5" step="0.05" value="0">
+<p>المعطيات: <span class="ltr">d = 0.250 mm</span> ، <span class="ltr">L = 1.00 m</span></p>
+<label>احسبي λ (nm) واكتبيها:</label><input type="number" id="mIn" placeholder="مثال: 600">
+<button class="btn vio" onclick="chkM()">✔ تحققي</button> <button class="btn" onclick="addRow()">＋ أضيفي للجدول</button>
+<div class="out" id="mO"></div>
+<table><thead><tr><th>الليزر</th><th>x (mm)</th><th>λ المحسوبة (nm)</th><th>اللون</th></tr></thead><tbody id="mTb"></tbody></table>
+<button class="btn gold" onclick="rv('r4')">▶ طريقة الحل</button>
+<div class="reveal" id="r4"><span class="ltr">λ = xd / L</span>. مثال: إذا كانت <span class="ltr">x = 2.60 mm</span> فإن <span class="ltr">λ = (2.60×10⁻³ m)(2.50×10⁻⁴ m) / 1.00 m = 6.50×10⁻⁷ m = 650 nm</span> (أحمر).</div></div>
+</section>
+
+<section class="lab" id="film" data-t="⑤ غشاء الصابون">
+<div class="card"><span class="tag">تجربة 5</span><h2>التداخل في الأغشية الرقيقة: غشاء الصابون الرأسي</h2>
+<div class="q">غشاء صابون معلّق رأسيًّا يزداد سمكه من أعلى إلى أسفل. أضيئيه بضوء أبيض ثم بضوء أحادي اللون، وفسّري تكرار الألوان والحزم.</div>
+<div class="row"><div class="col"><canvas id="fC" width="420" height="420"></canvas></div>
+<div class="col"><div class="chips" id="fL"><button onclick="setFL(0)">⚪ ضوء أبيض</button><button onclick="setFL(589)">🟡 أصفر 589 nm</button><button onclick="setFL(450)">🔵 أزرق 450 nm</button><button onclick="setFL(650)">🔴 أحمر 650 nm</button></div>
+<label>أقصى سمك عند القاع: <b id="fTV">900</b> nm</label><input type="range" id="fT" min="300" max="1500" step="10" value="900">
+<label>معامل انكسار الغشاء n = <b id="fNV">1.33</b></label><input type="range" id="fN" min="1.20" max="1.60" step="0.01" value="1.33">
+<label>مرّري المؤشر على الغشاء لقراءة السمك d</label>
+<div class="out" id="fO">—</div></div></div>
+<button class="btn gold" onclick="rv('r5')">▶ لماذا أعلى الغشاء معتم؟</button>
+<div class="reveal" id="r5">ينعكس الشعاع 1 عن السطح الأمامي (هواء ← صابون) <b>منقلبًا</b>، وينعكس الشعاع 2 عن السطح الخلفي (صابون ← هواء) <b>دون انقلاب</b>. عندما يكون الغشاء رقيقًا جدًّا (d ≈ 0) لا يقطع الشعاع 2 مسافة إضافية تقريبًا، فيبقى الشعاعان متعاكسين ويحدث تداخل هدّام لجميع الألوان: يبدو الجزء العلوي معتمًا. ويحدث التداخل البنّاء عندما <span class="ltr">d = λ/4n , 3λ/4n , 5λ/4n …</span></div></div>
+</section>
+
+<section class="lab" id="calc" data-t="⑥ حاسبة السمك">
+<div class="card"><span class="tag">تجربة 6</span><h2>حاسبة الأغشية الرقيقة (استراتيجية حل المسألة)</h2>
+<div class="q">اختاري الأوساط الثلاثة ونوع التداخل المطلوب، وستحدد الحاسبة هل تنقلب كل موجة، ثم تكوّن المعادلة وتحسب أقل سمك. جرّبي المثال 2 (هواء/زيت/ماء) والمسألة 4 (هواء/فلوريد الماغنسيوم/زجاج).</div>
+<div class="row"><div class="col"><label>الوسط 1 (فوق الغشاء) n₁</label><input type="number" id="n1" value="1.00" step="0.01">
+<label>الغشاء n</label><input type="number" id="nf" value="1.45" step="0.01">
+<label>الوسط 2 (تحت الغشاء) n₂</label><input type="number" id="n2" value="1.33" step="0.01"></div>
+<div class="col"><label>الطول الموجي في الهواء λ (nm)</label><input type="number" id="cl" value="555">
+<label>المطلوب</label><select id="ct"><option value="c">تقوية الانعكاس (تداخل بنّاء)</option><option value="d">منع الانعكاس (تداخل هدّام)</option></select>
+<label>الرتبة m</label><select id="cm"><option>0</option><option>1</option><option>2</option></select>
+<button class="btn vio" onclick="calc()">🧮 احسبي</button>
+<div class="chips"><button onclick="ex(1,1.45,1.33,555,'c')">مثال 2</button><button onclick="ex(1,1.38,1.52,555,'d')">مسألة 4</button><button onclick="ex(1,1.33,1,521,'c')">مسألة 5</button></div></div></div>
+<canvas id="cC" width="900" height="230" style="margin-top:8px"></canvas>
+<div class="out" id="cO"></div></div>
+</section>
+
+</main>
+<footer>المختبر الافتراضي • فيزياء 3 • الدرس 7-1 التداخل • إعداد المعلمة: أ. أفنان الطلحي</footer>
+<audio id="sClick" src="snd/drop.mp3" preload="auto"></audio><audio id="sOk" src="snd/applause.mp3" preload="auto"></audio><audio id="sNo" src="snd/knock.mp3" preload="auto"></audio>
+<script>
+const $=i=>document.getElementById(i);
+const snd=n=>{try{const a=$(n).cloneNode();a.volume=.6;a.play().catch(()=>{})}catch(e){}};
+function rv(id){const e=$(id);e.style.display=e.style.display==='block'?'none':'block';snd('sClick')}
+// nav
+const labs=[...document.querySelectorAll('.lab')];
+$('nav').innerHTML=labs.map((l,i)=>`<button onclick="go(${i})">${l.dataset.t}</button>`).join('');
+function go(i){labs.forEach((l,j)=>l.classList.toggle('on',i===j));[...$('nav').children].forEach((b,j)=>b.classList.toggle('on',i===j));snd('sClick');try{history.replaceState(null,'','#'+labs[i].id)}catch(e){}}
+{const h=location.hash.slice(1);const k=labs.findIndex(l=>l.id===h);go(k<0?0:k)}
+// colour of wavelength (nm) -> [r,g,b] 0..1
+function wl(l){let r=0,g=0,b=0;if(l>=380&&l<440){r=-(l-440)/60;b=1}else if(l<490){g=(l-440)/50;b=1}else if(l<510){g=1;b=-(l-510)/20}else if(l<580){r=(l-510)/70;g=1}else if(l<645){r=1;g=-(l-645)/65}else if(l<=780){r=1}
+let f=l<420?.3+.7*(l-380)/40:l>700?.3+.7*(780-l)/80:1;return[r*f,g*f,b*f]}
+const css=(c,a=1)=>`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${a})`;
+const f3=x=>(+x).toFixed(3),f2=x=>(+x).toFixed(2);
+
+// 1 coherence
+let coh=0,cohT=0;const rnd=[];for(let i=0;i<40;i++)rnd.push({x:60+Math.random()*120,y:60+Math.random()*260,p:Math.random()*60,c:380+Math.random()*320});
+function setCoh(k){coh=k;[0,1,2].forEach(i=>$('cb'+i).classList.toggle('on',i===k));$('cohO').textContent=['مقدمات موجات عشوائية غير متزامنة وبأطوال موجية مختلفة → لا نمط منتظم','مقدمات موجة دائرية منتظمة متزامنة من مصدر نقطي واحد → ضوء مترابط','مقدمات موجة مستقيمة منتظمة (أشعة متوازية) → ضوء مترابط'][k];snd('sClick')}
+setCoh(0);
+function loopCoh(){const c=$('cohC').getContext('2d');c.clearRect(0,0,900,380);cohT+=1.2;c.lineWidth=2.5;
+if(coh===0){rnd.forEach(s=>{c.strokeStyle=css(wl(s.c),.55);for(let r=(cohT+s.p)%60;r<520;r+=60){c.beginPath();c.arc(s.x,s.y,r,-.9,.9);c.stroke()}});c.fillStyle='#ffe9a8';c.beginPath();c.arc(110,190,46,0,7);c.fill()}
+else if(coh===1){c.strokeStyle='rgba(255,90,90,.9)';for(let r=cohT%40;r<800;r+=40){c.beginPath();c.arc(120,190,r,0,7);c.stroke()}c.fillStyle='#fff';c.beginPath();c.arc(120,190,8,0,7);c.fill();
+c.strokeStyle='rgba(255,255,255,.5)';c.setLineDash([6,6]);for(let a=-1;a<=1;a+=.5){c.beginPath();c.moveTo(120,190);c.lineTo(120+760*Math.cos(a),190+760*Math.sin(a));c.stroke()}c.setLineDash([])}
+else{c.fillStyle='#552';c.fillRect(40,150,110,80);c.fillStyle='#f33';c.fillRect(150,175,12,30);c.strokeStyle='rgba(255,60,60,.95)';for(let x=170+cohT%40;x<900;x+=40){c.beginPath();c.moveTo(x,120);c.lineTo(x,260);c.stroke()}
+c.strokeStyle='rgba(255,255,255,.45)';c.setLineDash([6,6]);for(let y=130;y<=250;y+=30){c.beginPath();c.moveTo(165,y);c.lineTo(890,y);c.stroke()}c.setLineDash([])}
+c.fillStyle='#fff';c.font='bold 18px Almarai';c.textAlign='center';c.fillText(['ضوء غير مترابط','مقدمات موجة دائرية','مقدمات موجة مستقيمة'][coh],600,30)}
+
+// 2 superposition
+let supP=0,supT=0;$('supR').oninput=()=>{supP=+$('supR').value;supInfo()};
+function setSup(v){$('supR').value=v;supP=v;supInfo();snd('sClick')}
+function supInfo(){$('supV').textContent=f2(supP);const fr=supP%1;let s;if(Math.abs(fr)<.03||Math.abs(fr-1)<.03)s='✔ تداخل بنّاء: الموجتان متفقتان في الطور → السعة المحصلة مثلي سعة كل موجة (هدب مضيء)';else if(Math.abs(fr-.5)<.03)s='✖ تداخل هدّام: الموجتان متعاكستان في الطور → السعة المحصلة صفر (هدب معتم)';else s='تداخل جزئي: السعة المحصلة = '+f2(Math.abs(2*Math.cos(Math.PI*supP)))+' من سعة الموجة الواحدة';$('supO').textContent=s}supInfo();
+function loopSup(){const c=$('supC').getContext('2d');c.clearRect(0,0,900,420);supT+=.04;const rows=[[80,'#D81B60','الموجة 1 (الشق 1)',0],[200,'#1E88E5','الموجة 2 (الشق 2)',supP],[330,'#2B2A6B','المحصلة (التراكب)',null]];
+rows.forEach(([y0,col,t,ph])=>{c.strokeStyle='#ccc';c.lineWidth=1;c.beginPath();c.moveTo(30,y0);c.lineTo(870,y0);c.stroke();c.strokeStyle=col;c.lineWidth=ph===null?4:3;c.beginPath();
+for(let x=30;x<=870;x+=3){const k=(x-30)/140*2*Math.PI-supT*3;const y=ph===null?32*(Math.sin(k)+Math.sin(k-2*Math.PI*supP)):32*Math.sin(k-2*Math.PI*ph);x===30?c.moveTo(x,y0-y):c.lineTo(x,y0-y)}c.stroke();
+c.fillStyle=col;c.font='bold 16px Almarai';c.textAlign='right';c.fillText(t,870,y0-(ph===null?72:42))})}
+
+// 3 Young
+let yl=650,yd=.25,yL=1,white=false;
+['lR','dR','LR'].forEach(i=>$(i).oninput=()=>{yl=+$('lR').value;yd=+$('dR').value;yL=+$('LR').value;white=false;yInfo()});
+function setL(v){$('lR').value=v;yl=v;white=false;yInfo();snd('sClick')}function setWhite(){white=true;yInfo();snd('sClick')}
+function yInfo(){$('lV').textContent=white?'أبيض':yl;$('dV').textContent=f3(yd);$('LV').textContent=f2(yL);
+const x=yl*1e-9*yL/(yd*1e-3);$('yO').innerHTML=white?'الضوء الأبيض: الهدب المركزي أبيض، وتظهر حوله أطياف ملوّنة (الأزرق أقرب إلى المركز والأحمر أبعد).':`<span class="ltr">x = λL / d = (${yl}×10⁻⁹ m)(${f2(yL)} m) / (${f3(yd)}×10⁻³ m) = ${(x*1000).toFixed(2)} mm</span>`}yInfo();
+let yT=0;
+function I(xmm,l){const x=xmm*1e-3,th=x/yL;const ph=Math.PI*yd*1e-3*th/(l*1e-9);const be=Math.PI*.04e-3*th/(l*1e-9);const env=be===0?1:Math.pow(Math.sin(be)/be,2);return Math.pow(Math.cos(ph),2)*env}
+const SPAN=12;// mm half width shown on screen
+function scr(c,w,h,y0,hh){const img=c.createImageData(w,hh);for(let px=0;px<w;px++){const xm=(px-w/2)/(w/2)*SPAN;let col=[0,0,0];
+if(white){for(let l=400;l<=700;l+=20){const k=I(xm,l),cc=wl(l);col[0]+=cc[0]*k;col[1]+=cc[1]*k;col[2]+=cc[2]*k}col=col.map(v=>v/6.2)}else{const k=I(xm,yl),cc=wl(yl);col=cc.map(v=>v*k)}
+for(let py=0;py<hh;py++){const o=(py*w+px)*4;img.data[o]=Math.min(255,col[0]*255);img.data[o+1]=Math.min(255,col[1]*255);img.data[o+2]=Math.min(255,col[2]*255);img.data[o+3]=255}}c.putImageData(img,0,y0)}
+function loopY(){const c=$('yC').getContext('2d');c.clearRect(0,0,900,360);yT+=1.5;const col=white?[1,1,1]:wl(yl);
+c.fillStyle='#444';c.fillRect(20,160,70,40);c.fillStyle=css(col);c.fillRect(90,172,10,16);
+c.strokeStyle=css(col,.9);c.lineWidth=2;const lam=18+ (white?550:yl-400)/300*16;for(let x=100+yT%lam;x<250;x+=lam){c.beginPath();c.moveTo(x,150);c.lineTo(x,210);c.stroke()}
+c.fillStyle='#bba';c.fillRect(250,20,10,320);const sep=30+yd*240;const s1=180-sep/2,s2=180+sep/2;c.fillStyle='#0d0b1e';c.fillRect(250,s1-4,10,8);c.fillRect(250,s2-4,10,8);
+c.save();c.beginPath();c.rect(262,10,560,340);c.clip();[s1,s2].forEach(s=>{c.strokeStyle=css(col,.45);for(let r=yT%lam;r<640;r+=lam){c.beginPath();c.arc(255,s,r,-1.3,1.3);c.stroke()}});c.restore();
+const Lx=520+yL*130;c.fillStyle='#ddd';c.fillRect(Math.min(Lx,880),10,8,340);
+c.fillStyle='#fff';c.font='15px Almarai';c.textAlign='center';c.fillText('d',240,180);c.fillText('L = '+f2(yL)+' m',(255+Math.min(Lx,880))/2,350);c.fillText('حاجز ذو شقين',255,15);
+const s=$('yS').getContext('2d');scr(s,900,130,0,100);s.fillStyle='#fff';s.font='13px Almarai';s.textAlign='center';for(let m=-10;m<=10;m+=2){const px=450+m/SPAN*450;s.fillRect(px,100,1,8);s.fillText(m+' mm',px,124)}}
+
+// 4 measurement
+const ML=[[680,'أحمر'],[532,'أخضر'],[445,'أزرق بنفسجي']];let mk=0,xm=0;const rows=[];
+function setM(k){mk=k;[...$('mCh').children].forEach((b,j)=>b.classList.toggle('on',j===k));$('mO').textContent='';snd('sClick')}setM(0);
+$('xR').oninput=()=>{xm=+$('xR').value;$('xV').textContent=xm.toFixed(2)};
+function loopM(){const c=$('mC').getContext('2d');c.clearRect(0,0,900,200);const l=ML[mk][0];const cc=wl(l);const img=c.createImageData(900,110);
+for(let px=0;px<900;px++){const x=(px-450)/450*6;const ph=Math.PI*.25e-3*(x*1e-3)/(l*1e-9);const k=Math.pow(Math.cos(ph),2);for(let py=0;py<110;py++){const o=(py*900+px)*4;img.data[o]=cc[0]*k*255;img.data[o+1]=cc[1]*k*255;img.data[o+2]=cc[2]*k*255;img.data[o+3]=255}}c.putImageData(img,0,10);
+c.fillStyle='#f5f0e0';c.fillRect(0,125,900,50);c.fillStyle='#222';c.font='12px Almarai';c.textAlign='center';for(let i=-60;i<=60;i++){const px=450+i/10*75;const L=i%10===0?22:i%5===0?15:9;c.fillRect(px,125,1,L);if(i%10===0)c.fillText((i/10)+'',px,170)}
+c.fillText('mm',880,160);const px=450+xm*75;c.fillStyle='#FFD400';c.beginPath();c.moveTo(px,120);c.lineTo(px-8,104);c.lineTo(px+8,104);c.fill();c.fillRect(px-1,10,2,110)}
+function chkM(){const v=+$('mIn').value,l=ML[mk][0];if(!v){$('mO').textContent='اكتبي قيمة λ أولًا';return}const x=l*1e-9/.25e-3*1e3;if(Math.abs(v-l)/l<.04){$('mO').innerHTML=`✔ أحسنتِ! λ ≈ ${l} nm (${ML[mk][1]})، والمسافة الصحيحة <span class="ltr">x = ${x.toFixed(2)} mm</span>`;snd('sOk')}else{$('mO').innerHTML='✖ راجعي القياس أو الحساب: <span class="ltr">λ = xd / L</span> مع تحويل x و d إلى المتر';snd('sNo')}}
+function addRow(){const v=+$('mIn').value;rows.push(['ABC'[mk],xm.toFixed(2),v||'—',v?nameOf(v):'—']);$('mTb').innerHTML=rows.map(r=>`<tr>${r.map(t=>`<td>${t}</td>`).join('')}</tr>`).join('');snd('sClick')}
+const nameOf=v=>v<450?'بنفسجي/أزرق':v<495?'أزرق':v<570?'أخضر':v<590?'أصفر':v<620?'برتقالي':'أحمر';
+
+// 5 soap film
+let fl=0,fmax=900,fn=1.33,fY=-1,fPh=0;
+function setFL(v){fl=v;[...$('fL').children].forEach((b,j)=>b.classList.toggle('on',[0,589,450,650][j]===v));snd('sClick')}setFL(0);
+$('fT').oninput=()=>{fmax=+$('fT').value;$('fTV').textContent=fmax};$('fN').oninput=()=>{fn=+$('fN').value;$('fNV').textContent=f2(fn)};
+function film(d,n,l){const R=k=>Math.pow(Math.sin(2*Math.PI*n*d/k),2);if(l){const c=wl(l),r=R(l);return c.map(v=>v*r)}let s=[0,0,0];for(let k=400;k<=700;k+=10){const c=wl(k),r=R(k);s[0]+=c[0]*r;s[1]+=c[1]*r;s[2]+=c[2]*r}return s.map(v=>Math.min(1,v/11))}
+$('fC').addEventListener('mousemove',e=>{const r=e.target.getBoundingClientRect();fY=(e.clientY-r.top)/r.height*420});$('fC').addEventListener('touchmove',e=>{const r=e.target.getBoundingClientRect();fY=(e.touches[0].clientY-r.top)/r.height*420},{passive:true});
+let LUT=[],lutK='';function loopF(){const k=fl+'|'+fmax+'|'+fn;if(k!==lutK){lutK=k;LUT=[];for(let d=0;d<=fmax+10;d++)LUT.push(film(d,fn,fl))}const c=$('fC').getContext('2d');fPh+=.02;c.clearRect(0,0,420,420);const img=c.createImageData(340,340);
+for(let py=0;py<340;py++){for(let px=0;px<340;px++){const dx=px-170,dy=py-170;if(dx*dx+dy*dy>168*168)continue;const sw=6*Math.sin(px/40+fPh)*Math.sin(py/55-fPh*.7);const d=Math.max(0,(py/340)*fmax+sw*(py/340));const col=LUT[Math.min(LUT.length-1,Math.round(d))];const o=(py*340+px)*4;img.data[o]=col[0]*255;img.data[o+1]=col[1]*255;img.data[o+2]=col[2]*255;img.data[o+3]=255}}
+c.putImageData(img,40,40);c.strokeStyle='#8a6d3b';c.lineWidth=8;c.beginPath();c.arc(210,210,172,0,7);c.stroke();c.fillStyle='#8a6d3b';c.fillRect(204,0,12,38);
+if(fY>40&&fY<380){c.strokeStyle='#fff';c.lineWidth=1;c.setLineDash([4,4]);c.beginPath();c.moveTo(40,fY);c.lineTo(380,fY);c.stroke();c.setLineDash([]);const d=(fY-40)/340*fmax;
+const lam=l=>(4*fn*d/l);$('fO').innerHTML=`السمك عند المؤشر: <span class="ltr">d ≈ ${Math.round(d)} nm</span>`+(fl?`<br>λ داخل الغشاء = <span class="ltr">${Math.round(fl/fn)} nm</span> • d ÷ (λ/4n) = <span class="ltr">${lam(fl).toFixed(2)}</span> ${Math.abs(lam(fl)%2-1)<.25?'→ قريب من عدد فردي: حزمة مضيئة ✔':Math.abs(lam(fl)%2)<.25||Math.abs(lam(fl)%2-2)<.25?'→ قريب من عدد زوجي: حزمة معتمة ✖':''}`:'')}}
+
+// 6 calculator
+function ex(a,b,cc,l,t){$('n1').value=a.toFixed(2);$('nf').value=b.toFixed(2);$('n2').value=cc.toFixed(2);$('cl').value=l;$('ct').value=t;$('cm').value='0';calc()}
+function calc(){const n1=+$('n1').value,nf=+$('nf').value,n2=+$('n2').value,l=+$('cl').value,t=$('ct').value,m=+$('cm').value;
+const inv1=nf>n1,inv2=n2>nf,flips=(inv1?1:0)+(inv2?1:0);const half=(flips===1)!==(t==='d');// half => (m+1/2)
+const ln=l/nf;const d=(half?(m+.5):(m||1)*1)*ln/2;const mm=half?m:(m||1);
+let s=`الانعكاس الأول (${n1}←${nf}): ${inv1?'<b>ينقلب</b> (من وسط أقل إلى أكبر)':'لا ينقلب'}<br>الانعكاس الثاني (${nf}←${n2}): ${inv2?'<b>ينقلب</b>':'لا ينقلب'}<br>`;
+s+=`عدد الانقلابات: ${flips} • المطلوب: ${t==='c'?'تداخل بنّاء':'تداخل هدّام'}<br>المعادلة: <span class="ltr">2d = ${half?'(m + ½)':'m'} λ / n<sub>film</sub></span>`+(!half&&m===0?' (m = 0 يعطي d = 0، لذا نأخذ m = 1)':'')+`<br>`;
+s+=`<span class="ltr">λ<sub>film</sub> = ${l} / ${nf} = ${ln.toFixed(1)} nm</span><br>✔ <span class="ltr">d = ${d.toFixed(1)} nm</span>`;$('cO').innerHTML=s;snd('sClick');
+const c=$('cC').getContext('2d');c.clearRect(0,0,900,230);c.fillStyle='#E3F2FD';c.fillRect(0,0,900,70);c.fillStyle='#FFE082';c.fillRect(0,70,900,80);c.fillStyle='#C8E6C9';c.fillRect(0,150,900,80);
+c.fillStyle='#2B2A6B';c.font='bold 15px Almarai';c.textAlign='right';c.fillText('الوسط 1  n = '+n1,880,30);c.fillText('الغشاء  n = '+nf,880,115);c.fillText('الوسط 2  n = '+n2,880,195);
+c.strokeStyle='#D32F2F';c.lineWidth=3;const ar=(x1,y1,x2,y2)=>{c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke()};ar(300,0,360,70);ar(360,70,420,0);ar(360,70,400,150);ar(400,150,440,70);ar(440,70,500,0);
+c.fillStyle='#2B2A6B';c.textAlign='center';c.fillText(inv1?'↻ انقلاب':'بلا انقلاب',360,92);c.fillText(inv2?'↻ انقلاب':'بلا انقلاب',400,172);c.fillText('شعاع 1',420,20);c.fillText('شعاع 2',520,20)}
+calc();
+
+function tick(){const id=document.querySelector('.lab.on')?.id;({coh:loopCoh,sup:loopSup,young:loopY,meas:loopM,film:loopF})[id]?.();requestAnimationFrame(tick)}tick();
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>الواقع المعزز | التداخل</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E3557;--gold:#A8741A;--teal:#1F7A80;--hot:#E0622B;--cold:#2B7BB9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#0b1626;font-family:Almarai,sans-serif;color:#fff;touch-action:none}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+#bgFallback{position:fixed;inset:0;background:radial-gradient(circle at 50% 30%,#2a4a73,#0b1626 70%);z-index:0}
+#gl{position:fixed;inset:0;z-index:1}
+.glass{background:rgba(15,30,55,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:18px}
+#top{position:fixed;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:3;display:flex;align-items:center;gap:8px;padding:6px 10px}
+#top img{height:34px;background:#fff;border-radius:8px;padding:2px}#top h1{flex:1;margin:0;font-size:clamp(14px,3.6vw,20px);text-align:center}
+#info{position:fixed;top:calc(64px + env(safe-area-inset-top));right:8px;z-index:3;width:min(420px,calc(100% - 16px));padding:12px 14px;transition:.3s}
+#info h2{margin:0 0 4px;font-size:20px;color:#F2C14E}#info p{margin:0;font-size:15px;line-height:1.75}
+#info.min p{display:none}
+#bottom{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom));left:8px;right:8px;z-index:3}
+#chips{display:flex;gap:8px;overflow-x:auto;padding:8px;scrollbar-width:none}#chips::-webkit-scrollbar{display:none}
+#chips button{flex:0 0 auto;font:inherit;font-weight:800;font-size:15px;color:#fff;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);padding:9px 14px;border-radius:999px;cursor:pointer}
+#chips button.on{background:linear-gradient(135deg,#E0622B,#F2B01E);border-color:#fff;box-shadow:0 0 18px rgba(242,176,30,.7)}
+#ctrl{display:flex;gap:8px;align-items:center;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
+#ctrl label{font-size:14px;font-weight:700}#ctrl input[type=range]{flex:1;min-width:140px;accent-color:#E0622B}
+.ib{font:inherit;font-weight:800;font-size:14px;color:#fff;border:0;border-radius:12px;padding:9px 12px;cursor:pointer;background:var(--teal)}
+.ib.g{background:var(--gold)}.ib.h{background:var(--hot)}
+#side{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:10px}
+#side button{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(15,30,55,.6);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(8px)}
+#quiz,#shot,#perm,#intro{position:fixed;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:rgba(5,12,24,.55);padding:16px}
+#quiz .box,#shot .box,#perm .box,#intro .box{width:min(520px,100%);padding:18px;text-align:center}
+#quiz h3{margin:0 0 12px;font-size:21px;line-height:1.6}
+.qo{display:block;width:100%;font:inherit;font-weight:700;font-size:17px;margin:8px 0;padding:12px;border-radius:14px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;text-align:right}
+.qo.ok{background:#2E8B57;border-color:#2E8B57}.qo.no{background:#C0392B;border-color:#C0392B}
+#qfb{min-height:24px;margin-top:8px;line-height:1.7}
+#shot img{width:100%;border-radius:12px}
+#toast{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(.8);z-index:6;font-size:30px;font-weight:800;opacity:0;transition:.35s;pointer-events:none;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#hint{position:fixed;left:50%;top:58%;transform:translateX(-50%);z-index:2;font-size:14px;background:rgba(0,0,0,.4);padding:6px 12px;border-radius:999px;transition:opacity 1s;pointer-events:none}
+.big{font-size:54px;margin:4px 0}
+</style></head><body>
+<div id="bgFallback"></div>
+<video id="cam" playsinline muted autoplay></video>
+<canvas id="gl"></canvas>
+<div id="top" class="glass"><img src="img/moe.png" alt=""><h1>🔍 الواقع المعزز: التداخل من حولي</h1><span style="width:34px"></span></div>
+<div id="info" class="glass" onclick="this.classList.toggle('min')"><h2 id="iT"></h2><p id="iP"></p></div>
+<div id="side"><button onclick="openQuiz()" title="سؤال">❓</button><button onclick="snap()" title="التقاط">📸</button><button onclick="recenter()" title="توسيط">🎯</button><button onclick="toggleSnd()" id="sndB" title="الصوت">🔊</button></div>
+<div id="hint">اسحبي لتدوير النموذج • قرّبي بإصبعين • حرّكي الجوال حولك</div>
+<div id="bottom"><div id="ctrl" class="glass"></div><div id="chips" class="glass"></div></div>
+<div id="quiz"><div class="box glass"><h3 id="qq"></h3><div id="qo"></div><div id="qfb"></div><button class="ib g" onclick="closeQ()" style="margin-top:10px">إغلاق</button></div></div>
+<div id="shot"><div class="box glass"><img id="shotImg" alt=""><p>اضغطي مطولًا على الصورة لحفظها، أو:</p><a id="dl" class="ib h" style="display:inline-block;text-decoration:none" download="ar-interference.png">⬇ حفظ الصورة</a> <button class="ib" onclick="document.getElementById('shot').style.display='none'">إغلاق</button></div></div>
+<div id="perm"><div class="box glass"><div class="big">📷</div><h3>اسمحي بالوصول إلى الكاميرا</h3><p style="line-height:1.8">لعرض النماذج فوق ما حولك. إن ظهرت رسالة الإذن اضغطي «سماح».</p><button class="ib h" onclick="startCam(true)">تشغيل الكاميرا</button> <button class="ib" onclick="document.getElementById('perm').style.display='none'">المتابعة بدون كاميرا</button></div></div>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ---------- camera: request immediately ----------
+const video=document.getElementById('cam');
+async function startCam(fromBtn){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    video.srcObject=st;await video.play().catch(()=>{});document.getElementById('bgFallback').style.display='none';document.getElementById('perm').style.display='none';
+  }catch(e){document.getElementById('perm').style.display='flex'}
+  if(fromBtn)enableGyro();
+}
+startCam(false);
+
+// ---------- sounds (natural only) ----------
+const SND={};['applause','knock','drop','bubble','whoosh'].forEach(n=>{SND[n]=new Audio('snd/'+n+'.mp3')});SND.bubble.loop=true;
+let sndOn=true,amb=null,unlocked=false;
+function sfx(n,v=.8){if(!sndOn)return;try{const a=SND[n].cloneNode();a.volume=v;a.play().catch(()=>{})}catch(e){}}
+function ambient(n){if(amb){amb.pause();amb=null}if(!n||!sndOn||!unlocked)return;amb=SND[n];amb.volume=.35;amb.currentTime=0;amb.play().catch(()=>{})}
+function toggleSnd(){sndOn=!sndOn;document.getElementById('sndB').textContent=sndOn?'🔊':'🔇';if(!sndOn&&amb)amb.pause();else ambient(SC[cur].amb)}
+document.addEventListener('pointerdown',()=>{if(!unlocked){unlocked=true;enableGyro();ambient(SC[cur].amb)}},{once:false});
+
+// ---------- three ----------
+const cv=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);R.outputEncoding=THREE.sRGBEncoding;
+const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.05,100);
+scene.add(new THREE.HemisphereLight(0xffffff,0x334466,.9));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(2,4,3);scene.add(dl);
+const pl=new THREE.PointLight(0xffaa66,.6,10);pl.position.set(-2,1,2);scene.add(pl);
+const anchor=new THREE.Group();anchor.position.set(0,-.15,-3);scene.add(anchor);
+const holder=new THREE.Group();anchor.add(holder);
+// shadow disc
+const disc=new THREE.Mesh(new THREE.CircleGeometry(1.5,48),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22}));disc.rotation.x=-Math.PI/2;disc.position.y=-1.05;anchor.add(disc);
+const ring=new THREE.Mesh(new THREE.RingGeometry(1.45,1.52,64),new THREE.MeshBasicMaterial({color:0xF2C14E,transparent:true,opacity:.8,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=-1.04;anchor.add(ring);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)});
+
+// ---------- gyro (look around: objects stay in the room) ----------
+let gyro=false,q0=null;const qd=new THREE.Quaternion(),eu=new THREE.Euler(),zee=new THREE.Vector3(0,0,1),q1=new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5));
+function onOri(e){if(e.alpha==null)return;gyro=true;const a=THREE.MathUtils.degToRad(e.alpha),b=THREE.MathUtils.degToRad(e.beta),g=THREE.MathUtils.degToRad(e.gamma),o=THREE.MathUtils.degToRad(screen.orientation?screen.orientation.angle:(window.orientation||0));
+eu.set(b,a,-g,'YXZ');qd.setFromEuler(eu);qd.multiply(q1);qd.multiply(new THREE.Quaternion().setFromAxisAngle(zee,-o));if(!q0){q0=qd.clone().invert();}}
+function enableGyro(){if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')addEventListener('deviceorientation',onOri)}).catch(()=>{})}else addEventListener('deviceorientation',onOri)}
+function recenter(){q0=null;rotY=0;rotX=0;zoom=1;sfx('whoosh',.5)}
+
+// ---------- touch rotate / pinch ----------
+let rotY=0,rotX=0,zoom=1,drag=null,pinch=null;
+cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};document.getElementById('hint').style.opacity=0});
+addEventListener('pointermove',e=>{if(!drag||pinch)return;rotY+=(e.clientX-drag.x)*.01;rotX=Math.max(-.6,Math.min(.6,rotX+(e.clientY-drag.y)*.006));drag={x:e.clientX,y:e.clientY}});
+addEventListener('pointerup',()=>drag=null);
+cv.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch)zoom=Math.max(.5,Math.min(2.2,zoom*d/pinch));pinch=d}},{passive:true});
+cv.addEventListener('touchend',()=>pinch=null);
+cv.addEventListener('wheel',e=>{zoom=Math.max(.5,Math.min(2.2,zoom*(e.deltaY>0?.92:1.08)))},{passive:true});
+
+// ---------- helpers ----------
+const RD=()=>{const u=Math.random()*2-1,a=Math.random()*6.2832,s=Math.sqrt(1-u*u);return new THREE.Vector3(s*Math.cos(a),u,s*Math.sin(a))};
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.35,metalness:.1},o));
+function glow(color,size){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,color);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.scale.set(size,size,1);return s}
+function label(txt,bg='#1E3557',fg='#fff',w=1.1){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');const draw=()=>{g.clearRect(0,0,512,128);g.fillStyle=bg;g.globalAlpha=.88;g.beginPath();g.moveTo(30,10);g.lineTo(482,10);g.quadraticCurveTo(502,10,502,30);g.lineTo(502,98);g.quadraticCurveTo(502,118,482,118);g.lineTo(30,118);g.quadraticCurveTo(10,118,10,98);g.lineTo(10,30);g.quadraticCurveTo(10,10,30,10);g.fill();g.globalAlpha=1;g.fillStyle=fg;g.font='800 52px Almarai';g.textAlign='center';g.textBaseline='middle';g.direction='rtl';g.fillText(s.userData.t,256,66);tex.needsUpdate=true};
+const tex=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));s.scale.set(w,w/4,1);s.userData.t=txt;s.userData.set=t=>{s.userData.t=t;draw()};draw();s.renderOrder=10;return s}
+const tcol=(T)=>{const c=Math.max(0,Math.min(1,(T+10)/110));return new THREE.Color().setRGB(.17+c*.8,.48-c*.1+(c>.5?-.2*(c-.5):0),.73-c*.62)};
+let slider=null,sval=60,rodK=1;
+function setCtrl(html){document.getElementById('ctrl').innerHTML=html;document.getElementById('ctrl').style.display=html?'flex':'none'}
+
+// ---------- scenes ----------
+function wl(l){let r=0,g=0,b=0;if(l>=380&&l<440){r=-(l-440)/60;b=1}else if(l<490){g=(l-440)/50;b=1}else if(l<510){g=1;b=-(l-510)/20}else if(l<580){r=(l-510)/70;g=1}else if(l<645){r=1;g=-(l-645)/65}else if(l<=780){r=1}let f=l<420?.3+.7*(l-380)/40:l>700?.3+.7*(780-l)/80:1;return[r*f,g*f,b*f]}
+function filmCol(d,n){let s=[0,0,0];for(let k=400;k<=700;k+=10){const c=wl(k),r=Math.pow(Math.sin(2*Math.PI*n*d/k),2);s[0]+=c[0]*r;s[1]+=c[1]*r;s[2]+=c[2]*r}return s.map(v=>Math.min(255,v/11*255))}
+function filmTex(w,h,fn){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');const im=g.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const d=fn(x/w,y/h),col=filmCol(d,1.33),o=(y*w+x)*4;im.data[o]=col[0];im.data[o+1]=col[1];im.data[o+2]=col[2];im.data[o+3]=255}g.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=THREE.RepeatWrapping;return t}
+function fringeTex(lam){const c=document.createElement('canvas');c.width=512;c.height=64;const g=c.getContext('2d');const im=g.createImageData(512,64);const col=wl(lam);for(let x=0;x<512;x++){const X=(x-256)/256*12e-3,th=X/1.0,ph=Math.PI*.25e-3*th/(lam*1e-9),be=Math.PI*.04e-3*th/(lam*1e-9),env=be?Math.pow(Math.sin(be)/be,2):1,k=Math.pow(Math.cos(ph),2)*env;for(let y=0;y<64;y++){const o=(y*512+x)*4;im.data[o]=col[0]*k*255;im.data[o+1]=col[1]*k*255;im.data[o+2]=col[2]*k*255;im.data[o+3]=255}}g.putImageData(im,0,0);return new THREE.CanvasTexture(c)}
+let cohMode=0,phase=0,yLam=650;
+const SC=[
+{n:'💡 مترابط؟',t:'الضوء المترابط والضوء غير المترابط',p:'المصباح العادي يصدر موجات غير متزامنة بأطوال موجية مختلفة (ضوء غير مترابط) فلا يظهر نمط منتظم. أما المصدر النقطي أو الليزر فيصدر مقدمات موجة منتظمة متزامنة (ضوء مترابط). بدّلي بين المصدرين بالأزرار.',
+ amb:null,ctrl:'<button class="ib g" onclick="cohMode=0;sfx(\'drop\',.5)">💡 مصباح عادي</button><button class="ib h" onclick="cohMode=1;sfx(\'drop\',.5)">🔴 مصدر مترابط</button>',
+ q:['أي الضوءين يمكن أن يُكوّن نمط تداخل منتظمًا؟',['ضوء المصباح العادي','الضوء المترابط مثل الليزر','لا يحدث تداخل للضوء'],1],
+ build(g){cohMode=0;this.rings=[];for(let i=0;i<46;i++){const m=new THREE.Mesh(new THREE.RingGeometry(.97,1,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,side:2,depthWrite:false}));g.add(m);m.userData={o:Math.random(),x:(Math.random()-.5)*.6,z:(Math.random()-.5)*.6,c:new THREE.Color().setRGB(...wl(400+Math.random()*300))};this.rings.push(m)}
+ this.src=new THREE.Mesh(new THREE.SphereGeometry(.16,32,16),new THREE.MeshBasicMaterial({color:0xfff2b0}));this.src.position.y=.15;g.add(this.src);this.gl=glow('rgba(255,230,140,.9)',.9);this.gl.position.y=.15;g.add(this.gl);
+ this.l=label('ضوء غير مترابط','#A8741A');this.l.position.y=1.05;g.add(this.l);setCtrl(this.ctrl)},
+ update(dt,t){const c=cohMode===1;this.l.userData.t!==(c?'ضوء مترابط':'ضوء غير مترابط')&&this.l.userData.set(c?'ضوء مترابط':'ضوء غير مترابط');this.src.material.color.set(c?0xff3b3b:0xfff2b0);
+ this.rings.forEach((m,i)=>{const p=c?((t*.35+i/this.rings.length*4)%1):((t*.35+m.userData.o)%1);const s=.05+p*1.4;m.scale.set(s,s,1);m.position.set(c?0:m.userData.x,.15+(c?0:m.userData.z),0);m.material.color.copy(c?new THREE.Color(0xff3b3b):m.userData.c);m.material.opacity=(1-p)*(c?.95:.6);m.visible=c?i<12:true})}},
+{n:'〰 بنّاء وهدّام',t:'مبدأ التراكب: التداخل البنّاء والهدّام',p:'موجتان متماثلتان (وردية وزرقاء) تتراكبان فتنتج الموجة المحصلة (ذهبية). حرّكي المؤشر لتغيّري فرق المسار: عند 0 أو λ يحدث تداخل بنّاء، وعند λ/2 يحدث تداخل هدّام فتتلاشى المحصلة.',
+ amb:null,ctrl:'<label>فرق المسار: <b id="pv">0.00</b> λ</label><input type="range" min="0" max="1" step="0.05" value="0" oninput="phase=+this.value;document.getElementById(\'pv\').textContent=(+this.value).toFixed(2)">',
+ q:['يحدث تداخل هدّام عندما يكون فرق المسار بين الموجتين:',['λ','λ/2','2λ'],1],
+ build(g){phase=0;this.w=[];[[0xD81B60,.75],[0x1E88E5,.15],[0xF2B01E,-.65]].forEach(([c,y],k)=>{const arr=[];for(let i=0;i<54;i++){const b=new THREE.Mesh(new THREE.SphereGeometry(k==2?.05:.04,12,8),M(c,{emissive:c,emissiveIntensity:.35}));g.add(b);arr.push(b)}this.w.push({arr,y})});
+ this.l=label('تداخل بنّاء ✔','#2E8B57');this.l.position.y=1.3;g.add(this.l);setCtrl(this.ctrl)},
+ update(dt,t){this.w.forEach((w,k)=>w.arr.forEach((b,i)=>{const x=-1.35+i*.051,a=x*4.5-t*3;let y=k==0?Math.sin(a):k==1?Math.sin(a-2*Math.PI*phase):Math.sin(a)+Math.sin(a-2*Math.PI*phase);b.position.set(x,w.y+y*.17,0)}));
+ const f=phase%1,s=Math.abs(f-.5)<.03?'تداخل هدّام ✖':(f<.03||f>.97)?'تداخل بنّاء ✔':'تداخل جزئي';if(this.l.userData.t!==s)this.l.userData.set(s)}},
+{n:'🔦 شقّا يونج',t:'تجربة شقّي يونج',p:'ضوء مترابط يمر عبر شقين متقاربين، فيحيد عند كل شق وتتداخل الموجتان على الشاشة مكوّنتين أهدابًا مضيئة (تداخل بنّاء) وأخرى معتمة (تداخل هدّام). غيّري اللون: الأحمر طوله الموجي أكبر فتتباعد أهدابه أكثر، لأن x = λL/d.',
+ amb:null,ctrl:'<button class="ib h" onclick="yLam=650;sfx(\'drop\',.5)">🔴 أحمر 650 nm</button><button class="ib" onclick="yLam=532;sfx(\'drop\',.5)">🟢 أخضر 532 nm</button><button class="ib g" onclick="yLam=450;sfx(\'drop\',.5)">🔵 أزرق 450 nm</button>',
+ q:['عند استبدال الضوء الأحمر بضوء أزرق في تجربة يونج، فإن المسافة بين الأهداب:',['تزداد','تقل','لا تتغير'],1],
+ build(g){yLam=650;this.lam=0;const box=new THREE.Mesh(new THREE.BoxGeometry(.5,.25,.25),M(0x333344,{metalness:.6}));box.position.set(-1.3,0,0);g.add(box);
+ this.beam=new THREE.Mesh(new THREE.BoxGeometry(.55,.03,.03),new THREE.MeshBasicMaterial({color:0xff2222}));this.beam.position.set(-.78,0,0);g.add(this.beam);
+ const bar=M(0xb0a890,{metalness:.3});[[.0,.62],[0,-.62]].forEach(([x,y])=>{const p=new THREE.Mesh(new THREE.BoxGeometry(.05,.95,.6),bar);p.position.set(-.48,y,0);g.add(p)});const mid=new THREE.Mesh(new THREE.BoxGeometry(.05,.18,.6),bar);mid.position.set(-.48,0,0);g.add(mid);
+ this.arcs=[];[.12,-.12].forEach(sy=>{for(let i=0;i<9;i++){const m=new THREE.Mesh(new THREE.RingGeometry(.98,1,48,1,-Math.PI/2,Math.PI),new THREE.MeshBasicMaterial({color:0xff3333,transparent:true,side:2}));m.position.set(-.46,sy,0);m.userData.o=i/9;g.add(m);this.arcs.push(m)}});
+ this.scr=new THREE.Mesh(new THREE.PlaneGeometry(.9,1.7),new THREE.MeshBasicMaterial({map:fringeTex(650)}));this.scr.position.set(1.15,0,0);this.scr.rotation.y=-Math.PI/2;g.add(this.scr);
+ const fr=new THREE.Mesh(new THREE.BoxGeometry(.04,1.78,.98),M(0x222222));fr.position.set(1.18,0,0);g.add(fr);
+ const l=label('الشاشة','#2B2A6B');l.position.set(1.15,1.12,0);g.add(l);const l2=label('حاجز ذو شقين','#A8741A');l2.position.set(-.48,1.25,0);g.add(l2);this.ll=label('λ = 650 nm','#C2185B');this.ll.position.set(-1.3,.45,0);g.add(this.ll);setCtrl(this.ctrl)},
+ update(dt,t){if(this.lam!==yLam){this.lam=yLam;this.scr.material.map=fringeTex(yLam);this.scr.material.needsUpdate=true;const c=new THREE.Color().setRGB(...wl(yLam));this.beam.material.color.copy(c);this.arcs.forEach(a=>a.material.color.copy(c));this.ll.userData.set('λ = '+yLam+' nm')}
+ const sp=yLam/650;this.arcs.forEach(a=>{const p=(t*.25/sp+a.userData.o)%1;const s=.05+p*1.6;a.scale.set(s,s,1);a.material.opacity=(1-p)*.8})}},
+{n:'🫧 فقاعة الصابون',t:'ألوان فقاعة الصابون',p:'محلول الصابون شفاف، لكن الغشاء الرقيق للفقاعة يعكس الضوء من سطحيه الأمامي والخلفي، فتتداخل الموجتان. ولأن سمك الغشاء يتغير، يتحقق التداخل البنّاء لألوان مختلفة في أماكن مختلفة، فتظهر ألوان قوس المطر.',
+ amb:'bubble',ctrl:'',
+ q:['سبب ظهور ألوان الطيف على فقاعة الصابون:',['وجود أصباغ ملوّنة في الصابون','التداخل في الغشاء الرقيق','امتصاص الصابون للون الأبيض'],1],
+ build(g){const tex=filmTex(256,256,(u,v)=>80+v*1100+60*Math.sin(u*12.566+v*9));this.b=new THREE.Mesh(new THREE.SphereGeometry(.85,64,48),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:.62,side:2,depthWrite:false}));g.add(this.b);
+ this.sh=glow('rgba(255,255,255,.8)',.5);this.sh.position.set(-.3,.35,.75);g.add(this.sh);
+ const wand=new THREE.Mesh(new THREE.TorusGeometry(.3,.025,12,48),M(0xE0A040));wand.position.set(.9,-.75,0);g.add(wand);const st=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.7),M(0xE0A040));st.position.set(1.15,-1.05,0);st.rotation.z=.8;g.add(st);
+ this.sm=[];for(let i=0;i<6;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.08+Math.random()*.1,32,16),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:.55,depthWrite:false}));s.userData.o=Math.random();g.add(s);this.sm.push(s)}
+ const l=label('غشاء رقيق: n = 1.33','#6A3FB5');l.position.y=1.15;g.add(l);setCtrl(this.ctrl)},
+ update(dt,t){this.b.material.map.offset.x=t*.02;this.b.rotation.y=t*.15;this.b.scale.setScalar(1+.02*Math.sin(t*2));this.sm.forEach((s,i)=>{const p=(t*.12+s.userData.o)%1;s.position.set(.9-p*.6+Math.sin(t+i)*.15,-.6+p*2,Math.cos(t+i)*.3);s.material.opacity=.55*(1-p)})}},
+{n:'🛢 زيت على الماء',t:'بقعة زيت على سطح الماء (المثال 2)',p:'طبقة زيت رقيقة (n = 1.45) فوق الماء (n = 1.33). ينقلب الشعاع المنعكس عن سطح الزيت العلوي، ولا ينقلب المنعكس عن سطح الماء. يقل سمك الزيت من المركز نحو الأطراف فتظهر حلقات ملوّنة، وأقل سمك يعكس الأصفر المخضر (555 nm) هو d = λ/4n = 95.7 nm.',
+ amb:'drop',ctrl:'',
+ q:['لماذا تقل أطوال الموجات في الزيت عنها في الهواء؟',['لأن معامل انكسار الزيت أكبر من الهواء','لأن الزيت أثقل من الماء','لأن الزيت معتم'],0],
+ build(g){const w=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,.12,64),M(0x2a6fb0,{roughness:.1,metalness:.2,transparent:true,opacity:.92}));w.position.y=-.4;g.add(w);
+ const tex=filmTex(256,256,(u,v)=>{const r=Math.hypot(u-.5,v-.5)*2;return Math.max(0,(1-r)*900+30*Math.sin(u*20)*Math.cos(v*17))});this.oil=new THREE.Mesh(new THREE.CircleGeometry(1.05,64),new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:.9}));this.oil.rotation.x=-Math.PI/2;this.oil.position.y=-.335;g.add(this.oil);
+ const a=label('زيت n = 1.45','#A8741A');a.position.set(-.6,.35,0);g.add(a);const b=label('ماء n = 1.33','#1F7A80');b.position.set(.85,-.05,.6);g.add(b);
+ this.d=[];for(let i=0;i<5;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.05,16,8),M(0x88c0ff,{transparent:true,opacity:.8}));s.userData.o=Math.random();g.add(s);this.d.push(s)}setCtrl(this.ctrl)},
+ update(dt,t){this.oil.rotation.z=t*.05;this.d.forEach((s,i)=>{const p=(t*.4+s.userData.o)%1;s.position.set(Math.sin(i*2)*1.1,1.4-p*1.75,Math.cos(i*2)*1.1)})}},
+{n:'🦋 فراشة المورفو',t:'فراشة المورفو: لون بلا صبغة',p:'اللون الأزرق المتلألئ لجناحي فراشة المورفو ليس صبغة؛ بل نتوءات دقيقة تشبه الدرج على قشور الجناح، ينعكس عنها الضوء وينكسر فتتداخل الأشعة المنعكسة تداخلًا بنّاء للأزرق. دوّري الفراشة: يتغير اللون مع زاوية النظر!',
+ amb:null,ctrl:'',
+ q:['اللون الأزرق في جناح فراشة المورفو ناتج عن:',['صبغة زرقاء','التداخل في تراكيب الجناح الرقيقة','انعكاس لون السماء فقط'],1],
+ build(g){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const gr=x.createRadialGradient(40,128,10,40,128,240);gr.addColorStop(0,'#bfe8ff');gr.addColorStop(.4,'#1e7bff');gr.addColorStop(.85,'#0a2a8a');gr.addColorStop(1,'#111');x.fillStyle=gr;x.beginPath();x.moveTo(0,110);x.bezierCurveTo(60,-10,250,0,250,60);x.bezierCurveTo(240,140,150,130,120,135);x.bezierCurveTo(200,170,200,250,110,250);x.bezierCurveTo(40,250,10,200,0,150);x.fill();x.strokeStyle='rgba(0,0,40,.5)';for(let i=0;i<7;i++){x.beginPath();x.moveTo(0,130);x.lineTo(250,20+i*35);x.stroke()}
+ const tex=new THREE.CanvasTexture(c);this.wm=[];[1,-1].forEach(s=>{const pv=new THREE.Group();const m=new THREE.MeshStandardMaterial({map:tex,transparent:true,side:2,roughness:.2,metalness:.6,emissive:0x1040ff,emissiveIntensity:.25});const w=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.2),m);w.position.x=.6;if(s<0){w.scale.x=-1;w.position.x=-.6}pv.add(w);g.add(pv);this.wm.push({pv,s,m})});
+ const body=new THREE.Mesh(new THREE.CylinderGeometry(.05,.04,.9,12),M(0x2a1a10));g.add(body);
+ const l=label('ألوان بالتداخل','#1E3557');l.position.y=1.0;g.add(l);setCtrl(this.ctrl)},
+ update(dt,t){const f=.5*Math.sin(t*3.2);this.wm.forEach(w=>{w.pv.rotation.y=w.s*f;const ang=Math.abs(Math.sin(holder.rotation.y+w.s*f));w.m.emissive.setHSL(.62+ang*.14,1,.35);w.m.emissiveIntensity=.25+.3*ang})}}
+];
+let cur=0,built=null;
+function load(i){cur=i;while(holder.children.length)holder.remove(holder.children[0]);const s=SC[i];built=Object.create(s);built.build(holder);
+document.getElementById('iT').textContent=s.t;document.getElementById('iP').textContent=s.p;document.getElementById('info').classList.remove('min');
+document.querySelectorAll('#chips button').forEach((b,j)=>b.classList.toggle('on',j===i));holder.scale.setScalar(.01);pop=0;sfx('whoosh',.55);ambient(s.amb);try{history.replaceState(null,'','#s'+i)}catch(e){}}
+let pop=1;
+document.getElementById('chips').innerHTML=SC.map((s,i)=>`<button onclick="load(${i})">${s.n}</button>`).join('');
+// quiz
+function openQuiz(){const q=SC[cur].q;document.getElementById('qq').textContent='❓ '+q[0];document.getElementById('qfb').textContent='';
+document.getElementById('qo').innerHTML=q[1].map((o,i)=>`<button class="qo" onclick="qa(${i},this)">${'أبج'[i]}) ${o}</button>`).join('');document.getElementById('quiz').style.display='flex';sfx('drop',.5)}
+function qa(i,b){const q=SC[cur].q;if(b.parentNode.dataset.d)return;b.parentNode.dataset.d=1;const ok=i===q[2];b.classList.add(ok?'ok':'no');b.parentNode.children[q[2]].classList.add('ok');
+document.getElementById('qfb').textContent=ok?'🎉 أحسنتِ! إجابة صحيحة':'💡 الإجابة الصحيحة مظلّلة بالأخضر';sfx(ok?'applause':'knock',.8);if(ok)toast('⭐ +10')}
+function closeQ(){document.getElementById('quiz').style.display='none'}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1200)}
+// snapshot
+function snap(){const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');
+if(video.videoWidth){const vr=video.videoWidth/video.videoHeight,cr=c.width/c.height;let sw=video.videoWidth,sh=video.videoHeight,sx=0,sy=0;if(vr>cr){sw=sh*cr;sx=(video.videoWidth-sw)/2}else{sh=sw/cr;sy=(video.videoHeight-sh)/2}g.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height)}else{g.fillStyle='#16304f';g.fillRect(0,0,c.width,c.height)}
+g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 3 • أ. أفنان الطلحي',c.width/2,c.height-25);
+const u=c.toDataURL('image/png');document.getElementById('shotImg').src=u;document.getElementById('dl').href=u;document.getElementById('shot').style.display='flex';sfx('drop',.7)}
+// loop
+const clock=new THREE.Clock();
+function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+if(gyro&&q0){cam.quaternion.copy(q0).multiply(qd)}else{cam.quaternion.set(0,0,0,1)}
+pop=Math.min(1,pop+dt*2.2);const e=1-Math.pow(1-pop,3)*(1-pop*0)+Math.sin(pop*Math.PI)*.08;
+var asp=innerWidth/innerHeight;window.base=asp<1?.38+asp*.42:1;anchor.position.y=asp<1?-.35:-.15;holder.scale.setScalar(Math.max(.01,e)*zoom*base);disc.scale.setScalar(base);disc.position.y=ring.position.y=-1.05*base;holder.rotation.y+=((rotY+(drag?0:t*.15))-holder.rotation.y)*.2;holder.rotation.x+=(rotX-holder.rotation.x)*.2;
+ring.material.opacity=.5+.3*Math.sin(t*3);ring.scale.setScalar((1+.03*Math.sin(t*3))*base);
+if(built)built.update.call(built,dt,t);R.render(scene,cam);requestAnimationFrame(loop)}
+document.fonts.load('800 52px Almarai').finally(()=>{const h=location.hash.match(/^#s(\d)$/);load(h?+h[1]:0);loop()});
+setTimeout(()=>document.getElementById('hint').style.opacity=0,6000);
+</script>
+</body></html>
