@@ -45,7 +45,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b1626;font-family:Al
 <div id="info" class="glass" onclick="this.classList.toggle('min')"><h2 id="iT"></h2><p id="iP"></p></div>
 <div id="side"><button onclick="openQuiz()" title="سؤال">❓</button><button onclick="snap()" title="التقاط">📸</button><button onclick="recenter()" title="توسيط">🎯</button><button onclick="toggleSnd()" id="sndB" title="الصوت">🔊</button></div>
 <div id="hint">اسحبي لتدوير النموذج • قرّبي بإصبعين • حرّكي الجوال حولك</div>
-<div id="bottom"><div id="ctrl" class="glass"></div><div id="chips" class="glass"></div></div>
+<div id="bottom"><div id="ctrl" class="glass"></div><div id="chips" class="glass"></div><div style="text-align:center;font-size:13px;font-weight:800;margin-top:4px;text-shadow:0 1px 6px rgba(0,0,0,.8)">صُمّم بحب ♥ د. أفنان الطلحي</div></div>
 <div id="quiz"><div class="box glass"><h3 id="qq"></h3><div id="qo"></div><div id="qfb"></div><button class="ib g" onclick="closeQ()" style="margin-top:10px">إغلاق</button></div></div>
 <div id="shot"><div class="box glass"><img id="shotImg" alt=""><p>اضغطي مطولًا على الصورة لحفظها، أو:</p><a id="dl" class="ib h" style="display:inline-block;text-decoration:none" download="ar-interference.png">⬇ حفظ الصورة</a> <button class="ib" onclick="document.getElementById('shot').style.display='none'">إغلاق</button></div></div>
 <div id="perm"><div class="box glass"><div class="big">📷</div><h3>اسمحي بالوصول إلى الكاميرا</h3><p style="line-height:1.8">لعرض النماذج فوق ما حولك. إن ظهرت رسالة الإذن اضغطي «سماح».</p><button class="ib h" onclick="startCam(true)">تشغيل الكاميرا</button> <button class="ib" onclick="document.getElementById('perm').style.display='none'">المتابعة بدون كاميرا</button></div></div>
@@ -189,7 +189,7 @@ function toast(t){const e=document.getElementById('toast');e.textContent=t;e.cla
 // snapshot
 function snap(){const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');
 if(video.videoWidth){const vr=video.videoWidth/video.videoHeight,cr=c.width/c.height;let sw=video.videoWidth,sh=video.videoHeight,sx=0,sy=0;if(vr>cr){sw=sh*cr;sx=(video.videoWidth-sw)/2}else{sh=sw/cr;sy=(video.videoHeight-sh)/2}g.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height)}else{g.fillStyle='#16304f';g.fillRect(0,0,c.width,c.height)}
-g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 3 • أ. أفنان الطلحي',c.width/2,c.height-25);
+g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 3 • صُمّم بحب ♥ د. أفنان الطلحي',c.width/2,c.height-25);
 const u=c.toDataURL('image/png');document.getElementById('shotImg').src=u;document.getElementById('dl').href=u;document.getElementById('shot').style.display='flex';sfx('drop',.7)}
 // loop
 const clock=new THREE.Clock();
