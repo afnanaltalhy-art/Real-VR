@@ -36,7 +36,7 @@
 <script>
 const F=document.getElementById('frame');
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');SFX.click();const [p,h]=b.dataset.s.split('#');F.src=p+'?embed&r='+Date.now()+'#'+h;window.scrollTo({top:0,behavior:'smooth'})});
-addEventListener('message',e=>{if(e.data&&e.data.h)F.style.height=(e.data.h+10)+'px'});
+addEventListener('message',e=>{if(e.data&&e.data.h){const nh=e.data.h;if(Math.abs((F._h||0)-nh)>4){F._h=nh;F.style.height=nh+'px'}}});
 </script>
 </body>
 </html>
