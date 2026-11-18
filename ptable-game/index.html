@@ -10,7 +10,7 @@
 @font-face{font-family:Almarai;src:url(almarai-bold.ttf);font-weight:700 800}
 :root{--g:#2E6B47;--g2:#4E8A5C;--t:#1E2B22;--y:#E0A83A;--r:#C83B3B;--met:#9DC9F0;--non:#F7D154;--mld:#A8D88A;--bg:#EEF6EF;--line:#D3E4D7}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Almarai,Tahoma,sans-serif;color:var(--t);background:radial-gradient(circle at 20% 0,#fff 0,var(--bg) 55%,#DCEFE0 100%);-webkit-tap-highlight-color:transparent}
+body{margin:0;background-attachment:fixed!important;min-height:100vh;font-family:Almarai,Tahoma,sans-serif;color:var(--t);background:url(bg.webp) center/cover no-repeat fixed;-webkit-tap-highlight-color:transparent}
 button{font-family:inherit;cursor:pointer;color:inherit}
 .wrap{max-width:980px;margin:0 auto;padding:10px max(14px,env(safe-area-inset-right,0px)) 30px max(14px,env(safe-area-inset-left,0px))}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 3px 0 var(--line)}
@@ -27,7 +27,7 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .lv:hover{transform:translateY(-3px)}
 .lv .ic{font-size:34px}.lv b{display:block;font-size:17px;margin:6px 0 4px;color:var(--g)}.lv small{font-size:13px;font-weight:700;line-height:1.6;display:block}
 .lv .st{font-size:20px;letter-spacing:2px;margin-top:6px;color:var(--y)}
-.lv.lock{opacity:.45;pointer-events:none}
+.lv.lock{opacity:.8;filter:grayscale(.7);pointer-events:none}
 .lv.cert{background:linear-gradient(135deg,#FFF6DA,#fff);border-color:var(--y)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 8px}
 .bar h2{margin:0;font-size:22px;color:var(--g)}
@@ -62,6 +62,10 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
 @media(max-width:560px){.hero img{height:130px}.mini{gap:2px}.mini .c{font-size:8px;border-radius:3px}}
 @media print{.top,.bar,.foot,#printBtn,.inp,#nmRow{display:none!important}body{background:#fff}.scr{display:none!important}#s-cert{display:block!important}}
+.title,.hero,.legend,.chips,.bar,.foot,.who{background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.9);border-radius:18px;padding:10px 14px}
+.title,.hero{margin:12px 0}
+
+@media(max-width:700px){body,#start{background-image:url(bg-m.webp)!important;background-attachment:scroll!important}}
 </style>
 </head>
 <body>
