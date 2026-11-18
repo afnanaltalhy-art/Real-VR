@@ -43,12 +43,31 @@ button{font-family:inherit;cursor:pointer}
 .hide{display:none!important}
 .foot{position:fixed;bottom:0;left:0;right:0;z-index:5;text-align:center;font-size:12px;background:rgba(255,255,255,.9);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));font-weight:700}
 .camBtn{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7;border:none;border-radius:40px;padding:16px 28px;font-size:19px;font-weight:800;color:#fff;background:var(--g);box-shadow:0 6px 0 #1b4a30;display:none}
-#start{position:fixed;inset:0;z-index:20;background:url(bg.webp) center/cover no-repeat;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
-#start .in{width:100%;max-width:560px;text-align:center;padding:16px;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.9);border-radius:18px}
+#start{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at 50% 35%,#3d7a55 0,#1f4a33 55%,#122c1f 100%);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto;perspective:900px}
+#start:before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:38px 38px;pointer-events:none}
+#start .in{position:relative}
+#start .in{width:100%;max-width:560px;margin:auto;text-align:center;padding:16px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.45);border-radius:22px;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+#start h1{color:#fff!important}#start .by{color:#fff}
+#start .hdr img{filter:brightness(0) invert(1)}
+.atomwrap{display:flex;justify-content:center;align-items:center;gap:18px;margin:6px 0 12px;flex-wrap:wrap}
+.atom{position:relative;width:150px;height:150px;transform-style:preserve-3d}
+.atom .nuc{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe9a8,#e0a83a 60%,#9a6a12);box-shadow:0 0 22px #f7d154}
+.atom .orb{position:absolute;inset:0;border:2px solid rgba(255,255,255,.55);border-radius:50%;animation:spin 6s linear infinite}
+.atom .orb:nth-child(2){transform:rotateX(70deg) rotateY(0)}.atom .orb:nth-child(3){transform:rotateX(70deg) rotateY(60deg)}.atom .orb:nth-child(4){transform:rotateX(70deg) rotateY(120deg)}
+.atom .orb i{position:absolute;top:-6px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#9DC9F0;box-shadow:0 0 10px #9DC9F0}
+@keyframes spin{to{rotate:360deg}}
+.atom .orb:nth-child(2){animation:o1 5s linear infinite}.atom .orb:nth-child(3){animation:o2 6s linear infinite}.atom .orb:nth-child(4){animation:o3 7s linear infinite}
+@keyframes o1{from{transform:rotateX(70deg) rotateY(0) rotateZ(0)}to{transform:rotateX(70deg) rotateY(0) rotateZ(360deg)}}
+@keyframes o2{from{transform:rotateX(70deg) rotateY(60deg) rotateZ(0)}to{transform:rotateX(70deg) rotateY(60deg) rotateZ(360deg)}}
+@keyframes o3{from{transform:rotateX(70deg) rotateY(120deg) rotateZ(0)}to{transform:rotateX(70deg) rotateY(120deg) rotateZ(360deg)}}
+.pt3{direction:ltr;display:grid;grid-template-columns:repeat(18,11px);grid-auto-rows:11px;gap:2px;transform:rotateX(28deg) rotateY(-14deg);transform-style:preserve-3d;animation:tilt 7s ease-in-out infinite alternate}
+.pt3 b{border-radius:2px;box-shadow:0 2px 0 rgba(0,0,0,.25);animation:glow 3s ease-in-out infinite}
+@keyframes tilt{to{transform:rotateX(18deg) rotateY(14deg)}}
+@keyframes glow{50%{filter:brightness(1.35)}}
 #start .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;text-align:right;font-size:12.5px;font-weight:700;line-height:1.6}
 #start .hdr img{height:54px}
 #start h1{font-size:28px;font-weight:800;color:var(--g);margin:4px 0}
-#start p{font-size:15px;margin-bottom:14px;font-weight:700}
+#start p{color:#fff;font-size:15px;margin-bottom:14px;font-weight:700}
 .hero{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:10px}
 .hero img{height:170px}
 .hero .mini{display:grid;grid-template-columns:repeat(4,38px);gap:4px;direction:ltr}
@@ -72,7 +91,9 @@ button{font-family:inherit;cursor:pointer}
 canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
 @media (max-height:520px){#bubble{display:none}#guide{height:42vh}}
 
-@media(max-width:700px){#start{background-image:url(bg-m.webp)!important;background-attachment:scroll!important}}
+
+.choice{background:rgba(255,255,255,.85)!important}
+#card.card,.tabs{background:rgba(255,255,255,.55)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 </style>
 </head>
 <body>
@@ -105,7 +126,7 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
 
 <div id="start"><div class="in">
  <div class="hdr"><div>المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بمنطقة المدينة المنورة<br>الابتدائية والمتوسطة الأولى بصخيبرة</div><img src="moe.png" alt="وزارة التعليم"></div>
- <div class="hero"><div class="mini"><span style="background:var(--non)">H</span><span style="background:var(--met)">Na</span><span style="background:var(--mld)">Si</span><span style="background:var(--met)">Fe</span><span style="background:var(--non)">O</span><span style="background:var(--met)">Au</span><span style="background:var(--met)">Hg</span><span style="background:var(--non)">C</span></div><img src="girl-r.webp" alt=""></div>
+ <div class="atomwrap"><div class="atom"><span class="nuc"></span><span class="orb"><i></i></span><span class="orb"><i></i></span><span class="orb"><i></i></span></div><div class="pt3" id="pt3"></div></div>
  <h1>مختبر الجدول الدوري ⚛️</h1>
  <p>اختاري المشهد، وستفتح الكاميرا لتظهر العناصر في غرفتكِ!</p>
  <button class="choice" onclick="enter('around')"><b>🧪 عناصر من حولنا</b><small>ثمانية عناصر ثلاثية الأبعاد • اقرئي مفتاح كل عنصر</small></button>
@@ -118,6 +139,7 @@ canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
+(()=>{const c={metal:'#9DC9F0',nonmetal:'#F7D154',metalloid:'#A8D88A',unknown:'#B9B9C3'};const d=document.getElementById('pt3');ELEMENTS.filter(e=>!e.f).forEach((e,i)=>{const b=document.createElement('b');b.style.gridColumn=e.g;b.style.gridRow=e.p;b.style.background=c[e.cat];b.style.animationDelay=(i%18)*.12+'s';d.appendChild(b);});})();
 const E = ELEMENTS, bySym = s => E.find(e => e.sym === s);
 const COL = {metal:'#9DC9F0', nonmetal:'#F7D154', metalloid:'#A8D88A', unknown:'#B9B9C3'};
 const FACT = {H:'أخف العناصر وأولها في الجدول الدوري؛ يُستعمل وقودًا نظيفًا في مشروع نيوم.',C:'لافلز صلب؛ نجده في الجرافيت (رصاص القلم) والألماس، وفي جسمكِ.',
@@ -213,6 +235,8 @@ function buildTable(){
     m.position.set((gx - 8.5) * .45, (3.8 - gy) * .45, 0); m.userData.e = e; m.userData.base = m.position.clone();
     world.add(m); tiles.push(m);
   });
+  const bb = new THREE.Box3(); tiles.forEach(t => bb.expandByPoint(t.position)); const cy = (bb.min.y + bb.max.y) / 2;
+  tiles.forEach(t => { t.position.y -= cy; t.userData.base = t.position.clone(); });
 }
 function build(){
   world.clear(); tiles = []; selected = null; liftCat = null;
@@ -233,8 +257,8 @@ window.lift = cat => { liftCat = cat; talk(cat ? 'ارتفعت ' + {metal:'ال�
 function resize(){
   const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); cam.aspect = w / h;
   const narrow = w < h;
-  cam.position.z = current === 'table' ? (narrow ? 15 : 9.5) : (narrow ? 11.5 : 8.5);
-  cam.position.y = narrow ? .3 : .8; cam.lookAt(0, narrow ? -.6 : 0, 0); cam.updateProjectionMatrix();
+  cam.position.z = current === 'table' ? (narrow ? Math.max(15, 4.4 / (Math.tan(22.5 * Math.PI / 180) * w / h)) : 9.5) : (narrow ? 11.5 : 8.5);
+  cam.position.y = 0; cam.lookAt(0, 0, 0); cam.updateProjectionMatrix();
   if (current === 'around' && tiles.length) layoutAround();
 }
 addEventListener('resize', resize);
