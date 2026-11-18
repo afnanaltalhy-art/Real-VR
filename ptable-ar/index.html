@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#2E6B47">
+<title>مختبر الجدول الدوري – واقع معزّز</title>
+<style>
+@font-face{font-family:Almarai;src:url(almarai.ttf);font-weight:400}
+@font-face{font-family:Almarai;src:url(almarai-bold.ttf);font-weight:700 800}
+:root{--g:#2E6B47;--g2:#4E8A5C;--t:#1E2B22;--y:#E0A83A;--r:#C83B3B;--met:#9DC9F0;--non:#F7D154;--mld:#A8D88A;--unk:#B9B9C3}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:Almarai,sans-serif;color:var(--t);background:linear-gradient(160deg,#e6f3ea,#f7f3e6)}
+button{font-family:inherit;cursor:pointer}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none}
+#gl{position:fixed;inset:0;z-index:1;touch-action:none}
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;background:rgba(46,107,71,.94);color:#fff;font-size:13px;text-align:center;padding:calc(7px + env(safe-area-inset-top,0px)) 8px 7px;font-weight:700}
+.tabs{position:fixed;top:calc(38px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:6px;background:rgba(255,255,255,.9);padding:5px;border-radius:30px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.tabs button{border:none;border-radius:24px;padding:8px 13px;font-weight:700;font-size:14px;white-space:nowrap;background:transparent;color:var(--t)}
+.tabs button.on{background:var(--g);color:#fff}
+.tools{position:fixed;top:calc(96px + env(safe-area-inset-top,0px));left:10px;z-index:5;display:flex;flex-direction:column;gap:8px}
+.tools button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.92);font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.filters{position:fixed;top:calc(96px + env(safe-area-inset-top,0px));right:10px;z-index:5;display:none;flex-direction:column;gap:6px}
+.filters button{border:none;border-radius:16px;padding:7px 12px;font-weight:800;font-size:13px;box-shadow:0 3px 8px rgba(0,0,0,.15)}
+.actions{position:fixed;bottom:calc(40px + env(safe-area-inset-bottom,0px));left:10px;right:10px;z-index:5;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.actions button{pointer-events:auto;border:none;border-radius:26px;padding:12px 16px;font-weight:800;font-size:15px;color:#fff;background:var(--g);box-shadow:0 4px 0 #1b4a30}
+.card{position:fixed;left:10px;right:10px;bottom:calc(98px + env(safe-area-inset-bottom,0px));z-index:6;max-width:520px;margin:auto;background:rgba(255,255,255,.97);border-radius:20px;padding:14px 16px;box-shadow:0 8px 24px rgba(0,0,0,.2);border:3px solid var(--g);display:none;animation:up .35s ease}
+.card.on{display:flex;gap:12px;align-items:stretch}
+.key{flex:none;width:96px;border-radius:12px;border:2px solid var(--t);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;direction:ltr}
+.key .z{font-size:15px;font-weight:800}.key .s{font-size:38px;font-weight:800;line-height:1.1}.key .n{font-size:11px}.key .m{font-size:12px}
+.info{flex:1;min-width:0}
+.info h3{font-size:19px;margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tag{font-size:12px;color:#fff;background:var(--g2);border-radius:12px;padding:2px 9px}
+.info p{font-size:14.5px;line-height:1.75}
+.row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.row button{border:none;border-radius:14px;padding:6px 12px;font-weight:700;background:#e9f4ec;color:var(--t)}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1}}
+#guide{position:fixed;right:-6px;bottom:calc(28px + env(safe-area-inset-bottom,0px));height:30vh;max-height:280px;z-index:4;pointer-events:none;transform-origin:bottom center;animation:slide .8s ease}
+#guide.jump{animation:jump .6s ease}
+@keyframes slide{from{transform:translateX(120%)}to{transform:none}}
+@keyframes jump{30%{transform:translateY(-24px)}60%{transform:none}80%{transform:translateY(-7px)}}
+#bubble{position:fixed;right:12px;bottom:calc(32px + min(30vh,280px) + env(safe-area-inset-bottom,0px));z-index:4;max-width:230px;background:#fff;border:2.5px solid var(--y);border-radius:18px 18px 4px 18px;padding:9px 12px;font-size:13.5px;font-weight:700;line-height:1.6;box-shadow:0 5px 14px rgba(0,0,0,.15)}
+.hide{display:none!important}
+.foot{position:fixed;bottom:0;left:0;right:0;z-index:5;text-align:center;font-size:12px;background:rgba(255,255,255,.9);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));font-weight:700}
+.camBtn{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7;border:none;border-radius:40px;padding:16px 28px;font-size:19px;font-weight:800;color:#fff;background:var(--g);box-shadow:0 6px 0 #1b4a30;display:none}
+#start{position:fixed;inset:0;z-index:20;background:linear-gradient(160deg,#e6f3ea,#f7f3e6);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+#start .in{width:100%;max-width:560px;text-align:center}
+#start .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;text-align:right;font-size:12.5px;font-weight:700;line-height:1.6}
+#start .hdr img{height:54px}
+#start h1{font-size:28px;font-weight:800;color:var(--g);margin:4px 0}
+#start p{font-size:15px;margin-bottom:14px;font-weight:700}
+.hero{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:10px}
+.hero img{height:170px}
+.hero .mini{display:grid;grid-template-columns:repeat(4,38px);gap:4px;direction:ltr}
+.hero .mini span{height:38px;border-radius:7px;display:grid;place-items:center;font-weight:800;font-size:15px}
+.choice{display:block;width:100%;border:none;background:#fff;border-radius:20px;margin-bottom:12px;box-shadow:0 8px 22px rgba(0,0,0,.12);text-align:right;padding:14px 18px;border-right:8px solid var(--g)}
+.choice b{display:block;font-size:19px;color:var(--t)}
+.choice small{display:block;font-size:13px;color:#557;margin-top:3px}
+.by{font-size:13px;margin-top:8px;font-weight:700}
+.modal{position:fixed;inset:0;z-index:30;background:rgba(30,43,34,.45);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}
+.box{background:#fff;border-radius:24px;width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.3);animation:up .35s}
+.box h2{font-size:20px;text-align:center;margin-bottom:10px;color:var(--g)}
+.box .q{font-size:17px;font-weight:800;text-align:center;line-height:1.7;margin:8px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.opt{border:3px solid #dbe7dd;background:#f5faf6;border-radius:16px;padding:13px 6px;font-size:16px;font-weight:800;color:var(--t)}
+.opt.ok{background:var(--g);border-color:var(--g);color:#fff}
+.opt.no{background:var(--r);border-color:var(--r);color:#fff}
+.prog{text-align:center;font-size:13px;color:#667;margin-top:6px}
+.close{display:block;margin:14px auto 0;border:none;border-radius:20px;padding:9px 22px;font-weight:800;background:#eee;color:var(--t)}
+.medal{font-size:64px;text-align:center}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40}
+@media (max-height:520px){#bubble{display:none}#guide{height:42vh}}
+</style>
+</head>
+<body>
+<video id="cam" playsinline muted autoplay></video>
+<canvas id="gl"></canvas>
+<canvas id="cf"></canvas>
+<div class="bar">العلوم • ثالث متوسط • الفصل 4 • مقدمة في الجدول الدوري ⚛️</div>
+<div class="tabs"><button id="t-around" onclick="setScene('around')">عناصر من حولنا</button><button id="t-table" onclick="setScene('table')">الجدول ثلاثي الأبعاد</button></div>
+<div class="tools">
+ <button title="إعادة الوضع" onclick="resetView()">↺</button>
+ <button title="تبديل الكاميرا" onclick="flipCam()">🔄</button>
+ <button title="إخفاء المرشدة" onclick="toggleGuide()">👧</button>
+</div>
+<div class="filters" id="filters">
+ <button style="background:var(--met)" onclick="lift('metal')">الفلزات</button>
+ <button style="background:var(--non)" onclick="lift('nonmetal')">اللافلزات</button>
+ <button style="background:var(--mld)" onclick="lift('metalloid')">أشباه الفلزات</button>
+ <button style="background:#fff" onclick="lift(null)">الكل</button>
+</div>
+<button class="camBtn" id="camBtn" onclick="startCam()">📷 افتحي الكاميرا</button>
+<div class="card" id="card">
+ <div class="key" id="k"><div class="z" id="kz"></div><div class="s" id="ks"></div><div class="n" id="kn"></div><div class="m" id="km"></div></div>
+ <div class="info"><h3><span id="c-title"></span><span class="tag" id="c-tag"></span></h3><p id="c-text"></p>
+ <div class="row"><button onclick="say(curText)">🔊 استمعي</button><button onclick="hideCard()">✕ إغلاق</button></div></div>
+</div>
+<img id="guide" src="girl-r.webp" alt="المرشدة">
+<div id="bubble">أهلًا يا مستكشفة! المسي أي عنصر لتقرئي مفتاحه 🔍</div>
+<div class="actions" id="actions"></div>
+<div class="foot">المعلمة: د. أفنان الطلحي</div>
+
+<div id="start"><div class="in">
+ <div class="hdr"><div>المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بمنطقة المدينة المنورة<br>الابتدائية والمتوسطة الأولى بصخيبرة</div><img src="moe.png" alt="وزارة التعليم"></div>
+ <div class="hero"><div class="mini"><span style="background:var(--non)">H</span><span style="background:var(--met)">Na</span><span style="background:var(--mld)">Si</span><span style="background:var(--met)">Fe</span><span style="background:var(--non)">O</span><span style="background:var(--met)">Au</span><span style="background:var(--met)">Hg</span><span style="background:var(--non)">C</span></div><img src="girl-r.webp" alt=""></div>
+ <h1>مختبر الجدول الدوري ⚛️</h1>
+ <p>اختاري المشهد، وستفتح الكاميرا لتظهر العناصر في غرفتكِ!</p>
+ <button class="choice" onclick="enter('around')"><b>🧪 عناصر من حولنا</b><small>ثمانية عناصر ثلاثية الأبعاد • اقرئي مفتاح كل عنصر</small></button>
+ <button class="choice" onclick="enter('table')"><b>🧱 الجدول الدوري ثلاثي الأبعاد</b><small>118 عنصرًا • الفلزات واللافلزات وأشباه الفلزات</small></button>
+ <div class="by">المعلمة: د. أفنان الطلحي</div>
+</div></div>
+<div class="modal" id="m-quiz"><div class="box" id="quizBox"></div></div>
+
+<script src="elements.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const E = ELEMENTS, bySym = s => E.find(e => e.sym === s);
+const COL = {metal:'#9DC9F0', nonmetal:'#F7D154', metalloid:'#A8D88A', unknown:'#B9B9C3'};
+const FACT = {H:'أخف العناصر وأولها في الجدول الدوري؛ يُستعمل وقودًا نظيفًا في مشروع نيوم.',C:'لافلز صلب؛ نجده في الجرافيت (رصاص القلم) والألماس، وفي جسمكِ.',
+ O:'غاز لافلزي نتنفسه، ويكوّن مع الهيدروجين الماء H₂O.',Na:'فلز نشط في المجموعة 1؛ يتحد مع الكلور فيكوّن ملح الطعام NaCl.',
+ Si:'شبه فلز يوصل الكهرباء جزئيًا؛ تُصنع منه الشرائح الإلكترونية والألواح الشمسية.',Fe:'فلز انتقالي صلب؛ ذكره الله في القرآن: ﴿وأنزلنا الحديد فيه بأس شديد ومنافع للناس﴾.',
+ Hg:'الفلز الوحيد السائل عند درجة حرارة الغرفة؛ اسمه يعني «الفضة السائلة».',Au:'فلز لامع قابل للطرق والسحب؛ رمزه من الكلمة اللاتينية Aurum بمعنى «بزوغ الضوء».'};
+const QUIZ = {
+ around:[{q:'ما العدد الذري للحديد Fe؟',o:['26','55.845','8','4'],a:0,m:'Fe'},{q:'أيّ هذه العناصر سائل عند درجة حرارة الغرفة؟',o:['الزئبق Hg','الذهب Au','الصوديوم Na','الكربون C'],a:0,m:'Hg'},
+  {q:'السيليكون Si يُصنَّف على أنه:',o:['شبه فلز','فلز','لافلز','غاز نبيل'],a:0,m:'Si'},{q:'ما الكتلة الذرية للأكسجين O؟',o:['15.999','8','16 بالضبط','32'],a:0,m:'O'},
+  {q:'رمز الذهب Au مأخوذ من الكلمة اللاتينية:',o:['Aurum','Argentum','Natrium','Ferrum'],a:0,m:'Au'}],
+ table:[{q:'كم عدد الدورات في الجدول الدوري؟',o:['7','18','8','10'],a:0},{q:'أين تقع اللافلزات غالبًا؟',o:['يمين الجدول','يسار الجدول','أسفل الجدول','وسط الجدول'],a:0},
+  {q:'العناصر في المجموعات 3–12 تُسمّى:',o:['العناصر الانتقالية','العناصر الممثلة','الغازات النبيلة','أشباه الفلزات'],a:0},{q:'كم عدد أشباه الفلزات في الجدول؟',o:['8','17','18','3'],a:0},
+  {q:'رُتّبت العناصر في الجدول الحديث حسب تزايد:',o:['العدد الذري','الكتلة الذرية','الكثافة','تاريخ الاكتشاف'],a:0}]};
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);
+
+/* ---------- speech (no music, no tones) ---------- */
+let VOICE = null;
+function pickVoice(){ try{ const vs = speechSynthesis.getVoices().filter(v => /^ar/i.test(v.lang)); if (vs.length) VOICE = vs.find(v => /female|zeina|hoda|salma|laila|mariam|google/i.test(v.name)) || vs[0]; }catch(e){} }
+if ('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+window.say = t => { try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t.replace(/[⚛️🔍💡🏅﴿﴾]/g, '،')); u.lang = 'ar-SA'; if (VOICE) u.voice = VOICE; u.rate = 1.05; speechSynthesis.speak(u); }catch(e){} };
+const bubble = document.getElementById('bubble'), guide = document.getElementById('guide');
+const talk = (t, sp = false) => { bubble.textContent = t; if (sp) say(t); };
+const jump = () => { guide.classList.remove('jump'); void guide.offsetWidth; guide.classList.add('jump'); };
+window.toggleGuide = () => { guide.classList.toggle('hide'); bubble.classList.toggle('hide'); };
+
+/* ---------- camera ---------- */
+const video = document.getElementById('cam'), camBtn = document.getElementById('camBtn');
+let facing = 'environment', stream = null;
+window.startCam = async () => {
+  try{
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing}, width:{ideal:1280}, height:{ideal:720}}, audio:false});
+    video.srcObject = stream; await video.play(); video.style.display = 'block'; camBtn.style.display = 'none';
+    video.style.transform = facing === 'user' ? 'scaleX(-1)' : 'none';
+  }catch(e){ video.style.display = 'none'; camBtn.style.display = 'block'; }
+};
+window.flipCam = () => { facing = facing === 'environment' ? 'user' : 'environment'; startCam(); };
+
+/* ---------- textures ---------- */
+function tileTex(e, big){
+  const c = document.createElement('canvas'); const S = big ? 512 : 128; c.width = c.height = S; const x = c.getContext('2d');
+  x.fillStyle = COL[e.cat]; x.fillRect(0, 0, S, S);
+  x.strokeStyle = '#1E2B22'; x.lineWidth = S * .03; x.strokeRect(S * .02, S * .02, S * .96, S * .96);
+  x.fillStyle = '#1E2B22'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  if (big){
+    x.font = '700 44px Almarai'; x.fillText(e.en, S / 2, 60);
+    x.font = '800 56px Almarai'; x.fillText(e.z, S / 2, 130);
+    x.font = '800 190px Almarai'; x.fillText(e.sym, S / 2, 285);
+    x.font = '700 48px Almarai'; x.fillText(e.mass, S / 2, 420);
+    x.font = '700 40px Almarai'; x.fillText(e.ar, S / 2, 475);
+  } else {
+    x.font = '700 22px Almarai'; x.fillText(e.z, S / 2, 22);
+    x.font = '800 54px Almarai'; x.fillText(e.sym, S / 2, 74);
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+}
+
+/* ---------- three ---------- */
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setClearColor(0x000000, 0);
+const scene = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(45, 1, .1, 200); cam.position.set(0, 1, 9); cam.lookAt(0, 0, 0);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a7a, 1.3));
+const dl = new THREE.DirectionalLight(0xffffff, 1.4); dl.position.set(3, 5, 6); scene.add(dl);
+const world = new THREE.Group(); scene.add(world);
+let current = 'around', tiles = [], selected = null, liftCat = null;
+const SIDE = new THREE.MeshStandardMaterial({color:0xf3f6f2, roughness:.6});
+
+function buildAround(){
+  ['H','C','O','Na','Si','Fe','Hg','Au'].forEach(s => {
+    const e = bySym(s);
+    const front = new THREE.MeshStandardMaterial({map:tileTex(e, true), roughness:.5});
+    const m = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, .35), [SIDE, SIDE, SIDE, SIDE, front, front]);
+    m.userData.e = e; world.add(m); tiles.push(m);
+  });
+  layoutAround();
+}
+function layoutAround(){
+  const narrow = innerWidth < innerHeight;
+  tiles.forEach((m, i) => {
+    const c = narrow ? i % 2 : i % 4, r = narrow ? Math.floor(i / 2) : Math.floor(i / 4);
+    const x = narrow ? (c - .5) * 2.0 : (c - 1.5) * 2.0, y = narrow ? (1.5 - r) * 1.85 : (.5 - r) * 2.0;
+    m.position.set(x, y, 0); m.userData.base = m.position.clone();
+  });
+}
+function buildTable(){
+  E.forEach(e => {
+    const mat = new THREE.MeshStandardMaterial({map:tileTex(e, false), roughness:.55});
+    const m = new THREE.Mesh(new THREE.BoxGeometry(.42, .42, .16), [SIDE, SIDE, SIDE, SIDE, mat, mat]);
+    let gx, gy;
+    if (e.f){ gx = e.c + 3; gy = 7 + e.f - .4; } else { gx = e.g - 1; gy = e.p - 1; }
+    m.position.set((gx - 8.5) * .45, (3.8 - gy) * .45, 0); m.userData.e = e; m.userData.base = m.position.clone();
+    world.add(m); tiles.push(m);
+  });
+}
+function build(){
+  world.clear(); tiles = []; selected = null; liftCat = null;
+  current === 'around' ? buildAround() : buildTable();
+}
+window.setScene = s => {
+  current = s;
+  document.getElementById('t-around').classList.toggle('on', s === 'around');
+  document.getElementById('t-table').classList.toggle('on', s === 'table');
+  document.getElementById('filters').style.display = s === 'table' ? 'flex' : 'none';
+  build(); hideCard(); resetView(); resize();
+  document.getElementById('actions').innerHTML = '<button onclick="openQuiz()">🎯 تحدّي المستكشفة</button>';
+  talk(s === 'around' ? 'هذه عناصر من حولنا… المسي أي عنصر لتقرئي مفتاحه 🔍' : 'هذا الجدول الدوري! اختاري الفلزات أو اللافلزات أو أشباه الفلزات لترتفع أمامكِ 🔍', true);
+  try{ history.replaceState(null, '', '?scene=' + s); }catch(e){}
+};
+window.lift = cat => { liftCat = cat; talk(cat ? 'ارتفعت ' + {metal:'الفلزات: يسار الجدول ووسطه', nonmetal:'اللافلزات: يمين الجدول (17 عنصرًا)', metalloid:'أشباه الفلزات: بين الفلزات واللافلزات (8 عناصر)'}[cat] : 'عادت كل العناصر إلى مكانها', true); };
+
+function resize(){
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); cam.aspect = w / h;
+  const narrow = w < h;
+  cam.position.z = current === 'table' ? (narrow ? 15 : 9.5) : (narrow ? 11.5 : 8.5);
+  cam.position.y = narrow ? .3 : .8; cam.lookAt(0, narrow ? -.6 : 0, 0); cam.updateProjectionMatrix();
+  if (current === 'around' && tiles.length) layoutAround();
+}
+addEventListener('resize', resize);
+
+/* ---------- interaction ---------- */
+let rotY = 0, rotX = .1, scl = 1;
+window.resetView = () => { rotY = 0; rotX = .1; scl = 1; };
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+let pts = new Map(), downPos = null, moved = false, pinch0 = 0, scl0 = 1;
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, {x:e.clientX, y:e.clientY}); downPos = {x:e.clientX, y:e.clientY}; moved = false;
+  if (pts.size === 2){ const [a, b] = [...pts.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y); scl0 = scl; } });
+canvas.addEventListener('pointermove', e => { if (!pts.has(e.pointerId)) return; const prev = pts.get(e.pointerId); pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (pts.size === 2){ const [a, b] = [...pts.values()]; scl = Math.min(2.4, Math.max(.5, scl0 * Math.hypot(a.x - b.x, a.y - b.y) / pinch0)); moved = true; return; }
+  if (Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y) > 8) moved = true;
+  rotY += (e.clientX - prev.x) * .008; rotX = Math.max(-.7, Math.min(.8, rotX + (e.clientY - prev.y) * .005)); });
+canvas.addEventListener('pointerup', e => { pts.delete(e.pointerId); if (!moved && pts.size === 0) tap(e); });
+canvas.addEventListener('pointercancel', e => pts.delete(e.pointerId));
+function tap(e){ ptr.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ptr, cam);
+  const hit = ray.intersectObjects(tiles, false)[0]; if (hit) select(hit.object.userData.e.sym); }
+let curText = '';
+function where(e){ return e.f ? (e.f === 1 ? 'اللانثانيدات (أسفل الجدول)' : 'الأكتينيدات (أسفل الجدول)') : 'الدورة ' + e.p + ' • المجموعة ' + e.g; }
+function blockAr(e){ return {representative:'عنصر ممثل', transition:'عنصر انتقالي', inner:'عنصر انتقالي داخلي'}[e.block]; }
+function select(sym, speak = true){
+  const e = bySym(sym); selected = sym;
+  const k = document.getElementById('k'); k.style.background = COL[e.cat];
+  document.getElementById('kz').textContent = e.z; document.getElementById('ks').textContent = e.sym;
+  document.getElementById('kn').textContent = e.en; document.getElementById('km').textContent = e.mass;
+  document.getElementById('c-title').textContent = e.ar + ' ' + e.sym;
+  document.getElementById('c-tag').textContent = CAT_AR[e.cat];
+  const txt = 'العدد الذري ' + e.z + ' • الكتلة الذرية ' + e.mass + ' • ' + STATE_AR[e.state] + ' • ' + where(e) + ' • ' + blockAr(e) + '. ' + (FACT[sym] || '');
+  document.getElementById('c-text').textContent = txt;
+  curText = e.ar + '. ' + txt; document.getElementById('card').classList.add('on'); talk(e.ar + ': ' + CAT_AR[e.cat] + ' عدده الذري ' + e.z, speak); jump();
+}
+window.hideCard = () => { document.getElementById('card').classList.remove('on'); selected = null; };
+
+/* ---------- loop ---------- */
+const clock = new THREE.Clock();
+function loop(){ requestAnimationFrame(loop); const t = clock.getElapsedTime();
+  world.scale.setScalar(scl);
+  if (current === 'around'){
+    tiles.forEach((m, i) => { m.rotation.y = rotY + Math.sin(t * .6 + i) * .35; m.rotation.x = rotX; const b = m.userData.base; m.position.y = b.y + Math.sin(t * 1.3 + i) * .06;
+      const s = m.userData.e.sym === selected ? 1.12 : 1; m.scale.lerp(new THREE.Vector3(s, s, s), .15); });
+  } else {
+    world.rotation.y = rotY * .6; world.rotation.x = rotX * .6;
+    tiles.forEach(m => { const e = m.userData.e, b = m.userData.base; const up = (liftCat && e.cat === liftCat) ? .9 : 0;
+      const sel = e.sym === selected ? .5 : 0; m.position.z += (b.z + up + sel - m.position.z) * .12;
+      const s = e.sym === selected ? 1.35 : 1; m.scale.lerp(new THREE.Vector3(s, s, s), .15);
+      m.material[4].opacity = 1; });
+  }
+  renderer.render(scene, cam); }
+loop();
+
+/* ---------- start ---------- */
+window.enter = s => { document.getElementById('start').style.display = 'none'; startCam(); setScene(s); };
+document.fonts.load('800 20px Almarai').then(() => {
+  const qs = new URLSearchParams(location.search).get('scene');
+  if (qs === 'around' || qs === 'table'){ document.getElementById('start').style.display = 'none'; startCam(); setScene(qs); }
+});
+
+/* ---------- quiz ---------- */
+let qi = 0, first = 0, missed = false, QS = [];
+window.closeM = id => document.getElementById(id).classList.remove('on');
+window.openQuiz = () => { qi = 0; first = 0; QS = QUIZ[current].map(q => { const idx = shuffle(q.o.map((_, i) => i)); return {q:q.q, o:idx.map(i => q.o[i]), a:idx.indexOf(q.a), m:q.m}; });
+  document.getElementById('m-quiz').classList.add('on'); renderQ(); };
+function renderQ(){ const Q = QS[qi], box = document.getElementById('quizBox'); missed = false;
+  box.innerHTML = '<h2>🎯 تحدّي المستكشفة</h2><div class="q">' + Q.q + '</div><div class="opts">' + Q.o.map((o, i) => '<button class="opt" data-i="' + i + '">' + o + '</button>').join('') +
+    '</div><div class="prog">السؤال ' + (qi + 1) + ' من ' + QS.length + '</div><button class="close" onclick="closeM(\'m-quiz\')">إغلاق</button>';
+  box.querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.i, b)); }
+function answer(i, b){ const Q = QS[qi]; if (b.classList.contains('ok')) return;
+  if (i === Q.a){ b.classList.add('ok'); jump(); if (!missed) first++; talk('أحسنتِ! إجابة صحيحة 🌟'); if (Q.m) select(Q.m, false);
+    setTimeout(() => { qi++; qi < QS.length ? renderQ() : win(); }, 1300); }
+  else { b.classList.add('no'); missed = true; talk('حاولي مرة أخرى 💡'); } }
+function win(){ confetti();
+  document.getElementById('quizBox').innerHTML = '<div class="medal">🏅</div><h2>مستكشفة الجدول الدوري!</h2><p class="q">أجبتِ من أول محاولة عن ' + first + ' من ' + QS.length + '</p><button class="close" onclick="closeM(\'m-quiz\')">رائع! أكملي الاستكشاف</button>';
+  talk('أحسنتِ! أنتِ مستكشفة حقيقية 🏅', true); }
+const cv = document.getElementById('cf'), cx = cv.getContext('2d'); let P = [];
+function confetti(){ cv.width = innerWidth; cv.height = innerHeight; const C = ['#2E6B47', '#E0A83A', '#9DC9F0', '#F7D154', '#A8D88A', '#C83B3B'];
+  for (let i = 0; i < 160; i++) P.push({x:Math.random() * cv.width, y:-20 - Math.random() * cv.height * .4, vx:(Math.random() - .5) * 3, vy:2 + Math.random() * 3, r:4 + Math.random() * 5, c:C[i % 6], a:Math.random() * 6}); cl(); }
+function cl(){ cx.clearRect(0, 0, cv.width, cv.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.a += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+  P = P.filter(p => p.y < cv.height + 30); if (P.length) requestAnimationFrame(cl); else cx.clearRect(0, 0, cv.width, cv.height); }
+</script>
+</body>
+</html>

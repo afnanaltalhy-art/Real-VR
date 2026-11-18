@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2E6B47">
+<title>أوراق عمل تفاعلية – مقدمة في الجدول الدوري</title>
+<style>
+@font-face{font-family:Almarai;src:url(almarai.ttf);font-weight:400}
+@font-face{font-family:Almarai;src:url(almarai-bold.ttf);font-weight:700 800}
+:root{--g:#2E6B47;--g2:#4E8A5C;--t:#1E2B22;--y:#E0A83A;--r:#C83B3B;--met:#9DC9F0;--non:#F7D154;--mld:#A8D88A;--bg:#EEF6EF;--line:#D3E4D7}
+*{box-sizing:border-box}
+body{margin:0;font-family:Almarai,Tahoma,sans-serif;color:var(--t);background:var(--bg);-webkit-tap-highlight-color:transparent}
+button,input,select{font-family:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:10px max(14px,env(safe-area-inset-right,0px)) 30px max(14px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 3px 0 var(--line)}
+.top .h{font-size:12px;font-weight:700;line-height:1.6}.top img{height:46px}
+.title{display:flex;align-items:center;gap:12px;margin:12px 0}
+.title img{height:110px;flex:none}
+.title h1{margin:0;font-size:clamp(22px,5vw,32px);color:var(--g)}
+.title p{margin:4px 0;font-weight:700;font-size:14.5px;line-height:1.7}
+.who{display:flex;gap:10px;flex-wrap:wrap;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 3px 0 var(--line)}
+.who label{font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;flex:1;min-width:180px}
+.who input{flex:1;border:2px solid var(--line);border-radius:10px;padding:7px 10px;font-size:15px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tab{border:2px solid var(--line);background:#fff;border-radius:14px;padding:8px 12px;font-weight:800;font-size:14px}
+.tab.on{background:var(--g);border-color:var(--g);color:#fff}
+.tab .sc{font-size:12px;opacity:.85}
+.sheet{display:none;background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 0 var(--line)}
+.sheet.on{display:block}
+.sheet h2{margin:0 0 4px;color:var(--g);font-size:21px}
+.sheet .ins{font-weight:700;font-size:14.5px;margin:0 0 12px;color:#4A5D50;line-height:1.7}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px;border:2px dashed var(--y);border-radius:14px;background:#FFFBEF}
+.bank span{background:#fff;border:2px solid var(--y);border-radius:12px;padding:5px 12px;font-weight:800}
+.bank span.used{opacity:.35;text-decoration:line-through}
+.fill{font-size:16.5px;font-weight:700;line-height:2.4;margin:0 0 4px}
+.fill select{font-size:15.5px;font-weight:800;border:2px solid var(--line);border-radius:10px;padding:3px 6px;background:#F7FBF8}
+.ok-f{border-color:var(--g2)!important;background:#E2F3E7!important}.no-f{border-color:var(--r)!important;background:#FBE5E5!important}
+.cls{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.el{border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.el .sy{font-size:30px;font-weight:800;direction:ltr}.el .nm{font-weight:700;font-size:13.5px;margin-bottom:6px}
+.el .ch{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.el .ch button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:4px 7px;font-weight:800;font-size:12.5px}
+.el .ch button.pick{background:var(--g);border-color:var(--g);color:#fff}
+.keywrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.key{width:170px;border:3px solid var(--t);border-radius:14px;padding:10px;text-align:center;direction:ltr;background:var(--non);position:relative}
+.key div{font-weight:800}.key .a{font-size:16px}.key .b{font-size:24px}.key .c{font-size:60px;line-height:1.05}.key .d{font-size:18px}
+.key .tag{position:absolute;right:-8px;transform:translateX(100%);background:var(--y);color:#fff;border-radius:50%;width:24px;height:24px;font-size:13px;display:grid;place-items:center}
+.kq{flex:1;min-width:240px;display:grid;gap:8px}
+.kq label{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.kq .n{background:var(--y);color:#fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;flex:none}
+.kq input{flex:1;border:2px solid var(--line);border-radius:10px;padding:7px 10px;font-size:15px;min-width:0}
+.tf{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.tf li{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:700;font-size:15.5px;line-height:1.7}
+.tf .btns{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
+.tf .btns button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:5px 14px;font-weight:800}
+.tf .btns button.pick{background:var(--g);border-color:var(--g);color:#fff}
+.tf .fix{flex:1;min-width:200px;border:2px solid var(--line);border-radius:10px;padding:6px 10px;font-size:14.5px;display:none}
+table.pos{width:100%;border-collapse:separate;border-spacing:0 8px}
+table.pos td,table.pos th{padding:6px;text-align:center;font-weight:800}
+table.pos th{color:var(--g);font-size:14px}
+table.pos td.s{font-size:22px;direction:ltr}
+table.pos input{width:70px;border:2px solid var(--line);border-radius:10px;padding:6px;text-align:center;font-size:16px}
+.act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.btn{border:none;background:var(--g);color:#fff;border-radius:14px;padding:10px 20px;font-weight:800;font-size:16px;box-shadow:0 3px 0 #1E4A31}
+.btn.alt{background:#fff;color:var(--g);border:2px solid var(--g);box-shadow:none}
+.res{font-weight:800;font-size:16px;padding:6px 12px;border-radius:12px}
+.res.good{background:#E2F3E7;color:var(--g)}.res.mid{background:#FFF4D9;color:#8A5B00}
+.sum{background:#fff;border-radius:20px;padding:14px;margin-top:12px;box-shadow:0 4px 0 var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sum b{font-size:20px;color:var(--g)}
+.foot{text-align:center;margin-top:16px;font-weight:800;font-size:14px}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
+@media print{body{background:#fff}.tabs,.act,.btn,.sum .btn{display:none!important}.sheet{display:block!important;box-shadow:none;border:1.5px solid #ccc;break-inside:avoid;margin-bottom:10px}.top,.who,.sum{box-shadow:none;border:1.5px solid #ccc}.fix{display:block!important}}
+</style>
+</head>
+<body>
+<canvas id="cf"></canvas>
+<div class="wrap">
+ <div class="top"><div class="h">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بمنطقة المدينة المنورة<br>الابتدائية والمتوسطة الأولى بصخيبرة</div><img src="moe.png" alt="وزارة التعليم"></div>
+ <div class="title"><img src="girl-r.webp" alt=""><div><h1>أوراق عمل تفاعلية 📝</h1><p>العلوم • الصف الثالث المتوسط • درس «مقدمة في الجدول الدوري»</p><p style="color:var(--g2)">حلّي كل ورقة ثم اضغطي «تحقّقي»، وفي النهاية اطبعي أوراقك أو احفظيها PDF.</p></div></div>
+ <div class="who"><label>اسم الطالبة: <input id="sn"></label><label>الصف/الشعبة: <input id="sc" style="max-width:120px"></label></div>
+ <div class="tabs" id="tabs"></div>
+
+ <!-- 1 -->
+ <section class="sheet" id="w1"><h2>الورقة 1: تاريخ الجدول الدوري</h2><p class="ins">اختاري الكلمة المناسبة من بنك الكلمات لكل فراغ.</p>
+  <div class="bank" id="bank"></div><div id="fills"></div></section>
+ <!-- 2 -->
+ <section class="sheet" id="w2"><h2>الورقة 2: فلز أم لافلز أم شبه فلز؟</h2><p class="ins">صنّفي كل عنصر بالضغط على نوعه. (استعيني بالجدول الدوري في كتابك.)</p><div class="cls" id="cls"></div></section>
+ <!-- 3 -->
+ <section class="sheet" id="w3"><h2>الورقة 3: اقرئي مفتاح العنصر</h2><p class="ins">تأمّلي مفتاح العنصر، واكتبي ما يدل عليه كل رقم.</p>
+  <div class="keywrap"><div class="key"><div class="a">Chlorine <span>①</span></div><div class="b">17 <span>②</span></div><div class="c">Cl <span style="font-size:20px">③</span></div><div class="d">35.453 <span>④</span></div></div>
+   <div class="kq" id="kq"></div></div></section>
+ <!-- 4 -->
+ <section class="sheet" id="w4"><h2>الورقة 4: صواب أم خطأ؟</h2><p class="ins">اختاري «صواب» أو «خطأ»، وصحّحي العبارة الخاطئة في المربع الذي يظهر.</p><ul class="tf" id="tf"></ul></section>
+ <!-- 5 -->
+ <section class="sheet" id="w5"><h2>الورقة 5: أين بيت العنصر؟</h2><p class="ins">اكتبي رقم الدورة ورقم المجموعة لكل عنصر مستعينةً بالجدول الدوري.</p>
+  <table class="pos"><thead><tr><th>العنصر</th><th>الرمز</th><th>الدورة</th><th>المجموعة</th><th></th></tr></thead><tbody id="pos"></tbody></table></section>
+
+ <div class="act"><button class="btn" id="chk">✓ تحقّقي من الورقة</button><button class="btn alt" id="nxt">الورقة التالية ←</button><span class="res" id="res"></span></div>
+ <div class="sum"><b id="tot">مجموعكِ: 0 / 40</b><span id="sumtxt" style="font-weight:700"></span><button class="btn" style="margin-inline-start:auto" onclick="print()">🖨 طباعة / حفظ PDF</button></div>
+ <div class="foot">المعلمة: د. أفنان الطلحي</div>
+</div>
+<script>
+const $ = id => document.getElementById(id), shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const NAMES = ['تاريخ الجدول', 'التصنيف', 'المفتاح', 'صواب وخطأ', 'بيت العنصر'];
+const SCORE = [0, 0, 0, 0, 0], MAX = [8, 10, 6, 8, 8];
+let cur = 0;
+/* 1 */
+const F = [['رتّب العالم ___ العناصر حسب الكتلة الذرية عام 1869م.', 'مندليف'], ['ترك مندليف ___ في جدوله لعناصر لم تكن مكتشفة.', 'فراغات'],
+  ['رتّب العالم ___ العناصر حسب العدد الذري.', 'موزلي'], ['العدد الذري هو عدد ___ في نواة الذرة.', 'البروتونات'],
+  ['الصف الأفقي في الجدول الدوري يُسمّى ___.', 'الدورة'], ['العمود الرأسي في الجدول الدوري يُسمّى ___.', 'المجموعة'],
+  ['العناصر في المجموعات 3 إلى 12 تُسمّى العناصر ___.', 'الانتقالية'], ['تتكرر خصائص العناصر بنمط منتظم؛ لذا سُمّي الجدول ___.', 'الدوري']];
+const W = F.map(f => f[1]);
+$('bank').innerHTML = shuf(W).map(w => `<span data-w="${w}">${w}</span>`).join('');
+$('fills').innerHTML = F.map((f, i) => `<p class="fill">${i + 1}. ${f[0].replace('___', `<select data-a="${f[1]}"><option value="">……</option>${W.map(w => `<option>${w}</option>`).join('')}</select>`)}</p>`).join('');
+document.querySelectorAll('#fills select').forEach(s => s.onchange = () => { const used = [...document.querySelectorAll('#fills select')].map(x => x.value); document.querySelectorAll('#bank span').forEach(b => b.classList.toggle('used', used.includes(b.dataset.w))); s.classList.remove('ok-f', 'no-f'); });
+/* 2 */
+const C = [['Na','صوديوم','فلز'],['O','أكسجين','لافلز'],['Si','سيليكون','شبه فلز'],['Fe','حديد','فلز'],['Cl','كلور','لافلز'],['B','بورون','شبه فلز'],['Cu','نحاس','فلز'],['He','هيليوم','لافلز'],['Ge','جرمانيوم','شبه فلز'],['Al','ألومنيوم','فلز']];
+$('cls').innerHTML = C.map(([s, n, a]) => `<div class="el" data-a="${a}"><div class="sy">${s}</div><div class="nm">${n}</div><div class="ch">${['فلز', 'لافلز', 'شبه فلز'].map(t => `<button>${t}</button>`).join('')}</div></div>`).join('');
+document.querySelectorAll('#cls .el').forEach(el => el.querySelectorAll('button').forEach(b => b.onclick = () => { el.querySelectorAll('button').forEach(x => x.classList.toggle('pick', x === b)); el.classList.remove('ok-f', 'no-f'); }));
+/* 3 */
+const K = [['① يدل على', ['الاسم', 'اسم العنصر']], ['② يدل على', ['العدد الذري']], ['③ يدل على', ['الرمز', 'رمز العنصر']], ['④ يدل على', ['الكتلة الذرية', 'الكتلة']],
+  ['عدد البروتونات في ذرة الكلور =', ['17', '١٧']], ['هل الكلور فلز أم لافلز؟', ['لافلز']]];
+$('kq').innerHTML = K.map((k, i) => `<label><span class="n">${i + 1}</span>${k[0]} <input data-i="${i}"></label>`).join('');
+const norm = s => s.trim().replace(/[ًٌٍَُِّْ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/^ال/, '').replace(/\s+/g, ' ');
+/* 4 */
+const T = [['الهيدروجين أول عنصر في الجدول الدوري.', true, ''], ['رتّب مندليف العناصر حسب العدد الذري.', false, 'حسب الكتلة الذرية'],
+  ['يتكون الجدول الدوري من 7 دورات و18 مجموعة.', true, ''], ['معظم العناصر في الجدول الدوري لافلزات.', false, 'معظمها فلزات'],
+  ['الزئبق فلز سائل عند درجة حرارة الغرفة.', true, ''], ['أشباه الفلزات تقع على يسار الجدول الدوري.', false, 'تقع على جانبي الخط المتعرّج'],
+  ['عناصر المجموعة الواحدة متشابهة في خصائصها.', true, ''], ['البروم فلز صلب.', false, 'لافلز سائل']];
+$('tf').innerHTML = T.map((t, i) => `<li data-i="${i}">${i + 1}. ${t[0]}<div class="btns"><button data-v="1">✓ صواب</button><button data-v="0">✗ خطأ</button><input class="fix" placeholder="اكتبي التصحيح…"></div></li>`).join('');
+document.querySelectorAll('#tf li').forEach(li => li.querySelectorAll('button').forEach(b => b.onclick = () => { li.querySelectorAll('button').forEach(x => x.classList.toggle('pick', x === b)); li.querySelector('.fix').style.display = b.dataset.v === '0' ? 'block' : 'none'; li.classList.remove('ok-f', 'no-f'); }));
+/* 5 */
+const P = [['ليثيوم','Li',2,1],['مغنيسيوم','Mg',3,2],['كربون','C',2,14],['فوسفور','P',3,15],['كالسيوم','Ca',4,2],['حديد','Fe',4,8],['كلور','Cl',3,17],['نيون','Ne',2,18]];
+$('pos').innerHTML = P.map(p => `<tr><td>${p[0]}</td><td class="s">${p[1]}</td><td><input inputmode="numeric" data-a="${p[2]}"></td><td><input inputmode="numeric" data-a="${p[3]}"></td><td class="m"></td></tr>`).join('');
+/* tabs + check */
+function tabs(){ $('tabs').innerHTML = NAMES.map((n, i) => `<button class="tab ${i === cur ? 'on' : ''}" data-i="${i}">${i + 1}. ${n} <span class="sc">${SCORE[i]}/${MAX[i]}</span></button>`).join('');
+  document.querySelectorAll('.tab').forEach(t => t.onclick = () => go(+t.dataset.i)); }
+function go(i){ cur = i; document.querySelectorAll('.sheet').forEach((s, k) => s.classList.toggle('on', k === i)); $('res').textContent = ''; $('res').className = 'res'; $('nxt').textContent = i < 4 ? 'الورقة التالية ←' : 'العودة للورقة الأولى ↺'; tabs(); }
+const mark = (el, ok) => { el.classList.remove('ok-f', 'no-f'); el.classList.add(ok ? 'ok-f' : 'no-f'); return ok ? 1 : 0; };
+const fixNum = v => v.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim();
+$('chk').onclick = () => {
+  let s = 0;
+  if (cur === 0) document.querySelectorAll('#fills select').forEach(x => s += mark(x, x.value === x.dataset.a));
+  if (cur === 1) document.querySelectorAll('#cls .el').forEach(el => { const p = el.querySelector('.pick'); s += mark(el, !!p && p.textContent === el.dataset.a); });
+  if (cur === 2) document.querySelectorAll('#kq input').forEach(x => s += mark(x, K[+x.dataset.i][1].some(a => norm(fixNum(x.value)) === norm(a))));
+  if (cur === 3) document.querySelectorAll('#tf li').forEach(li => { const p = li.querySelector('.pick'), t = T[+li.dataset.i]; s += mark(li, !!p && (p.dataset.v === '1') === t[1]);
+    if (p && !t[1] && p.dataset.v === '0'){ const f = li.querySelector('.fix'); if (!f.value.trim()) f.placeholder = 'اكتبي التصحيح… (مثال: ' + t[2] + ')'; } });
+  if (cur === 4){ s = 0; document.querySelectorAll('#pos tr').forEach(tr => { const ins = tr.querySelectorAll('input'); let ok = 0; ins.forEach(x => ok += mark(x, fixNum(x.value) === x.dataset.a)); tr.querySelector('.m').textContent = ok === 2 ? '✓' : '✗'; s += ok / 2; }); }
+  SCORE[cur] = s; const pct = s / MAX[cur];
+  $('res').className = 'res ' + (pct >= .75 ? 'good' : 'mid');
+  $('res').textContent = (pct === 1 ? '🌟 ممتاز! ' : pct >= .75 ? '👏 أحسنتِ! ' : '💪 راجعي الإجابات الحمراء وحاولي مرة أخرى. ') + `${s} من ${MAX[cur]}`;
+  const tot = SCORE.reduce((a, b) => a + b, 0); $('tot').textContent = `مجموعكِ: ${tot} / 40`;
+  $('sumtxt').textContent = tot === 40 ? 'أنهيتِ كل الأوراق بإتقان 🏅' : '';
+  tabs(); if (pct === 1) confetti();
+};
+$('nxt').onclick = () => go((cur + 1) % 5);
+const cv = $('cf'), cx = cv.getContext('2d'); let PP = [];
+function confetti(){ cv.width = innerWidth; cv.height = innerHeight; const CC = ['#2E6B47', '#E0A83A', '#9DC9F0', '#F7D154', '#A8D88A'];
+  for (let i = 0; i < 120; i++) PP.push({x:Math.random() * cv.width, y:-20 - Math.random() * cv.height * .4, vx:(Math.random() - .5) * 3, vy:2 + Math.random() * 3, r:4 + Math.random() * 5, c:CC[i % 5], a:Math.random() * 6}); loop(); }
+function loop(){ cx.clearRect(0, 0, cv.width, cv.height); PP.forEach(p => { p.x += p.vx; p.y += p.vy; p.a += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+  PP = PP.filter(p => p.y < cv.height + 30); if (PP.length) requestAnimationFrame(loop); else cx.clearRect(0, 0, cv.width, cv.height); }
+go(0);
+</script>
+</body>
+</html>

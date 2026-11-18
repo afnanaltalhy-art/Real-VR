@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2E6B47">
+<title>المختبر الافتراضي – الجدول الدوري</title>
+<style>
+@font-face{font-family:Almarai;src:url(almarai.ttf);font-weight:400}
+@font-face{font-family:Almarai;src:url(almarai-bold.ttf);font-weight:700 800}
+:root{--g:#2E6B47;--g2:#4E8A5C;--t:#1E2B22;--y:#E0A83A;--r:#C83B3B;--met:#9DC9F0;--non:#F7D154;--mld:#A8D88A;--unk:#C9C9D1;--bg:#EEF6EF;--line:#D3E4D7}
+*{box-sizing:border-box}
+body{margin:0;font-family:Almarai,Tahoma,sans-serif;color:var(--t);background:var(--bg);-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:10px max(14px,env(safe-area-inset-right,0px)) 30px max(14px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 3px 0 var(--line)}
+.top .h{font-size:12px;font-weight:700;line-height:1.6}
+.top img{height:46px}
+.title{display:flex;align-items:center;gap:12px;margin:12px 0 8px}
+.title img{height:96px;flex:none}
+.title h1{margin:0;font-size:clamp(22px,5vw,34px);color:var(--g)}
+.title p{margin:4px 0 0;font-size:14px;font-weight:700;line-height:1.7}
+.bub{background:#fff;border:2.5px solid var(--y);border-radius:16px 16px 16px 4px;padding:8px 12px;font-weight:700;font-size:14px;line-height:1.6}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{border:2px solid var(--line);background:#fff;border-radius:16px;padding:8px 13px;font-weight:800;font-size:14px}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;font-weight:700;margin-bottom:6px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #0002}
+.tablebox{background:#fff;border-radius:18px;padding:10px;box-shadow:0 3px 0 var(--line);overflow-x:auto}
+.pt{direction:ltr;display:grid;grid-template-columns:repeat(18,minmax(38px,1fr));gap:3px;min-width:720px}
+.gnum{text-align:center;font-size:11px;font-weight:800;color:var(--g2)}
+.el{border:none;border-radius:6px;padding:2px 0;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:transform .15s,opacity .2s,box-shadow .2s;position:relative}
+.el .z{font-size:9.5px;font-weight:700;opacity:.8}.el .s{font-size:15px;font-weight:800}
+.el:hover{transform:scale(1.08);z-index:2}
+.el.sel{box-shadow:0 0 0 3px var(--r);transform:scale(1.12);z-index:3}
+.el.dim{opacity:.28}
+.el.line{box-shadow:inset 0 0 0 2px var(--g)}
+.el.gap{background:#fff!important;border:2px dashed var(--r);color:var(--r)}
+.spacer{grid-column:span 1}
+.frow{grid-column:3 / span 1;font-size:10px;font-weight:800;color:var(--g2);display:flex;align-items:center;justify-content:center;text-align:center}
+.grid2{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+@media(min-width:860px){.grid2{grid-template-columns:330px 1fr}}
+.panel{background:#fff;border-radius:18px;padding:14px;box-shadow:0 3px 0 var(--line)}
+.panel h2{margin:0 0 8px;font-size:18px;color:var(--g)}
+.keybox{display:flex;gap:12px;align-items:flex-start}
+.key{width:130px;flex:none;border:2px solid var(--t);border-radius:12px;padding:8px;text-align:center;direction:ltr;position:relative}
+.key .n{font-size:13px;font-weight:700}.key .z{font-size:20px;font-weight:800}.key .s{font-size:48px;font-weight:800;line-height:1.1}.key .m{font-size:15px;font-weight:700}
+.key .st{position:absolute;top:6px;right:6px;font-size:16px}
+.parts{font-size:14px;line-height:2;margin:0;padding:0;list-style:none}
+.parts b{color:var(--g)}
+.facts{margin-top:8px;font-size:14px;line-height:1.8;background:#F4FAF5;border-radius:12px;padding:8px 10px}
+.missions{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.missions li{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:9px 11px;font-size:14.5px;font-weight:700;line-height:1.6}
+.missions li .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:15px}
+.missions li.done{background:#E6F4EA;border-color:var(--g2)}
+.missions li.done .ck{background:var(--g);border-color:var(--g);color:#fff}
+.bar2{height:12px;background:#E3EEE6;border-radius:10px;overflow:hidden;margin:8px 0}
+.bar2 i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--y),var(--g2));transition:width .5s}
+.tour{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.tour button{border:none;border-radius:14px;padding:9px 14px;font-weight:800;background:var(--g);color:#fff}
+.foot{text-align:center;margin-top:16px;font-weight:800;font-size:14px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--t);color:#fff;font-weight:800;padding:10px 18px;border-radius:18px;z-index:50;max-width:92%;text-align:center}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
+</style>
+</head>
+<body>
+<canvas id="cf"></canvas>
+<div class="wrap">
+ <div class="top"><div class="h">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بمنطقة المدينة المنورة<br>الابتدائية والمتوسطة الأولى بصخيبرة</div><img src="moe.png" alt="وزارة التعليم"></div>
+ <div class="title"><img src="girl-r.webp" alt=""><div><h1>المختبر الافتراضي: الجدول الدوري 🧪</h1><p>انقري أي عنصر لتقرئي مفتاحه، وغيّري طريقة العرض، وأنجزي مهام المختبر.</p><div class="bub" id="bub">ابدئي بالمهمة الأولى: اعثري على العنصرين السائلين عند درجة حرارة الغرفة 💧</div></div></div>
+
+ <div class="chips" id="modes">
+  <button class="chip on" data-m="cat">الفلزات واللافلزات</button>
+  <button class="chip" data-m="state">حالة المادة</button>
+  <button class="chip" data-m="block">الممثلة والانتقالية</button>
+  <button class="chip" data-m="mend">فراغات مندليف</button>
+ </div>
+ <div class="legend" id="legend"></div>
+ <div class="tablebox"><div class="pt" id="pt"></div></div>
+
+ <div class="grid2">
+  <div class="panel">
+   <h2>🔑 مفتاح العنصر</h2>
+   <div class="keybox"><div class="key" id="key"><span class="st" id="kst"></span><div class="n" id="kn">Hydrogen</div><div class="z" id="kz">1</div><div class="s" id="ks">H</div><div class="m" id="km">1.008</div></div>
+    <ul class="parts" id="kp"></ul></div>
+   <div class="facts" id="kf">انقري أي عنصر في الجدول.</div>
+   <div class="tour"><button id="tourBtn">⬅ جولة العدد الذري</button><span id="tourTxt" style="font-weight:700;font-size:14px"></span></div>
+  </div>
+  <div class="panel">
+   <h2>🎯 مهام المختبر <small id="cnt" style="font-size:14px;color:#557"></small></h2>
+   <div class="bar2"><i id="prog"></i></div>
+   <ul class="missions" id="missions"></ul>
+  </div>
+ </div>
+ <div class="foot">المعلمة: د. أفنان الطلحي</div>
+</div>
+
+<script src="elements.js"></script>
+<script>
+const E = ELEMENTS, $ = id => document.getElementById(id);
+const COL = {metal:'var(--met)', nonmetal:'var(--non)', metalloid:'var(--mld)', unknown:'var(--unk)'};
+const ST_COL = {s:'#D7E3F4', l:'#9DD3F5', g:'#F6C6C6', a:'#E5D8F5'}, ST_IC = {s:'⬜', l:'💧', g:'🎈', a:'⭕'};
+const BL_COL = {representative:'#F3C46A', transition:'#8FC7E8', inner:'#C9B6EC'};
+const GAPS = {Ga:'1875م', Sc:'1879م', Ge:'1886م'};
+let mode = 'cat', sel = null;
+
+function colorOf(e){
+  if (mode === 'state') return ST_COL[e.state];
+  if (mode === 'block') return BL_COL[e.block];
+  return COL[e.cat];
+}
+function legend(){
+  const L = {cat:[['فلز','var(--met)'],['لافلز','var(--non)'],['شبه فلز','var(--mld)'],['غير معروف بعد','var(--unk)']],
+    state:[['صلب ⬜',ST_COL.s],['سائل 💧',ST_COL.l],['غاز 🎈',ST_COL.g],['مُصنَّع ⭕',ST_COL.a]],
+    block:[['عناصر ممثلة (1، 2، 13–18)',BL_COL.representative],['عناصر انتقالية (3–12)',BL_COL.transition],['انتقالية داخلية',BL_COL.inner]],
+    mend:[['الفراغات التي تركها مندليف: انقري «؟»','#fff']]}[mode];
+  $('legend').innerHTML = L.map(([t, c]) => `<span><i style="background:${c}"></i>${t}</span>`).join('');
+}
+function build(){
+  const pt = $('pt'); pt.innerHTML = '';
+  for (let g = 1; g <= 18; g++){ const d = document.createElement('div'); d.className = 'gnum'; d.style.gridColumn = g; d.style.gridRow = 1; d.textContent = g; pt.appendChild(d); }
+  E.forEach(e => {
+    const b = document.createElement('button'); b.className = 'el'; b.dataset.s = e.sym;
+    if (e.f){ b.style.gridColumn = e.c + 4; b.style.gridRow = 9 + e.f; } else { b.style.gridColumn = e.g; b.style.gridRow = e.p + 1; }
+    b.innerHTML = `<span class="z">${e.z}</span><span class="s">${e.sym}</span>`;
+    b.onclick = () => pick(e.sym); pt.appendChild(b);
+  });
+  const sp = document.createElement('div'); sp.style.gridColumn = '1 / span 18'; sp.style.gridRow = 9; sp.style.height = '8px'; pt.appendChild(sp);
+  ['اللانثانيدات', 'الأكتينيدات'].forEach((t, i) => { const d = document.createElement('div'); d.className = 'frow'; d.style.gridColumn = '1 / span 3'; d.style.gridRow = 10 + i; d.textContent = t; pt.appendChild(d); });
+  paint();
+}
+function paint(){
+  document.querySelectorAll('.el').forEach(b => {
+    const e = E[+b.querySelector('.z').textContent - 1];
+    b.style.background = colorOf(e); b.classList.remove('gap');
+    if (mode === 'mend' && GAPS[e.sym] && !b.dataset.rev){ b.classList.add('gap'); b.querySelector('.s').textContent = '؟'; }
+    else b.querySelector('.s').textContent = e.sym;
+  });
+  legend(); highlight();
+}
+function highlight(){
+  const s = sel && E.find(e => e.sym === sel);
+  document.querySelectorAll('.el').forEach(b => {
+    const e = E.find(x => x.sym === b.dataset.s);
+    b.classList.toggle('sel', b.dataset.s === sel);
+    b.classList.toggle('line', !!s && !s.f && !e.f && (e.p === s.p || e.g === s.g) && b.dataset.s !== sel);
+  });
+}
+const WHERE = e => e.f ? (e.f === 1 ? 'اللانثانيدات' : 'الأكتينيدات') + ' (انتقالية داخلية)' : `الدورة ${e.p} • المجموعة ${e.g}`;
+const BL = {representative:'عنصر ممثل', transition:'عنصر انتقالي', inner:'عنصر انتقالي داخلي'};
+const FACTS = {H:'أول عنصر في الجدول وأخفّها.',Hg:'الفلز الوحيد السائل عند درجة حرارة الغرفة.',Br:'اللافلز الوحيد السائل عند درجة حرارة الغرفة.',
+  Md:'سُمّي تكريمًا للعالم مندليف الذي نشر أول جدول دوري عام 1869م.',Po:'سُمّي نسبةً إلى بولندا بلد العالمة ماري كوري.',Au:'رمزه من اللاتينية Aurum.',
+  Fe:'رمزه من اللاتينية Ferrum.',Na:'رمزه من اللاتينية Natrium.',K:'رمزه من اللاتينية Kalium.',Cu:'رمزه من اللاتينية Cuprum.',Ag:'رمزه من اللاتينية Argentum.',
+  Pb:'رمزه من اللاتينية Plumbum.',Sn:'رمزه من اللاتينية Stannum.',W:'رمزه من الألمانية Wolfram.',Si:'شبه فلز تُصنع منه الشرائح الإلكترونية والألواح الشمسية.',
+  C:'لافلز صلب؛ منه الجرافيت والألماس.',Ga:'توقّعه مندليف باسم «إيكا-ألومنيوم» واكتُشف عام 1875م.',Sc:'توقّعه مندليف باسم «إيكا-بورون» واكتُشف عام 1879م.',Ge:'توقّعه مندليف باسم «إيكا-سيليكون» واكتُشف عام 1886م.'};
+function showKey(e){
+  $('key').style.background = COL[e.cat]; $('kn').textContent = e.en; $('kz').textContent = e.z; $('ks').textContent = e.sym; $('km').textContent = e.mass; $('kst').textContent = ST_IC[e.state];
+  $('kp').innerHTML = `<li><b>الاسم:</b> ${e.ar} (${e.en})</li><li><b>العدد الذري:</b> ${e.z}</li><li><b>الرمز:</b> ${e.sym}</li><li><b>الكتلة الذرية:</b> ${e.mass}</li><li><b>الحالة:</b> ${STATE_AR[e.state]}</li>`;
+  $('kf').innerHTML = `<b>${CAT_AR[e.cat]}</b> • ${BL[e.block]} • ${WHERE(e)}${FACTS[e.sym] ? '<br>💡 ' + FACTS[e.sym] : ''}`;
+}
+function pick(sym){
+  const e = E.find(x => x.sym === sym); sel = sym;
+  if (mode === 'mend' && GAPS[sym]){ const b = document.querySelector(`.el[data-s="${sym}"]`); b.dataset.rev = 1; paint(); toast(`ترك مندليف مكانه فارغًا… واكتُشف ${e.ar} ${sym} عام ${GAPS[sym]} 🎉`); }
+  showKey(e); highlight(); check(e);
+}
+/* ---------- missions ---------- */
+const found = new Set();
+const M = [
+  {t:'اعثري على العنصرين السائلين عند درجة حرارة الغرفة (اختاري «حالة المادة»)', ok:e => { if (e.state === 'l') found.add(e.sym); return found.has('Hg') && found.has('Br'); }, hint:'💧 تلميح: أحدهما فلز في المجموعة 12، والآخر لافلز في المجموعة 17.'},
+  {t:'اعثري على العنصر الذي عدده الذري 26', ok:e => e.z === 26, hint:'🔢 تلميح: في الدورة 4 والمجموعة 8.'},
+  {t:'اختاري عنصرًا من أشباه الفلزات', ok:e => e.cat === 'metalloid', hint:'🟩 تلميح: تقع على الخط المتعرّج بين الفلزات واللافلزات.'},
+  {t:'اعثري على العنصر الذي يقع في الدورة 2 والمجموعة 14', ok:e => e.p === 2 && e.g === 14 && !e.f, hint:'📍 تلميح: لافلز صلب منه الجرافيت.'},
+  {t:'اكشفي فراغات مندليف الثلاثة (اختاري «فراغات مندليف»)', ok:e => mode === 'mend' && ['Ga', 'Sc', 'Ge'].every(s => document.querySelector(`.el[data-s="${s}"]`).dataset.rev), hint:'❓ انقري علامات «؟» في الجدول.'},
+  {t:'اعثري على العنصر الذي سُمّي تكريمًا لمندليف', ok:e => e.sym === 'Md', hint:'🏅 تلميح: في الأكتينيدات، عدده الذري 101.'},
+  {t:'اختاري عنصرًا انتقاليًا (اختاري «الممثلة والانتقالية»)', ok:e => e.block === 'transition', hint:'🟦 تلميح: المجموعات من 3 إلى 12.'}];
+const doneM = new Set();
+function renderM(){
+  $('missions').innerHTML = M.map((m, i) => `<li class="${doneM.has(i) ? 'done' : ''}"><span class="ck">${doneM.has(i) ? '✓' : i + 1}</span><span>${m.t}</span></li>`).join('');
+  $('cnt').textContent = `(${doneM.size} من ${M.length})`; $('prog').style.width = (doneM.size / M.length * 100) + '%';
+}
+function nextHint(){ const i = M.findIndex((_, k) => !doneM.has(k)); $('bub').textContent = i < 0 ? 'أحسنتِ! أنجزتِ كل مهام المختبر 🏅' : 'المهمة التالية: ' + M[i].t + ' • ' + M[i].hint; }
+function check(e){
+  let any = false;
+  M.forEach((m, i) => { if (!doneM.has(i) && m.ok(e)){ doneM.add(i); any = true; } });
+  if (any){ renderM(); toast('✓ أنجزتِ مهمة! (' + doneM.size + ' من ' + M.length + ')'); nextHint(); if (doneM.size === M.length) confetti(); }
+}
+/* ---------- tour ---------- */
+let tz = 0;
+$('tourBtn').onclick = () => { tz = tz % 118 + 1; const e = E[tz - 1]; pick(e.sym);
+  $('tourTxt').textContent = `العدد الذري ${tz}${tz > 1 ? ' = ' + (tz - 1) + ' + 1 بروتون' : ''}`;
+  document.querySelector(`.el[data-s="${e.sym}"]`).scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); };
+document.querySelectorAll('#modes .chip').forEach(c => c.onclick = () => {
+  document.querySelectorAll('#modes .chip').forEach(x => x.classList.toggle('on', x === c)); mode = c.dataset.m; paint();
+  if (mode === 'mend') $('bub').textContent = 'في جدول مندليف كانت هناك ثلاثة فراغات… انقري «؟» لتكتشفي العناصر التي ملأتها!';
+  const e = sel && E.find(x => x.sym === sel); if (e) check(e);
+});
+function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2300); }
+const cv = $('cf'), cx = cv.getContext('2d'); let P = [];
+function confetti(){ cv.width = innerWidth; cv.height = innerHeight; const C = ['#2E6B47', '#E0A83A', '#9DC9F0', '#F7D154', '#A8D88A'];
+  for (let i = 0; i < 160; i++) P.push({x:Math.random() * cv.width, y:-20 - Math.random() * cv.height * .4, vx:(Math.random() - .5) * 3, vy:2 + Math.random() * 3, r:4 + Math.random() * 5, c:C[i % 5], a:Math.random() * 6}); cl(); }
+function cl(){ cx.clearRect(0, 0, cv.width, cv.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.a += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+  P = P.filter(p => p.y < cv.height + 30); if (P.length) requestAnimationFrame(cl); else cx.clearRect(0, 0, cv.width, cv.height); }
+build(); renderM(); showKey(E[0]);
+</script>
+</body>
+</html>

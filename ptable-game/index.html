@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2E6B47">
+<title>رحلة في مدينة العناصر – لعبة الجدول الدوري</title>
+<style>
+@font-face{font-family:Almarai;src:url(almarai.ttf);font-weight:400}
+@font-face{font-family:Almarai;src:url(almarai-bold.ttf);font-weight:700 800}
+:root{--g:#2E6B47;--g2:#4E8A5C;--t:#1E2B22;--y:#E0A83A;--r:#C83B3B;--met:#9DC9F0;--non:#F7D154;--mld:#A8D88A;--bg:#EEF6EF;--line:#D3E4D7}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Almarai,Tahoma,sans-serif;color:var(--t);background:radial-gradient(circle at 20% 0,#fff 0,var(--bg) 55%,#DCEFE0 100%);-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.wrap{max-width:980px;margin:0 auto;padding:10px max(14px,env(safe-area-inset-right,0px)) 30px max(14px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:20px;padding:8px 14px;box-shadow:0 3px 0 var(--line)}
+.top .h{font-size:12px;font-weight:700;line-height:1.6}.top img{height:46px}
+.scr{display:none}.scr.on{display:block;animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hero{display:flex;align-items:center;gap:14px;margin:16px 0}
+.hero img{height:190px;flex:none}
+.hero h1{margin:0;font-size:clamp(26px,6vw,40px);color:var(--g)}
+.hero p{font-size:16px;font-weight:700;line-height:1.8;margin:6px 0}
+.bub{background:#fff;border:2.5px solid var(--y);border-radius:16px 16px 16px 4px;padding:9px 13px;font-weight:700;font-size:15px;line-height:1.7}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:10px}
+.lv{background:#fff;border:3px solid var(--line);border-radius:20px;padding:14px;text-align:right;box-shadow:0 4px 0 var(--line);transition:transform .15s}
+.lv:hover{transform:translateY(-3px)}
+.lv .ic{font-size:34px}.lv b{display:block;font-size:17px;margin:6px 0 4px;color:var(--g)}.lv small{font-size:13px;font-weight:700;line-height:1.6;display:block}
+.lv .st{font-size:20px;letter-spacing:2px;margin-top:6px;color:var(--y)}
+.lv.lock{opacity:.45;pointer-events:none}
+.lv.cert{background:linear-gradient(135deg,#FFF6DA,#fff);border-color:var(--y)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 8px}
+.bar h2{margin:0;font-size:22px;color:var(--g)}
+.back{border:none;background:#fff;border-radius:14px;padding:8px 14px;font-weight:800;box-shadow:0 3px 0 var(--line)}
+.prog{display:flex;gap:5px}.prog i{width:22px;height:8px;border-radius:6px;background:#D3E4D7}.prog i.ok{background:var(--g2)}.prog i.no{background:var(--r)}.prog i.cur{background:var(--y)}
+.card{background:#fff;border-radius:22px;padding:18px;box-shadow:0 4px 0 var(--line);text-align:center}
+.q{font-size:clamp(18px,4.4vw,24px);font-weight:800;line-height:1.7;margin:4px 0 14px}
+.key{display:inline-block;width:150px;border:3px solid var(--t);border-radius:14px;padding:8px;direction:ltr;background:#fff;margin-bottom:10px}
+.key .n{font-size:14px;font-weight:700}.key .z{font-size:22px;font-weight:800}.key .s{font-size:56px;font-weight:800;line-height:1.05}.key .m{font-size:16px;font-weight:700}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.opt{border:3px solid var(--line);background:#fff;border-radius:16px;padding:14px 10px;font-size:18px;font-weight:800;box-shadow:0 3px 0 var(--line);line-height:1.5}
+.opt.ok{background:#DDF1E2;border-color:var(--g2)}.opt.no{background:#F9DEDE;border-color:var(--r)}
+.opt[disabled]{cursor:default}
+.fb{min-height:52px;margin-top:12px;font-weight:800;font-size:16px;line-height:1.7;border-radius:14px;padding:6px 10px}
+.fb.ok{background:#E6F4EA;color:var(--g)}.fb.no{background:#FBE9E9;color:#9B2C2C}
+.next{border:none;background:var(--g);color:#fff;border-radius:16px;padding:12px 26px;font-size:18px;font-weight:800;margin-top:10px;box-shadow:0 4px 0 #1E4A31}
+.mini{direction:ltr;display:grid;grid-template-columns:repeat(18,1fr);gap:3px;margin:8px auto 0;max-width:760px}
+.mini .c{aspect-ratio:1;border:none;border-radius:5px;background:#E3EEE6;font-size:10px;font-weight:800;color:#7A9483;padding:0}
+.mini .c:hover{background:#CFE4D5}.mini .c.ok{background:var(--g2);color:#fff}.mini .c.no{background:var(--r);color:#fff}.mini .c.ans{background:var(--y);color:#fff}
+.mini .gn{font-size:10px;font-weight:800;color:var(--g2);text-align:center}
+.mini .pn{font-size:10px;font-weight:800;color:var(--g2);display:flex;align-items:center;justify-content:center}
+.res{text-align:center}.res .big{font-size:54px;letter-spacing:6px;color:var(--y)}
+.cert-box{background:#fff;border:6px double var(--g);border-radius:20px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
+.cert-box h2{font-size:30px;color:var(--g);margin:6px 0}
+.cert-box .nm{font-size:30px;font-weight:800;color:var(--y);border-bottom:2px dashed var(--line);display:inline-block;min-width:200px;padding:4px 10px;margin:8px 0}
+.cert-box p{font-size:17px;font-weight:700;line-height:1.9;margin:4px 0}
+.cert-box .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;font-size:15px;font-weight:800}
+.cert-box img.g{position:absolute;top:8px;left:10px;height:120px}
+.cert-box img.g2{position:absolute;top:8px;right:10px;height:120px;transform:scaleX(-1)}
+.inp{font-family:inherit;font-size:18px;padding:10px 14px;border:3px solid var(--line);border-radius:14px;width:min(320px,90%);text-align:center}
+.foot{text-align:center;margin-top:18px;font-weight:800;font-size:14px}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
+@media(max-width:560px){.hero img{height:130px}.mini{gap:2px}.mini .c{font-size:8px;border-radius:3px}}
+@media print{.top,.bar,.foot,#printBtn,.inp,#nmRow{display:none!important}body{background:#fff}.scr{display:none!important}#s-cert{display:block!important}}
+</style>
+</head>
+<body>
+<canvas id="cf"></canvas>
+<div class="wrap">
+ <div class="top"><div class="h">المملكة العربية السعودية<br>وزارة التعليم<br>إدارة التعليم بمنطقة المدينة المنورة<br>الابتدائية والمتوسطة الأولى بصخيبرة</div><img src="moe.png" alt="وزارة التعليم"></div>
+
+ <!-- home -->
+ <section class="scr on" id="s-home">
+  <div class="hero"><img src="girl-r.webp" alt=""><div><h1>رحلة في مدينة العناصر 🏙️</h1>
+   <p>العلوم • الصف الثالث المتوسط • درس «مقدمة في الجدول الدوري»</p>
+   <div class="bub">أهلًا بكِ! الجدول الدوري مدينة لكل عنصر فيها بيت بعنوان: <b>دورة</b> و<b>مجموعة</b>. أنجزي المحطات الخمس واجمعي النجوم لتحصلي على شهادتك 🏅</div></div></div>
+  <div class="map" id="map"></div>
+ </section>
+
+ <!-- play -->
+ <section class="scr" id="s-play">
+  <div class="bar"><button class="back" onclick="home()">→ الخريطة</button><h2 id="lvT"></h2><div class="prog" id="prog"></div></div>
+  <div class="card" id="play"></div>
+ </section>
+
+ <!-- result -->
+ <section class="scr" id="s-res"><div class="card res" id="res"></div></section>
+
+ <!-- certificate -->
+ <section class="scr" id="s-cert">
+  <div class="bar"><button class="back" onclick="home()">→ الخريطة</button><h2>شهادة إنجاز</h2><span></span></div>
+  <div style="text-align:center;margin-bottom:10px" id="nmRow"><input class="inp" id="nm" placeholder="اكتبي اسمك هنا" oninput="$('cn').textContent=this.value||'...........'"></div>
+  <div class="cert-box">
+   <img src="moe.png" alt="" style="height:54px;margin-top:40px">
+   <h2>شهادة إنجاز 🏅</h2>
+   <p>تشهد المعلمة بأن الطالبة</p>
+   <div class="nm" id="cn">...........</div>
+   <p>أنهت «رحلة في مدينة العناصر» في درس مقدمة في الجدول الدوري<br>وجمعت <b id="cs"></b> نجمة من 15 ⭐</p>
+   <div class="row"><span>التاريخ: <span id="cd"></span></span><span>المعلمة: د. أفنان الطلحي</span></div>
+   <img class="g" src="girl.webp" alt=""><img class="g2" src="girl.webp" alt="">
+  </div>
+  <div style="text-align:center"><button class="next" id="printBtn" onclick="print()">🖨 طباعة / حفظ الشهادة</button></div>
+ </section>
+
+ <div class="foot">المعلمة: د. أفنان الطلحي</div>
+</div>
+
+<script src="elements.js"></script>
+<script>
+const $ = id => document.getElementById(id), E = ELEMENTS, bySym = s => E.find(e => e.sym === s);
+const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const CAT = {metal:'فلز', nonmetal:'لافلز', metalloid:'شبه فلز'};
+const COLK = {metal:'var(--met)', nonmetal:'var(--non)', metalloid:'var(--mld)', unknown:'#ddd'};
+const keyHTML = e => `<div class="key" style="background:${COLK[e.cat]}"><div class="n">${e.en}</div><div class="z">${e.z}</div><div class="s">${e.sym}</div><div class="m">${e.mass}</div></div>`;
+
+/* ---------- level generators: each returns array of rounds {q, html?, opts, ans, why} or {type:'cell'} ---------- */
+const POOL_CLS = ['Na','Fe','Cu','Au','Al','Mg','Ca','Zn','Ag','K','O','N','C','S','Cl','He','Ne','P','I','F','B','Si','Ge','As','Sb','Te'];
+function L1(){ return shuf(POOL_CLS).slice(0, 8).map(s => { const e = bySym(s);
+  return {q:`هل ${e.ar} (${e.sym}) فلز أم لافلز أم شبه فلز؟`, html:keyHTML(e), opts:['فلز', 'لافلز', 'شبه فلز'], ans:CAT[e.cat], fixed:true,
+    why:{metal:'الفلزات تقع يسار الخط المتعرّج، لامعة وموصلة للحرارة والكهرباء.', nonmetal:'اللافلزات تقع يمين الخط المتعرّج (عدا الهيدروجين)، معظمها غازات أو صلبة هشّة.', metalloid:'أشباه الفلزات تقع على جانبي الخط المتعرّج، لها خصائص بين الفلزات واللافلزات.'}[e.cat]}; }); }
+const POOL_POS = ['Li','Na','K','Mg','Ca','C','N','O','F','Ne','Al','Si','P','S','Cl','Ar','Fe','Cu','Zn','Br','He','B','Kr','Ag','I'];
+function L2(){ return shuf(POOL_POS).slice(0, 5).map(s => ({type:'cell', e:bySym(s)})); }
+function L3(){
+  const S = shuf(['C','O','Na','Fe','Al','Cl','Ca','Cu','Au','Si','Mg','S']).slice(0, 6), parts = ['z', 'sym', 'mass', 'name', 'z', 'state'];
+  return S.map((s, i) => { const e = bySym(s), p = parts[i];
+    if (p === 'z') return {q:'ما العدد الذري لهذا العنصر؟', html:keyHTML(e), opts:shuf([String(e.z), String(Math.round(+String(e.mass).replace(/[()]/g, ''))), String(e.z + 2)].filter((v, k, a) => a.indexOf(v) === k)), ans:String(e.z), why:'العدد الذري هو العدد الصحيح أعلى المفتاح، ويساوي عدد البروتونات.'};
+    if (p === 'sym') return {q:'ما رمز هذا العنصر؟', html:keyHTML(e), opts:shuf([e.sym, e.sym.toLowerCase(), e.sym.toUpperCase() === e.sym && e.sym.length === 1 ? e.sym + e.sym.toLowerCase() : e.sym.toUpperCase()]), ans:e.sym, why:'الرمز حرف كبير، ويليه حرف صغير إن وُجد.'};
+    if (p === 'mass') return {q:'ما الكتلة الذرية لهذا العنصر؟', html:keyHTML(e), opts:shuf([String(e.mass), String(e.z), String(e.z * 2 + 1)]), ans:String(e.mass), why:'الكتلة الذرية هي العدد العشري أسفل المفتاح.'};
+    if (p === 'name') return {q:'ما اسم هذا العنصر بالعربية؟', html:keyHTML(e), opts:shuf([e.ar, ...shuf(E.filter(x => x.z < 31 && x.sym !== e.sym)).slice(0, 2).map(x => x.ar)]), ans:e.ar, why:`${e.en} = ${e.ar}.`};
+    return {q:'ما حالة هذا العنصر عند درجة حرارة الغرفة؟', html:keyHTML(e), opts:['صلب', 'سائل', 'غاز'], fixed:true, ans:STATE_AR[e.state], why:'تُظهر رموز الحالة في الجدول ما إذا كان العنصر صلبًا أو سائلًا أو غازًا.'}; }); }
+const ORIG = [['Na','Natrium','اللاتينية'],['K','Kalium','اللاتينية'],['Fe','Ferrum','اللاتينية'],['Au','Aurum','اللاتينية'],['Ag','Argentum','اللاتينية'],['Cu','Cuprum','اللاتينية'],['Pb','Plumbum','اللاتينية'],['Sn','Stannum','اللاتينية'],['Hg','Hydrargyrum','اللاتينية'],['W','Wolfram','الألمانية']];
+function L4(){ return shuf(ORIG).slice(0, 6).map(([s, o, l]) => { const e = bySym(s), wrong = shuf(ORIG.filter(x => x[0] !== s)).slice(0, 2).map(x => x[1]);
+  return {q:`لماذا رمز ${e.ar} هو <span dir="ltr">${s}</span>؟ اختاري الاسم الذي أُخذ منه الرمز.`, opts:shuf([o, ...wrong]), ans:o, why:`رمز ${e.ar} ${s} مأخوذ من اسمه ${l === 'اللاتينية' ? 'اللاتيني' : 'الألماني'} ${o}.`}; }); }
+const BOSS = [
+  {q:'مَن العالِم الذي رتّب العناصر حسب الكتلة الذرية وترك فراغات لعناصر لم تُكتشف؟', opts:['مندليف','موزلي','نيوتن'], ans:'مندليف', why:'نشر مندليف جدوله عام 1869م وتنبّأ بخصائص عناصر لم تكن مكتشفة.'},
+  {q:'رتّب موزلي العناصر حسب…', opts:['العدد الذري','الكتلة الذرية','اللون'], ans:'العدد الذري', why:'اكتشف موزلي أن ترتيب العناصر بالعدد الذري (عدد البروتونات) يحلّ مشكلات جدول مندليف.'},
+  {q:'الصف الأفقي في الجدول الدوري يُسمّى…', opts:['دورة','مجموعة','عائلة'], ans:'دورة', why:'في الجدول 7 دورات أفقية.'},
+  {q:'العمود الرأسي في الجدول الدوري يُسمّى…', opts:['مجموعة','دورة','مفتاح'], ans:'مجموعة', why:'في الجدول 18 مجموعة، وعناصر المجموعة الواحدة متشابهة في خصائصها.'},
+  {q:'العناصر الانتقالية تقع في المجموعات…', opts:['من 3 إلى 12','1 و 2','من 13 إلى 18'], ans:'من 3 إلى 12', why:'المجموعات 1 و2 و13–18 للعناصر الممثلة، و3–12 للانتقالية.'},
+  {q:'العنصر 113 لونه رمادي في الجدول لأن…', opts:['خصائصه لم تُعرف بعد','غاز','فلز سائل'], ans:'خصائصه لم تُعرف بعد', why:'بعض العناصر المصنّعة حديثًا لم تُحدَّد خصائصها بدقّة بعد.'},
+  {q:'معنى كلمة «دوري» في الجدول الدوري…', opts:['نمط يتكرر بانتظام','ترتيب أبجدي','عشوائي'], ans:'نمط يتكرر بانتظام', why:'الخصائص تتكرر بنمط منتظم كما تتكرر أيام الأسبوع.'}];
+function L5(){ return shuf(BOSS).slice(0, 6).map(x => ({...x, opts:shuf(x.opts)})); }
+
+const LV = [
+  {t:'حيّ الفلزات واللافلزات', ic:'🏘️', d:'صنّفي العناصر: فلز أم لافلز أم شبه فلز؟', f:L1},
+  {t:'ساعي البريد', ic:'📮', d:'أوصلي الرسالة إلى بيت العنصر: الدورة والمجموعة.', f:L2},
+  {t:'بطاقة الهوية', ic:'🪪', d:'اقرئي مفتاح العنصر: الرمز والعدد والكتلة.', f:L3},
+  {t:'متحف الأسماء', ic:'🏛️', d:'من أين جاءت رموز العناصر؟', f:L4},
+  {t:'برج التحدي', ic:'🗼', d:'أسئلة ختامية عن مندليف وموزلي وتنظيم الجدول.', f:L5}];
+const STARS = JSON.parse((() => { try { return localStorage.getItem('pt-game-stars') || '[0,0,0,0,0]'; } catch (e) { return '[0,0,0,0,0]'; } })());
+const save = () => { try { localStorage.setItem('pt-game-stars', JSON.stringify(STARS)); } catch (e) {} };
+const starStr = n => '★'.repeat(n) + '☆'.repeat(3 - n);
+
+function show(id){ document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === id)); scrollTo({top:0, behavior:'smooth'}); }
+function home(){
+  const tot = STARS.reduce((a, b) => a + b, 0);
+  $('map').innerHTML = LV.map((l, i) => `<button class="lv ${i > 0 && !STARS[i - 1] ? 'lock' : ''}" onclick="start(${i})"><div class="ic">${l.ic}</div><b>${i + 1}. ${l.t}</b><small>${l.d}</small><div class="st">${starStr(STARS[i])}</div></button>`).join('')
+    + `<button class="lv cert ${STARS.every(s => s > 0) ? '' : 'lock'}" onclick="cert()"><div class="ic">🏅</div><b>الشهادة</b><small>أنهي المحطات الخمس لتفتح شهادتك.</small><div class="st">${tot} / 15 ⭐</div></button>`;
+  show('s-home');
+}
+/* ---------- play ---------- */
+let L, R, idx, mist, res;
+function start(i){ L = i; R = LV[i].f(); idx = 0; mist = 0; res = []; $('lvT').textContent = LV[i].ic + ' ' + LV[i].t; show('s-play'); round(); }
+function progress(){ $('prog').innerHTML = R.map((_, k) => `<i class="${k < idx ? (res[k] ? 'ok' : 'no') : k === idx ? 'cur' : ''}"></i>`).join(''); }
+function round(){
+  progress(); const r = R[idx];
+  if (r.type === 'cell') return cellRound(r.e);
+  $('play').innerHTML = `${r.html || ''}<div class="q">${r.q}</div><div class="opts">${r.opts.map(o => `<button class="opt">${o}</button>`).join('')}</div><div class="fb" id="fb"></div><div id="nx"></div>`;
+  let first = true;
+  document.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const ok = b.textContent === r.ans;
+    if (ok){ b.classList.add('ok'); document.querySelectorAll('.opt').forEach(x => x.disabled = true);
+      $('fb').className = 'fb ok'; $('fb').textContent = (first ? '✓ أحسنتِ! ' : '✓ صحيح الآن. ') + r.why; res[idx] = first; nextBtn(); }
+    else { b.classList.add('no'); b.disabled = true; if (first) mist++; first = false; $('fb').className = 'fb no'; $('fb').textContent = '✗ حاولي مرة أخرى… ' + (r.hint || 'فكّري في موقع العنصر في الجدول.'); }
+  });
+}
+function cellRound(e){
+  $('play').innerHTML = `<div class="q">📮 رسالة إلى <b>${e.ar} (<span dir="ltr">${e.sym}</span>)</b><br>عنوانه: الدورة <b>${e.p}</b> • المجموعة <b>${e.g}</b> — انقري بيته!</div><div class="mini" id="mini"></div><div class="fb" id="fb"></div><div id="nx"></div>`;
+  const m = $('mini'); let first = true, html = '<div></div>';
+  for (let g = 1; g <= 18; g++) html += `<div class="gn">${g}</div>`;
+  m.style.gridTemplateColumns = '18px repeat(18,1fr)';
+  for (let p = 1; p <= 7; p++){ html += `<div class="pn">${p}</div>`;
+    for (let g = 1; g <= 18; g++){ const has = E.some(x => !x.f && x.p === p && x.g === g); html += has ? `<button class="c" data-p="${p}" data-g="${g}"></button>` : '<div></div>'; } }
+  m.innerHTML = html;
+  m.querySelectorAll('.c').forEach(c => c.onclick = () => {
+    const p = +c.dataset.p, g = +c.dataset.g, x = E.find(y => !y.f && y.p === p && y.g === g);
+    if (p === e.p && g === e.g){ c.classList.add('ok'); c.textContent = e.sym; m.querySelectorAll('.c').forEach(z => z.disabled = true);
+      $('fb').className = 'fb ok'; $('fb').textContent = `✓ وصلت الرسالة! ${e.ar} في الدورة ${e.p} (صف أفقي) والمجموعة ${e.g} (عمود رأسي).`; res[idx] = first; nextBtn(); }
+    else { c.classList.add('no'); c.textContent = x.sym; c.disabled = true; if (first) mist++; first = false;
+      $('fb').className = 'fb no'; $('fb').textContent = `✗ هذا بيت ${x.ar} (الدورة ${p}، المجموعة ${g}). تذكّري: الدورة صف أفقي، والمجموعة عمود رأسي.`; }
+  });
+}
+function nextBtn(){ $('nx').innerHTML = `<button class="next">${idx < R.length - 1 ? 'التالي ←' : 'النتيجة 🏁'}</button>`; $('nx').firstChild.onclick = () => { idx++; idx < R.length ? round() : finish(); }; }
+function finish(){
+  const right = res.filter(Boolean).length, n = R.length, s = right === n ? 3 : right >= n - 2 ? 2 : 1;
+  STARS[L] = Math.max(STARS[L], s); save();
+  const nextOK = L < LV.length - 1;
+  $('res').innerHTML = `<img src="girl.webp" style="height:150px" alt=""><div class="big">${starStr(s)}</div><div class="q">${s === 3 ? 'رائعة! إجابات صحيحة من المحاولة الأولى 🌟' : s === 2 ? 'أحسنتِ! اقتربتِ من النجوم الثلاث 👏' : 'بداية جيدة! أعيدي المحطة لتجمعي نجومًا أكثر 💪'}</div>
+   <p style="font-weight:800;font-size:17px">صحيحة من المحاولة الأولى: ${right} من ${n}</p>
+   <button class="next" onclick="start(${L})">🔁 أعيدي المحطة</button> ${nextOK ? `<button class="next" style="background:var(--y);box-shadow:0 4px 0 #A87A22" onclick="start(${L + 1})">المحطة التالية ←</button>` : `<button class="next" style="background:var(--y);box-shadow:0 4px 0 #A87A22" onclick="cert()">🏅 الشهادة</button>`}
+   <div><button class="back" style="margin-top:12px" onclick="home()">→ الخريطة</button></div>`;
+  show('s-res'); if (s === 3) confetti();
+}
+function cert(){
+  $('cs').textContent = STARS.reduce((a, b) => a + b, 0);
+  try { $('cd').textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'}).format(new Date()); } catch (e) { $('cd').textContent = new Date().toLocaleDateString('ar'); }
+  show('s-cert'); confetti();
+}
+const cv = $('cf'), cx = cv.getContext('2d'); let P = [];
+function confetti(){ cv.width = innerWidth; cv.height = innerHeight; const C = ['#2E6B47', '#E0A83A', '#9DC9F0', '#F7D154', '#A8D88A'];
+  for (let i = 0; i < 160; i++) P.push({x:Math.random() * cv.width, y:-20 - Math.random() * cv.height * .4, vx:(Math.random() - .5) * 3, vy:2 + Math.random() * 3, r:4 + Math.random() * 5, c:C[i % 5], a:Math.random() * 6}); loop(); }
+function loop(){ cx.clearRect(0, 0, cv.width, cv.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.a += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); });
+  P = P.filter(p => p.y < cv.height + 30); if (P.length) requestAnimationFrame(loop); else cx.clearRect(0, 0, cv.width, cv.height); }
+home();
+</script>
+</body>
+</html>
