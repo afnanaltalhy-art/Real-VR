@@ -46,7 +46,7 @@
 <div class="tabs" id="tabs"><button data-t="t1" class="on">🍽 الطبق الصحي</button><button data-t="t2">🧻 كاشف الدهون</button><button data-t="t3">💧 مقياس الماء</button><button data-t="t4">🧂 الأملاح والفيتامينات</button></div>
 
 <section id="t1" class="sec">
-<div class="card"><h2>🍽 التجربة 1: ابني طبقًا صحيًا</h2>
+<div class="card"><h2><img src="assets/img/s_box.webp" style="height:64px">🍽 التجربة 1: ابني طبقًا صحيًا</h2>
 <p>اضغطي الطعام ليدخل في مكانه من الطبق. الطبق الصحي فيه: <b class="p">حبوب</b> و<b class="n">بروتين</b> و<b class="ok">خضار</b> و<b style="color:#E23B3B">فاكهة</b> + كوب ماء 💧</p>
 <div class="tray" id="tray"></div>
 <div class="plateWrap"><div class="plate" id="plate"><div class="q q0" data-k="grain"><b>حبوب</b></div><div class="q q1" data-k="prot"><b>بروتين</b></div><div class="q q2" data-k="veg"><b>خضار</b></div><div class="q q3" data-k="fruit"><b>فاكهة</b></div></div><div class="cup" id="cup">🥛<div style="font-size:13px;font-weight:800">كوب فارغ</div></div></div>
@@ -55,7 +55,7 @@
 </section>
 
 <section id="t2" class="sec" style="display:none">
-<div class="card"><h2>🧻 التجربة 2: كاشف الدهون (اختبار الورقة)</h2>
+<div class="card"><h2><img src="assets/img/s_fat.webp" style="height:64px">🧻 التجربة 2: كاشف الدهون (اختبار الورقة)</h2>
 <p><b>السؤال:</b> كيف أعرف أن الطعام يحتوي على <b class="p">دهون</b>؟ اضغطي الطعام لتفركيه على الورقة، ثم انتظري حتى تجف 🌬 وانظري إليها أمام الضوء 💡</p>
 <div class="tray" id="fatTray"></div>
 <div class="paper" id="paper"></div>
@@ -64,7 +64,7 @@
 </section>
 
 <section id="t3" class="sec" style="display:none">
-<div class="card"><h2>💧 التجربة 3: مقياس الماء في يومي</h2>
+<div class="card"><h2><img src="assets/img/s_water.webp" style="height:64px">💧 التجربة 3: مقياس الماء في يومي</h2>
 <p>الماء <b class="p">ضروري لخلايا الجسم</b>. اضغطي الكوب لتشربيه وراقبي جسمك ونشاطك! (الهدف 8 أكواب)</p>
 <div class="glasses" id="glasses"></div>
 <div class="meter"><i id="wm"></i></div>
@@ -75,13 +75,13 @@
 </section>
 
 <section id="t4" class="sec" style="display:none">
-<div class="card"><h2>🧂 التجربة 4: من أين أحصل على…؟</h2><p>اختاري العنصر لتظهر مصادره وفائدته:</p>
+<div class="card"><h2><img src="assets/img/s_veg.webp" style="height:64px">🧂 التجربة 4: من أين أحصل على…؟</h2><p>اختاري العنصر لتظهر مصادره وفائدته:</p>
 <div class="mins" id="mins"></div>
 <div class="src" id="src"></div>
 <div class="note" id="mmsg">👆 اختاري عنصرًا</div></div>
 </section>
 </div>
-<script>footer()</script>
+<script>girl();footer()</script>
 <script>
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ac();SFX.click();document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.sec').forEach(s=>s.style.display=s.id===b.dataset.t?'block':'none')});
 /* ---- 1 الطبق ---- */
@@ -94,7 +94,7 @@ function addF(i,b){ac();const [e,n,k]=PL[i];if(b.classList.contains('used'))retu
  const q=document.querySelector(`.q[data-k=${k}]`);q.insertAdjacentHTML('beforeend',`<span style="animation:pop .4s both">${e}</span>`);q.style.background={grain:'#FDE6C4',prot:'#D5E9FA',veg:'#DCF1DC',fruit:'#FBD9D9'}[k];SFX.pop()}
 function checkPlate(){ac();const miss=[];if(!plate.grain)miss.push('🍞 حبوب (طاقة)');if(!plate.prot)miss.push('🥚 بروتين (بناء)');if(!plate.veg)miss.push('🥦 خضار (وقاية)');if(!plate.fruit)miss.push('🍎 فاكهة (وقاية)');if(!plate.water)miss.push('💧 ماء');
  const m=document.getElementById('pmsg');
- if(!miss.length&&!plate.junk){m.innerHTML='🎉 <b class="ok">رائع! طبقك متوازن</b>: فيه أطعمة البناء والطاقة والوقاية والماء. هكذا تكون تغذيتك سليمة ✅';SFX.win();confetti()}
+ if(!miss.length&&!plate.junk){m.innerHTML='🎉 <b class="ok">رائع! طبقك متوازن</b>: فيه أطعمة البناء والطاقة والوقاية والماء. هكذا تكون تغذيتك سليمة ✅';SFX.win();confetti();say('🎉 طبقك رائع ومتوازن!')}
  else{m.innerHTML=(miss.length?'ينقص طبقك: <b class="p">'+miss.join('، ')+'</b>. ':'')+(plate.junk?'<br>⚠ وفيه أطعمة غنية بالدهون والسكريات، استبدليها بأطعمة صحية.':'');SFX.no()}}
 function resetPlate(){plate={grain:0,prot:0,veg:0,fruit:0,junk:0,water:0};document.querySelectorAll('.q').forEach(q=>{q.querySelectorAll('span').forEach(s=>s.remove());q.style.background=''});document.getElementById('cup').innerHTML='🥛<div style="font-size:13px;font-weight:800">كوب فارغ</div>';drawTray();document.getElementById('pmsg').textContent='ابدئي بالضغط على الأطعمة 👆';SFX.click()}
 drawTray();
