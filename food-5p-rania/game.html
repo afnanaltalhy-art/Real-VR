@@ -20,6 +20,8 @@
 .levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
 .levels button{border:3px solid #F6D4E2;background:#fff;border-radius:22px;padding:16px 8px;font-weight:900;font-size:18px;color:var(--old)}
 .levels button span{display:block;font-size:44px}.levels button small{display:block;font-size:13px;font-weight:400;margin-top:4px}
+.react{display:flex;align-items:center;gap:10px}.react img{height:110px;animation:pop .4s both}
+.qgirl{float:left;height:120px;margin-inline-end:6px}
 .meal{display:flex;justify-content:center;gap:10px;font-size:60px;flex-wrap:wrap}
 </style>
 </head>
@@ -47,7 +49,7 @@ function next(){clearInterval(tmr);lock=false;if(round>=rounds.length)return end
  if(r.t==='nut'){h+=`<div class="food">${r.f[0]}</div><div class="fname">${r.f[1]}</div><div class="q">ما العنصر الغذائي الرئيس فيه؟</div><div class="baskets">${Object.entries(NUT).map(([k,n])=>`<button style="background:${n.c}" data-k="${k}"><span>${n.e}</span>${n.n}</button>`).join('')}</div>`}
  if(r.t==='meal'){h+=`<div class="q">أكملي الوجبة لتصبح متوازنة 🍽</div><div class="meal">${r.m.have.join(' ➕ ')} ➕ ❓</div><div class="baskets">${r.m.opts.map((o,k)=>`<button style="background:${['#D94F86','#2F8FD6','#F2A541'][k]}" data-k="${k}"><span>${o[0]}</span>${o[1]}</button>`).join('')}</div>`}
  if(r.t==='fun'){const n=NUT[r.k];const opts=shuffle(Object.keys(NUT));h+=`<div class="food">${n.e}</div><div class="q">«${n.f}»<br>من أنا؟</div><div class="baskets">${opts.map(k=>`<button style="background:${NUT[k].c}" data-k="${k}"><span>${NUT[k].e}</span>${NUT[k].n}</button>`).join('')}</div>`}
- h+=`<div class="note" id="fb" style="display:none"></div></div>`;app.innerHTML=h;
+ h+=`<div class="note" id="fb" style="display:none"></div></div>`;h=h.replace('<div class="q">',`<img class="qgirl" src="assets/img/${['p_present','p_think','p_wave'][round%3]}.webp"><div class="q">`);app.innerHTML=h;
  app.querySelectorAll('.baskets button').forEach(b=>b.onclick=()=>pick(b));
  if(lvl>1){left=lvl===2?12:15;const T=left;const ti=document.getElementById('ti');tmr=setInterval(()=>{left-=.1;ti.style.width=Math.max(0,left/T*100)+'%';if(left<=0){clearInterval(tmr);timeout()}},100)}}
 function correct(r){if(r.t==='grp')return NUT[r.f[2]].g;if(r.t==='nut')return r.f[2];if(r.t==='meal')return String(r.m.a);return r.k}
@@ -55,9 +57,10 @@ function explain(r){if(r.t==='grp'){const n=NUT[r.f[2]];return `${r.f[0]} ${r.f[
 function pick(b){if(lock)return;lock=true;clearInterval(tmr);ac();const r=rounds[round];const ok=b.dataset.k===correct(r);b.classList.add(ok?'okb':'badb');
  if(!ok)app.querySelectorAll('.baskets button').forEach(x=>{if(x.dataset.k===correct(r))x.classList.add('okb')});
  if(ok){score+=lvl===1?1:(left>T2()?2:1);SFX.ok()}else SFX.no();
- const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML=`<img src="assets/img/${ok?'p_thumb':'p_think'}.webp" style="height:70px;float:left">`+(ok?'✅ <b class="ok">أحسنتِ!</b> ':'💡 ')+explain(r)+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
+ const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML=`<div class="react"><img src="assets/img/${ok?'p_cheer':'p_think'}.webp">${STK_N(r)?`<img src="assets/img/${STK_N(r)}.webp">`:''}<div>`+(ok?'👏 <b class="ok">أحسنتِ! إجابة صحيحة</b><br>':'😮 <b class="no">أوووه! حاولي التذكّر</b><br>')+explain(r)+'</div></div>'+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
+function STK_N(r){const k=r.t==='grp'||r.t==='nut'?r.f[2]:r.t==='fun'?r.k:r.m.need;return {P:'s_prot',C:'s_carb',F:'s_fat',V:'s_veg',W:'s_water'}[k]||'s_box'}
 function T2(){return lvl===2?6:7}
-function timeout(){if(lock)return;lock=true;SFX.no();const r=rounds[round];app.querySelectorAll('.baskets button').forEach(x=>{if(x.dataset.k===correct(r))x.classList.add('okb')});const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML='⏰ انتهى الوقت! '+explain(r)+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
+function timeout(){if(lock)return;lock=true;SFX.no();const r=rounds[round];app.querySelectorAll('.baskets button').forEach(x=>{if(x.dataset.k===correct(r))x.classList.add('okb')});const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML=`<div class="react"><img src="assets/img/p_think.webp"><div>⏰ <b class="no">أوووه! انتهى الوقت</b><br>`+explain(r)+'</div></div>'+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
 function end(){const max=lvl===1?10:20;const p=score/max;app.innerHTML=`<div class="card" style="text-align:center"><img src="assets/img/${p>=.5?'p_cheer':'p_think'}.webp" style="height:150px"><div style="font-size:50px">${p>=.8?'🏆':p>=.5?'🥈':'🌱'}</div><h2 style="justify-content:center">${p>=.8?'بطلة الغذاء الصحي!':p>=.5?'عمل رائع!':'حاولي مرة أخرى 💪'}</h2><p style="font-size:22px;font-weight:900">⭐ ${score} / ${max}</p><div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" onclick="start(${lvl})">↺ أعيدي المستوى</button>${lvl<3?`<button class="btn" onclick="start(${lvl+1})">المستوى التالي ⟵</button>`:''}<button class="btn w" onclick="home()">⌂ المستويات</button></div></div>`;if(p>=.5){SFX.win();confetti()}}
 home();
 </script>

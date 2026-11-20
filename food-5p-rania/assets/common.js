@@ -18,6 +18,9 @@ const SFX={
  alarm(){for(let i=0;i<5;i++)tone(3100,.22,'square',.07,i*.45)}, // صفارة كاشف الدخان
  hum(){tone(100,1,'sine',.07)}                                 // طنين كهربائي
 };
+/* أصوات طبيعية: تصفيق للصحيح و«أوووه» للخطأ */
+const AUD={};function playA(n){try{let a=AUD[n];if(!a){a=AUD[n]=new Audio('assets/audio/'+n+'.mp3')}a.currentTime=0;a.play().catch(()=>{})}catch(e){}}
+SFX.ok=()=>playA('applause');SFX.win=()=>playA('applause');SFX.no=()=>playA('oh');
 function toast(msg,ms=1900){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t)}t.innerHTML=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),ms)}
 function say(msg,ms=3200){let s=document.getElementById('speech');if(!s)return;s.innerHTML=msg;s.classList.add('on');clearTimeout(s._h);s._h=setTimeout(()=>s.classList.remove('on'),ms)}
 function confetti(n=140){let c=document.getElementById('confetti');if(!c){c=document.createElement('canvas');c.id='confetti';document.body.appendChild(c)}const x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#E23B3B','#2F8FD6','#F2A541','#D94F86','#4CAF50','#29B6F6'];const P=[...Array(n)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,r:4+Math.random()*6,c:cols[Math.random()*6|0],vy:2+Math.random()*3,vx:-1.5+Math.random()*3,a:Math.random()*6,round:Math.random()<.5}));let f=0;(function loop(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.a+=.1;x.fillStyle=p.c;x.save();x.translate(p.x,p.y);x.rotate(p.a);if(p.round){x.beginPath();x.arc(0,0,p.r/1.4,0,7);x.fill()}else x.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);x.restore()});if(++f<220)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})()}
