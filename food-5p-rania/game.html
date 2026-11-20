@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لعبة سلّة الغذاء 🎮</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script><script src="assets/food.js"></script>
+<style>
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;color:var(--old);font-size:16px}
+.hud .stars{font-size:20px}
+.timer{height:12px;background:#FBE3EC;border-radius:8px;overflow:hidden;margin:8px 0}.timer i{display:block;height:100%;background:linear-gradient(90deg,#4CAF50,#F2A541,#E23B3B);width:100%}
+.food{font-size:96px;text-align:center;animation:bounce 1.6s infinite;margin:6px 0}
+.fname{text-align:center;font-size:24px;font-weight:900;color:var(--old)}
+.q{text-align:center;font-size:19px;font-weight:900;color:var(--old);margin:8px 0;line-height:1.7}
+.baskets{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:10px}
+.baskets button{border:none;border-radius:20px;padding:12px 6px;font-weight:900;font-size:16px;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.2);line-height:1.5}
+.baskets button span{display:block;font-size:34px}
+.baskets button.okb{outline:5px solid #2E9E5B}.baskets button.badb{outline:5px solid #D9473B;animation:shake .45s}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.levels button{border:3px solid #F6D4E2;background:#fff;border-radius:22px;padding:16px 8px;font-weight:900;font-size:18px;color:var(--old)}
+.levels button span{display:block;font-size:44px}.levels button small{display:block;font-size:13px;font-weight:400;margin-top:4px}
+.meal{display:flex;justify-content:center;gap:10px;font-size:60px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/g8.webp)"></div>
+<script>header('لعبة «سلّة الغذاء» 🎮')</script>
+<div class="wrap" id="app"></div>
+<script>footer()</script>
+<script>
+const app=document.getElementById('app');let lvl=0,round=0,score=0,rounds=[],tmr=null,left=0,lock=false;
+function home(){clearInterval(tmr);app.innerHTML=`<div class="card" style="text-align:center"><div style="font-size:64px">🧺</div><h2 style="justify-content:center">لعبة سلّة الغذاء</h2><p>ضعي كل طعام في سلّته الصحيحة، واجمعي النجوم ⭐ اختاري مستواك:</p></div>
+<div class="card"><div class="levels"><button onclick="start(1)"><span>🌱</span>بذرة<small>صنّفي الطعام: بناء • طاقة • وقاية</small></button><button onclick="start(2)"><span>🌿</span>غصن<small>اعرفي العنصر الغذائي الرئيس + مؤقت</small></button><button onclick="start(3)"><span>🌳</span>شجرة<small>أكملي الوجبة المتوازنة + فوائد العناصر</small></button></div></div>`}
+function start(l){ac();SFX.click();lvl=l;round=0;score=0;
+ if(l===1)rounds=shuffle(FOODS.filter(f=>f[2]!=='W')).slice(0,10).map(f=>({t:'grp',f}));
+ if(l===2)rounds=shuffle(FOODS).slice(0,10).map(f=>({t:'nut',f}));
+ if(l===3)rounds=shuffle([...MEALS.map(m=>({t:'meal',m})),...Object.keys(NUT).map(k=>({t:'fun',k}))]).slice(0,10);
+ next()}
+const MEALS=[{have:['🍝','🍎'],need:'V',opts:[['🥗','سلطة خضار'],['🍰','كعكة'],['🍟','بطاطس مقلية']],a:0,why:'فيها بناء وطاقة وفاكهة، وتحتاج خضارًا للوقاية.'},
+{have:['🥛','🍇'],need:'C',opts:[['🍬','حلوى'],['🍞','خبز بالجبن'],['🥤','مشروب غازي']],a:1,why:'تحتاج أطعمة طاقة صحية مثل الخبز.'},
+{have:['🥗','🌴'],need:'P',opts:[['🍩','دونات'],['🥚','بيض'],['🍭','مصاصة']],a:1,why:'ينقصها البروتين (أطعمة البناء).'},
+{have:['🍚','🍗'],need:'V',opts:[['🥒','خيار وطماطم'],['🍫','شوكولاتة'],['🍔','برجر']],a:0,why:'تحتاج خضارًا أو فاكهة للوقاية.'},
+{have:['🍞','🥚','🥕'],need:'W',opts:[['🥤','مشروب غازي'],['💧','كوب ماء'],['🧃','عصير محلّى']],a:1,why:'الماء أفضل مشروب، ولا يغني عنه غيره.'}];
+function next(){clearInterval(tmr);lock=false;if(round>=rounds.length)return end();const r=rounds[round];let h=`<div class="card"><div class="hud"><span>الجولة ${round+1} / ${rounds.length}</span><span class="stars">⭐ ${score}</span><button class="btn w" style="padding:6px 10px" onclick="home()">⌂</button></div>`+(lvl>1?`<div class="timer"><i id="ti"></i></div>`:'');
+ if(r.t==='grp'){h+=`<div class="food">${r.f[0]}</div><div class="fname">${r.f[1]}</div><div class="q">في أي سلّة أضعه؟</div><div class="baskets">${Object.entries(GRP).map(([k,g])=>`<button style="background:${g.c}" data-k="${k}"><span>${g.e}</span>${g.n}</button>`).join('')}</div>`}
+ if(r.t==='nut'){h+=`<div class="food">${r.f[0]}</div><div class="fname">${r.f[1]}</div><div class="q">ما العنصر الغذائي الرئيس فيه؟</div><div class="baskets">${Object.entries(NUT).map(([k,n])=>`<button style="background:${n.c}" data-k="${k}"><span>${n.e}</span>${n.n}</button>`).join('')}</div>`}
+ if(r.t==='meal'){h+=`<div class="q">أكملي الوجبة لتصبح متوازنة 🍽</div><div class="meal">${r.m.have.join(' ➕ ')} ➕ ❓</div><div class="baskets">${r.m.opts.map((o,k)=>`<button style="background:${['#D94F86','#2F8FD6','#F2A541'][k]}" data-k="${k}"><span>${o[0]}</span>${o[1]}</button>`).join('')}</div>`}
+ if(r.t==='fun'){const n=NUT[r.k];const opts=shuffle(Object.keys(NUT));h+=`<div class="food">${n.e}</div><div class="q">«${n.f}»<br>من أنا؟</div><div class="baskets">${opts.map(k=>`<button style="background:${NUT[k].c}" data-k="${k}"><span>${NUT[k].e}</span>${NUT[k].n}</button>`).join('')}</div>`}
+ h+=`<div class="note" id="fb" style="display:none"></div></div>`;app.innerHTML=h;
+ app.querySelectorAll('.baskets button').forEach(b=>b.onclick=()=>pick(b));
+ if(lvl>1){left=lvl===2?12:15;const T=left;const ti=document.getElementById('ti');tmr=setInterval(()=>{left-=.1;ti.style.width=Math.max(0,left/T*100)+'%';if(left<=0){clearInterval(tmr);timeout()}},100)}}
+function correct(r){if(r.t==='grp')return NUT[r.f[2]].g;if(r.t==='nut')return r.f[2];if(r.t==='meal')return String(r.m.a);return r.k}
+function explain(r){if(r.t==='grp'){const n=NUT[r.f[2]];return `${r.f[0]} ${r.f[1]} من <b>${GRP[n.g].n}</b> لأنه غني بـ<b>${n.n}</b>: ${n.f}.`}if(r.t==='nut'){const n=NUT[r.f[2]];return `${r.f[1]} غني بـ<b>${n.n}</b> ${n.e}: ${n.f}.`}if(r.t==='meal')return r.m.why;return `<b>${NUT[r.k].n}</b>: ${NUT[r.k].f}.`}
+function pick(b){if(lock)return;lock=true;clearInterval(tmr);ac();const r=rounds[round];const ok=b.dataset.k===correct(r);b.classList.add(ok?'okb':'badb');
+ if(!ok)app.querySelectorAll('.baskets button').forEach(x=>{if(x.dataset.k===correct(r))x.classList.add('okb')});
+ if(ok){score+=lvl===1?1:(left>T2()?2:1);SFX.ok()}else SFX.no();
+ const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML=(ok?'✅ <b class="ok">أحسنتِ!</b> ':'💡 ')+explain(r)+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
+function T2(){return lvl===2?6:7}
+function timeout(){if(lock)return;lock=true;SFX.no();const r=rounds[round];app.querySelectorAll('.baskets button').forEach(x=>{if(x.dataset.k===correct(r))x.classList.add('okb')});const fb=document.getElementById('fb');fb.style.display='block';fb.innerHTML='⏰ انتهى الوقت! '+explain(r)+`<div class="row" style="justify-content:center;margin-top:8px"><button class="btn g" onclick="round++;next()">التالي ⟵</button></div>`}
+function end(){const max=lvl===1?10:20;const p=score/max;app.innerHTML=`<div class="card" style="text-align:center"><div style="font-size:80px">${p>=.8?'🏆':p>=.5?'🥈':'🌱'}</div><h2 style="justify-content:center">${p>=.8?'بطلة الغذاء الصحي!':p>=.5?'عمل رائع!':'حاولي مرة أخرى 💪'}</h2><p style="font-size:22px;font-weight:900">⭐ ${score} / ${max}</p><div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" onclick="start(${lvl})">↺ أعيدي المستوى</button>${lvl<3?`<button class="btn" onclick="start(${lvl+1})">المستوى التالي ⟵</button>`:''}<button class="btn w" onclick="home()">⌂ المستويات</button></div></div>`;if(p>=.5){SFX.win();confetti()}}
+home();
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المختبر الافتراضي 🔬 العناصر الغذائية</title>
+<link rel="stylesheet" href="assets/common.css">
+<script src="assets/common.js"></script><script src="assets/food.js"></script>
+<style>
+.tray{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.chip{border:2px solid #F6D4E2;background:#fff;border-radius:16px;padding:6px 8px;font-weight:800;font-size:13px;color:var(--old);min-width:70px;text-align:center}
+.chip span{display:block;font-size:30px;line-height:1.1}
+.chip.used{opacity:.35}
+.plateWrap{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.plate{position:relative;width:min(300px,80vw);aspect-ratio:1;border-radius:50%;background:#fff;border:10px solid #eee3dc;box-shadow:0 8px 22px rgba(0,0,0,.15);overflow:hidden}
+.q{position:absolute;width:50%;height:50%;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px;font-size:30px;padding:16px;transition:background .4s}
+.q b{position:absolute;font-size:12.5px;color:#6B2149;opacity:.8}
+.q0{top:0;right:0;border-bottom:3px solid #eee3dc;border-left:3px solid #eee3dc}.q0 b{top:8px;left:50%;transform:translateX(-50%)}
+.q1{bottom:0;right:0;border-left:3px solid #eee3dc}.q1 b{bottom:8px;left:50%;transform:translateX(-50%)}
+.q2{bottom:0;left:0}.q2 b{bottom:8px;left:50%;transform:translateX(-50%)}
+.q3{top:0;left:0;border-bottom:3px solid #eee3dc}.q3 b{top:8px;left:50%;transform:translateX(-50%)}
+.cup{font-size:52px;text-align:center}
+.paper{position:relative;width:min(320px,86vw);height:200px;margin:10px auto;background:linear-gradient(#fdf8ef,#f4ead8);border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.18);overflow:hidden}
+.paper.light{background:linear-gradient(#fffbe6,#fff2b8);box-shadow:0 0 40px 10px rgba(255,220,90,.6)}
+.spot{position:absolute;border-radius:50%;width:70px;height:60px;transition:opacity 1.5s,filter 1.5s}
+.spot small{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:800;white-space:nowrap;color:#6B2149}
+.glasses{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:380px;margin:10px auto}
+.glass{position:relative;height:90px;border:4px solid #9fd8f5;border-top:none;border-radius:0 0 16px 16px;background:rgba(255,255,255,.7);overflow:hidden;cursor:pointer}
+.glass i{position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(#7fd3ff,#29B6F6);transition:height .9s cubic-bezier(.3,1.3,.5,1)}
+.glass.full i{height:85%}
+.glass span{position:absolute;top:4px;left:0;right:0;text-align:center;font-weight:900;color:#1d5f96;z-index:2}
+.body{width:150px;height:220px;margin:auto;position:relative}
+.meter{height:22px;background:#FBE3EC;border-radius:12px;overflow:hidden;max-width:380px;margin:8px auto}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F2A541,#29B6F6);transition:width .8s}
+.mins{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.mins button{border:3px solid #F6D4E2;background:#fff;border-radius:18px;padding:10px;font-weight:900;font-size:16px;color:var(--old)}
+.mins button.on{border-color:var(--ol);background:#FFE3EE}
+.src{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:46px;margin:12px 0;min-height:60px}
+.src span{animation:pop .5s both}
+</style>
+</head>
+<body>
+<div class="bgimg" style="background-image:url(assets/img/g1.webp)"></div>
+<script>header('المختبر الافتراضي 🔬 العناصر الغذائية')</script>
+<div class="wrap">
+<div class="tabs" id="tabs"><button data-t="t1" class="on">🍽 الطبق الصحي</button><button data-t="t2">🧻 كاشف الدهون</button><button data-t="t3">💧 مقياس الماء</button><button data-t="t4">🧂 الأملاح والفيتامينات</button></div>
+
+<section id="t1" class="sec">
+<div class="card"><h2>🍽 التجربة 1: ابني طبقًا صحيًا</h2>
+<p>اضغطي الطعام ليدخل في مكانه من الطبق. الطبق الصحي فيه: <b class="p">حبوب</b> و<b class="n">بروتين</b> و<b class="ok">خضار</b> و<b style="color:#E23B3B">فاكهة</b> + كوب ماء 💧</p>
+<div class="tray" id="tray"></div>
+<div class="plateWrap"><div class="plate" id="plate"><div class="q q0" data-k="grain"><b>حبوب</b></div><div class="q q1" data-k="prot"><b>بروتين</b></div><div class="q q2" data-k="veg"><b>خضار</b></div><div class="q q3" data-k="fruit"><b>فاكهة</b></div></div><div class="cup" id="cup">🥛<div style="font-size:13px;font-weight:800">كوب فارغ</div></div></div>
+<div class="row" style="justify-content:center;margin-top:10px"><button class="btn g" onclick="checkPlate()">✔ هل طبقي متوازن؟</button><button class="btn w" onclick="resetPlate()">↺ طبق جديد</button></div>
+<div class="note" id="pmsg">ابدئي بالضغط على الأطعمة 👆</div></div>
+</section>
+
+<section id="t2" class="sec" style="display:none">
+<div class="card"><h2>🧻 التجربة 2: كاشف الدهون (اختبار الورقة)</h2>
+<p><b>السؤال:</b> كيف أعرف أن الطعام يحتوي على <b class="p">دهون</b>؟ اضغطي الطعام لتفركيه على الورقة، ثم انتظري حتى تجف 🌬 وانظري إليها أمام الضوء 💡</p>
+<div class="tray" id="fatTray"></div>
+<div class="paper" id="paper"></div>
+<div class="row" style="justify-content:center"><button class="btn b" onclick="dry()">🌬 جففي الورقة</button><button class="btn g" onclick="lightUp()">💡 أمام الضوء</button><button class="btn w" onclick="newPaper()">↺ ورقة جديدة</button></div>
+<div class="note" id="fmsg">🔎 توقّعي أولًا: أي الأطعمة ستترك بقعة شفافة؟</div></div>
+</section>
+
+<section id="t3" class="sec" style="display:none">
+<div class="card"><h2>💧 التجربة 3: مقياس الماء في يومي</h2>
+<p>الماء <b class="p">ضروري لخلايا الجسم</b>. اضغطي الكوب لتشربيه وراقبي جسمك ونشاطك! (الهدف 8 أكواب)</p>
+<div class="glasses" id="glasses"></div>
+<div class="meter"><i id="wm"></i></div>
+<div style="text-align:center;font-size:70px" id="face">😫</div>
+<div class="note" id="wmsg"></div>
+<div class="row" style="justify-content:center"><button class="btn w" onclick="resetW()">↺ يوم جديد</button></div>
+<div class="note">🇸🇦 <b>مائي</b>: يهدف المركز الوطني لكفاءة وترشيد المياه إلى خفض استهلاك الفرد إلى <b>150 لترًا يوميًا</b> بحلول 2030: نشرب ما نحتاج ونرشّد الباقي 💚</div></div>
+</section>
+
+<section id="t4" class="sec" style="display:none">
+<div class="card"><h2>🧂 التجربة 4: من أين أحصل على…؟</h2><p>اختاري العنصر لتظهر مصادره وفائدته:</p>
+<div class="mins" id="mins"></div>
+<div class="src" id="src"></div>
+<div class="note" id="mmsg">👆 اختاري عنصرًا</div></div>
+</section>
+</div>
+<script>footer()</script>
+<script>
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ac();SFX.click();document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.sec').forEach(s=>s.style.display=s.id===b.dataset.t?'block':'none')});
+/* ---- 1 الطبق ---- */
+const PL=[['🍞','خبز','grain'],['🍚','أرز','grain'],['🍝','معكرونة','grain'],['🥚','بيض','prot'],['🍗','دجاج','prot'],['🐟','سمك','prot'],['🫘','فول','prot'],['🥦','بروكلي','veg'],['🥕','جزر','veg'],['🥗','سلطة','veg'],['🍎','تفاح','fruit'],['🍌','موز','fruit'],['🍊','برتقال','fruit'],['🍟','بطاطس مقلية','junk'],['🍩','دونات','junk'],['🥤','مشروب غازي','junk'],['💧','ماء','water']];
+let plate={grain:0,prot:0,veg:0,fruit:0,junk:0,water:0};
+function drawTray(){document.getElementById('tray').innerHTML=PL.map((p,i)=>`<button class="chip" onclick="addF(${i},this)"><span>${p[0]}</span>${p[1]}</button>`).join('')}
+function addF(i,b){ac();const [e,n,k]=PL[i];if(b.classList.contains('used'))return;b.classList.add('used');plate[k]++;
+ if(k==='water'){document.getElementById('cup').innerHTML='🥛💧<div style="font-size:13px;font-weight:800;color:#1d5f96">كوب ماء ✔</div>';SFX.pop();return}
+ if(k==='junk'){const q=document.querySelector('.q'+[0,1,2,3][Math.random()*4|0]);q.insertAdjacentHTML('beforeend',`<span>${e}</span>`);SFX.no();say&&toast('⚠ '+n+': دهون أو سكريات كثيرة… قلّلي منها!');return}
+ const q=document.querySelector(`.q[data-k=${k}]`);q.insertAdjacentHTML('beforeend',`<span style="animation:pop .4s both">${e}</span>`);q.style.background={grain:'#FDE6C4',prot:'#D5E9FA',veg:'#DCF1DC',fruit:'#FBD9D9'}[k];SFX.pop()}
+function checkPlate(){ac();const miss=[];if(!plate.grain)miss.push('🍞 حبوب (طاقة)');if(!plate.prot)miss.push('🥚 بروتين (بناء)');if(!plate.veg)miss.push('🥦 خضار (وقاية)');if(!plate.fruit)miss.push('🍎 فاكهة (وقاية)');if(!plate.water)miss.push('💧 ماء');
+ const m=document.getElementById('pmsg');
+ if(!miss.length&&!plate.junk){m.innerHTML='🎉 <b class="ok">رائع! طبقك متوازن</b>: فيه أطعمة البناء والطاقة والوقاية والماء. هكذا تكون تغذيتك سليمة ✅';SFX.win();confetti()}
+ else{m.innerHTML=(miss.length?'ينقص طبقك: <b class="p">'+miss.join('، ')+'</b>. ':'')+(plate.junk?'<br>⚠ وفيه أطعمة غنية بالدهون والسكريات، استبدليها بأطعمة صحية.':'');SFX.no()}}
+function resetPlate(){plate={grain:0,prot:0,veg:0,fruit:0,junk:0,water:0};document.querySelectorAll('.q').forEach(q=>{q.querySelectorAll('span').forEach(s=>s.remove());q.style.background=''});document.getElementById('cup').innerHTML='🥛<div style="font-size:13px;font-weight:800">كوب فارغ</div>';drawTray();document.getElementById('pmsg').textContent='ابدئي بالضغط على الأطعمة 👆';SFX.click()}
+drawTray();
+/* ---- 2 الدهون ---- */
+const FT=[['🫒','زيت',1],['🧈','زبدة',1],['🥜','مكسرات',1],['🍞','خبز',0],['🍎','تفاح',0],['💧','ماء',0]];let spots=[],dried=false;
+document.getElementById('fatTray').innerHTML=FT.map((f,i)=>`<button class="chip" onclick="rub(${i},this)"><span>${f[0]}</span>${f[1]}</button>`).join('');
+function rub(i,b){ac();if(b.classList.contains('used'))return;if(spots.length>=6)return;b.classList.add('used');const [e,n,fat]=FT[i];const k=spots.length;const x=14+(k%3)*33,y=k<3?14:58;
+ const s=document.createElement('div');s.className='spot';s.style.left=x+'%';s.style.top=y+'%';s.style.background=fat?'radial-gradient(rgba(214,170,60,.55),rgba(214,170,60,.15) 70%,transparent)':'radial-gradient(rgba(120,150,170,.45),rgba(120,150,170,.12) 70%,transparent)';s.innerHTML=`<small>${e} ${n}</small>`;document.getElementById('paper').appendChild(s);spots.push({s,fat,n});burst(.25,.25,2500,.6,'bandpass');
+ document.getElementById('fmsg').innerHTML=`فركتِ <b>${n}</b> على الورقة… تركت بقعة مبللة. الآن جفّفي الورقة 🌬`}
+function dry(){ac();if(!spots.length)return;noise(.8,.15,400);dried=true;spots.forEach(o=>{if(!o.fat){o.s.style.opacity=.08}else{o.s.style.filter='saturate(1.4)'}});
+ document.getElementById('fmsg').innerHTML='اختفت بقع الأطعمة غير الدهنية بعد الجفاف 💨… والبقع الباقية؟ انظري إليها أمام الضوء 💡'}
+function lightUp(){ac();if(!dried){toast('🌬 جففي الورقة أولًا');return}const p=document.getElementById('paper');p.classList.add('light');SFX.coin();const f=spots.filter(o=>o.fat).map(o=>o.n),nf=spots.filter(o=>!o.fat).map(o=>o.n);
+ spots.forEach(o=>{if(o.fat)o.s.style.background='radial-gradient(rgba(255,255,255,.95),rgba(255,255,255,.5) 60%,transparent)'});
+ document.getElementById('fmsg').innerHTML=`✨ <b>النتيجة:</b> ${f.length?'<b class="p">'+f.join('، ')+'</b> تركت بقعة شفافة يمرّ منها الضوء ⇐ تحتوي على <b class="p">دهون</b> 🔥':''}${nf.length?'<br>'+nf.join('، ')+' لم تترك بقعة ⇐ لا تحتوي على دهون تُذكر.':''}<br>💡 الدهون تزوّد الجسم بالطاقة والحرارة، لكن <b class="p">نقلّل منها</b> لأن الإكثار منها يسبب السمنة وتصلّب الشرايين.`;if(f.length)confetti(60)}
+function newPaper(){spots=[];dried=false;const p=document.getElementById('paper');p.innerHTML='';p.classList.remove('light');document.querySelectorAll('#fatTray .chip').forEach(c=>c.classList.remove('used'));document.getElementById('fmsg').textContent='🔎 توقّعي أولًا: أي الأطعمة ستترك بقعة شفافة؟';SFX.click()}
+/* ---- 3 الماء ---- */
+let cups=0;const MSG=['😫 جسمك عطشان! قلة الماء تسبب الصداع والتعب والجفاف','🥵 ما زلتِ عطشى… اشربي أكثر','😐 بداية جيدة… استمري','🙂 أحسنتِ! نصف الطريق تقريبًا','🙂 جسمك يشكرك','😊 خلاياك نشيطة','😄 تركيزك ممتاز','😃 بقي كوب واحد!','🤩 ممتاز! 8 أكواب: جسمك مرتوٍ ونشيط 💪'];
+document.getElementById('glasses').innerHTML=[...Array(8)].map((_,i)=>`<div class="glass" onclick="drink(this)"><span>${i+1}</span><i></i></div>`).join('');
+function drink(g){ac();if(g.classList.contains('full'))return;g.classList.add('full');cups++;burst(.3,.2,700,.7,'lowpass');tone(500,.1,'sine',.08,0,900);upd();if(cups===8){SFX.win();confetti()}}
+function upd(){document.getElementById('wm').style.width=cups/8*100+'%';document.getElementById('face').textContent=MSG[cups].split(' ')[0];document.getElementById('wmsg').innerHTML=`<b>${cups} / 8</b> أكواب • `+MSG[cups].slice(MSG[cups].indexOf(' ')+1)}
+function resetW(){cups=0;document.querySelectorAll('.glass').forEach(g=>g.classList.remove('full'));upd();SFX.click()}upd();
+/* ---- 4 المعادن ---- */
+const MN=[['🩸 الحديد','🥩🐟🥚🥜','لصحة الدم ونقل الأكسجين في الجسم','اللحوم والأسماك والبيض والمكسرات'],['🐟 اليود','🐟🦐🧂','لنمو الجسم ونشاطه','الأسماك والمأكولات البحرية'],['🦴 الكالسيوم','🥛🧀🥣','لقوة العظام والأسنان','الحليب والجبن واللبن'],['👁 فيتامين أ','🥕🥬🍠','الضروري للإبصار','الجزر والخضراوات الورقية'],['☀ فيتامين د','☀🐟🥚','يساعد على امتصاص الكالسيوم','أشعة الشمس والأسماك والبيض'],['🍊 فيتامين جـ','🍊🍓🥝','لمقاومة الأمراض','البرتقال والليمون والفراولة']];
+document.getElementById('mins').innerHTML=MN.map((m,i)=>`<button onclick="showM(${i},this)">${m[0]}</button>`).join('');
+function showM(i,b){ac();SFX.pop();document.querySelectorAll('#mins button').forEach(x=>x.classList.toggle('on',x===b));const m=MN[i];document.getElementById('src').innerHTML=[...m[1]].filter(c=>c.trim()&&c!=='‍'&&c!=='️').reduce((a,c)=>{if(/\p{Emoji_Presentation}|\p{Extended_Pictographic}/u.test(c))a.push(c);else if(a.length)a[a.length-1]+=c;return a},[]).map((e,k)=>`<span style="animation-delay:${k*.15}s">${e}</span>`).join('');document.getElementById('mmsg').innerHTML=`<b>${m[0]}</b>: <b class="p">${m[2]}</b><br>مصادره: ${m[3]}`}
+</script>
+</body>
+</html>
