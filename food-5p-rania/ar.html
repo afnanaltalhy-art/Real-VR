@@ -73,7 +73,7 @@ apple=()=>face(_ap(),.8);egg=()=>face(_eg(),.62,.1,.52);bread=()=>face(_br(),.75
 let objs={};ITEMS=ITEMS.map(x=>[x[0],x[1],x[2],{apple,carrot,egg,drum,bread,rice,oil,water:waterGlass}[x[0]]]);
 const SCENES=[
 {tab:'🍽 طبقي الصحي',title:'🍽 الطبق الصحي على طاولتك',text:'الطبق الصحي فيه أربع مجموعات: <b>حبوب</b> 🍞 و<b>بروتين</b> 🥚 و<b>خضار</b> 🥕 و<b>فاكهة</b> 🍎، ومعه كوب <b>ماء</b> 💧. اضغطي اسم الطعام ليقفز ويعرّفك بنفسه!',
- quiz:{q:'أي مجموعة ينتمي إليها البيض؟',o:['أطعمة البناء (البروتينات)','أطعمة الوقاية','أطعمة الطاقة'],a:0,why:'البيض غني بالبروتين الذي يبني الجسم.'},
+ quiz:{q:'ما العنصر الغذائي الموجود في البيض؟',o:['البروتينات','الماء','السكريات'],a:0,why:'البيض غني بالبروتين للنمو وتعويض الأنسجة التالفة.'},
  build(api){root.clear();objs={};const pd=plateDisk();pd.position.y=-1.2;root.add(pd);
   const pos={bread:[2,-.5,-1.5],rice:[1.5,-.6,1.6],egg:[-1.3,-.45,1.6],drum:[-1.8,-.6,-1.2],apple:[-.2,-.2,-2.2],carrot:[.2,-.7,2.5],oil:[5,0,0],water:[-5,0,0]};
   ITEMS.forEach(([k,n,t,f])=>{const o=f();o.position.set(...pos[k]);o.userData.home=o.position.clone();root.add(o);objs[k]=o});

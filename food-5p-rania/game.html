@@ -33,16 +33,16 @@
 <script>
 const app=document.getElementById('app');let lvl=0,round=0,score=0,rounds=[],tmr=null,left=0,lock=false;
 function home(){clearInterval(tmr);app.innerHTML=`<div class="card" style="text-align:center"><img src="assets/img/p_lunch.webp" style="height:130px"><h2 style="justify-content:center">لعبة سلّة الغذاء</h2><p>ضعي كل طعام في سلّته الصحيحة، واجمعي النجوم ⭐ اختاري مستواك:</p></div>
-<div class="card"><div class="levels"><button onclick="start(1)"><span>🌱</span>بذرة<small>صنّفي الطعام: بناء • طاقة • وقاية</small></button><button onclick="start(2)"><span>🌿</span>غصن<small>اعرفي العنصر الغذائي الرئيس + مؤقت</small></button><button onclick="start(3)"><span>🌳</span>شجرة<small>أكملي الوجبة المتوازنة + فوائد العناصر</small></button></div></div>`}
+<div class="card"><div class="levels"><button onclick="start(1)"><span>🌱</span>بذرة<small>اعرفي العنصر الغذائي في الطعام</small></button><button onclick="start(2)"><span>🌿</span>غصن<small>فائدة كل عنصر + مؤقت</small></button><button onclick="start(3)"><span>🌳</span>شجرة<small>أكملي الوجبة المتوازنة + فوائد العناصر</small></button></div></div>`}
 function start(l){ac();SFX.click();lvl=l;round=0;score=0;
- if(l===1)rounds=shuffle(FOODS.filter(f=>f[2]!=='W')).slice(0,10).map(f=>({t:'grp',f}));
- if(l===2)rounds=shuffle(FOODS).slice(0,10).map(f=>({t:'nut',f}));
- if(l===3)rounds=shuffle([...MEALS.map(m=>({t:'meal',m})),...Object.keys(NUT).map(k=>({t:'fun',k}))]).slice(0,10);
+ if(l===1)rounds=shuffle(FOODS).slice(0,10).map(f=>({t:'nut',f}));
+ if(l===2)rounds=shuffle([...Object.keys(NUT),...Object.keys(NUT)]).map(k=>({t:'fun',k}));
+ if(l===3)rounds=shuffle([...MEALS.map(m=>({t:'meal',m})),...shuffle(FOODS).slice(0,5).map(f=>({t:'nut',f}))]);
  next()}
-const MEALS=[{have:['🍝','🍎'],need:'V',opts:[['🥗','سلطة خضار'],['🍰','كعكة'],['🍟','بطاطس مقلية']],a:0,why:'فيها بناء وطاقة وفاكهة، وتحتاج خضارًا للوقاية.'},
-{have:['🥛','🍇'],need:'C',opts:[['🍬','حلوى'],['🍞','خبز بالجبن'],['🥤','مشروب غازي']],a:1,why:'تحتاج أطعمة طاقة صحية مثل الخبز.'},
-{have:['🥗','🌴'],need:'P',opts:[['🍩','دونات'],['🥚','بيض'],['🍭','مصاصة']],a:1,why:'ينقصها البروتين (أطعمة البناء).'},
-{have:['🍚','🍗'],need:'V',opts:[['🥒','خيار وطماطم'],['🍫','شوكولاتة'],['🍔','برجر']],a:0,why:'تحتاج خضارًا أو فاكهة للوقاية.'},
+const MEALS=[{have:['🍝','🍎'],need:'V',opts:[['🥗','سلطة خضار'],['🍰','كعكة'],['🍟','بطاطس مقلية']],a:0,why:'ينقصها الخضار الغني بالفيتامينات والمعادن.'},
+{have:['🥛','🍇'],need:'C',opts:[['🍬','حلوى'],['🍞','خبز بالجبن'],['🥤','مشروب غازي']],a:1,why:'ينقصها الكربوهيدرات، مثل الخبز.'},
+{have:['🥗','🌴'],need:'P',opts:[['🍩','دونات'],['🥚','بيض'],['🍭','مصاصة']],a:1,why:'ينقصها البروتين، مثل البيض.'},
+{have:['🍚','🍗'],need:'V',opts:[['🥒','خيار وطماطم'],['🍫','شوكولاتة'],['🍔','برجر']],a:0,why:'ينقصها الخضار الغني بالفيتامينات والمعادن.'},
 {have:['🍞','🥚','🥕'],need:'W',opts:[['🥤','مشروب غازي'],['💧','كوب ماء'],['🧃','عصير محلّى']],a:1,why:'الماء أفضل مشروب، ولا يغني عنه غيره.'}];
 function next(){clearInterval(tmr);lock=false;if(round>=rounds.length)return end();const r=rounds[round];let h=`<div class="card"><div class="hud"><span>الجولة ${round+1} / ${rounds.length}</span><span class="stars">⭐ ${score}</span><button class="btn w" style="padding:6px 10px" onclick="home()">⌂</button></div>`+(lvl>1?`<div class="timer"><i id="ti"></i></div>`:'');
  if(r.t==='grp'){h+=`<div class="food">${r.f[0]}</div><div class="fname">${r.f[1]}</div><div class="q">في أي سلّة أضعه؟</div><div class="baskets">${Object.entries(GRP).map(([k,g])=>`<button style="background:${g.c}" data-k="${k}"><span>${g.e}</span>${g.n}</button>`).join('')}</div>`}

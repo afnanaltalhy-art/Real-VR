@@ -92,9 +92,9 @@ function addF(i,b){ac();const [e,n,k]=PL[i];if(b.classList.contains('used'))retu
  if(k==='water'){document.getElementById('cup').innerHTML='🥛💧<div style="font-size:13px;font-weight:800;color:#1d5f96">كوب ماء ✔</div>';SFX.pop();return}
  if(k==='junk'){const q=document.querySelector('.q'+[0,1,2,3][Math.random()*4|0]);q.insertAdjacentHTML('beforeend',`<span>${e}</span>`);SFX.no();say&&toast('⚠ '+n+': دهون أو سكريات كثيرة… قلّلي منها!');return}
  const q=document.querySelector(`.q[data-k=${k}]`);q.insertAdjacentHTML('beforeend',`<span style="animation:pop .4s both">${e}</span>`);q.style.background={grain:'#FDE6C4',prot:'#D5E9FA',veg:'#DCF1DC',fruit:'#FBD9D9'}[k];SFX.pop()}
-function checkPlate(){ac();const miss=[];if(!plate.grain)miss.push('🍞 حبوب (طاقة)');if(!plate.prot)miss.push('🥚 بروتين (بناء)');if(!plate.veg)miss.push('🥦 خضار (وقاية)');if(!plate.fruit)miss.push('🍎 فاكهة (وقاية)');if(!plate.water)miss.push('💧 ماء');
+function checkPlate(){ac();const miss=[];if(!plate.grain)miss.push('🍞 حبوب (كربوهيدرات)');if(!plate.prot)miss.push('🥚 بروتين');if(!plate.veg)miss.push('🥦 خضار (فيتامينات ومعادن)');if(!plate.fruit)miss.push('🍎 فاكهة (فيتامينات)');if(!plate.water)miss.push('💧 ماء');
  const m=document.getElementById('pmsg');
- if(!miss.length&&!plate.junk){m.innerHTML='🎉 <b class="ok">رائع! طبقك متوازن</b>: فيه أطعمة البناء والطاقة والوقاية والماء. هكذا تكون تغذيتك سليمة ✅';SFX.win();confetti();say('🎉 طبقك رائع ومتوازن!')}
+ if(!miss.length&&!plate.junk){m.innerHTML='🎉 <b class="ok">رائع! طبقك متوازن</b>: فيه البروتين والكربوهيدرات والفيتامينات والمعادن والماء. هكذا تكون تغذيتك سليمة ✅';SFX.win();confetti();say('🎉 طبقك رائع ومتوازن!')}
  else{m.innerHTML=(miss.length?'ينقص طبقك: <b class="p">'+miss.join('، ')+'</b>. ':'')+(plate.junk?'<br>⚠ وفيه أطعمة غنية بالدهون والسكريات، استبدليها بأطعمة صحية.':'');SFX.no()}}
 function resetPlate(){plate={grain:0,prot:0,veg:0,fruit:0,junk:0,water:0};document.querySelectorAll('.q').forEach(q=>{q.querySelectorAll('span').forEach(s=>s.remove());q.style.background=''});document.getElementById('cup').innerHTML='🥛<div style="font-size:13px;font-weight:800">كوب فارغ</div>';drawTray();document.getElementById('pmsg').textContent='ابدئي بالضغط على الأطعمة 👆';SFX.click()}
 drawTray();
