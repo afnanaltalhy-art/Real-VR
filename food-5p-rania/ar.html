@@ -92,12 +92,13 @@ const SCENES=[
  actions:[{l:'🥤 اشربي كوبًا',c:'b',f(){window._drink&&_drink()}}]}
 ];
 const GUIDE=[['p_wave','اضغطي اسم الطعام ليقفز ويعرّفك بنفسه! 🥚🍎'],['p_present','اختاري عنصرًا… وشوفي الأطعمة تجري إليه! ✨'],['p_thumb','اشربي 8 أكواب وأنا أصفّق لك 💧👏']];
-let GI=0;function guide(i){GI=i;const g=GUIDE[i]||GUIDE[0];document.getElementById('gimg').src='assets/img/'+g[0]+'.webp';const b=document.getElementById('bubble');b.classList.remove('show');setTimeout(()=>{b.textContent=g[1];b.classList.add('show')},250);clearTimeout(window._bt);window._bt=setTimeout(()=>b.classList.remove('show'),5200)}
+let GI=0;function guide(i){GI=i;const g=GUIDE[i]||GUIDE[0];document.getElementById('gimg').src='assets/img/'+g[0]+'.webp';const b=document.getElementById('bubble');b.textContent=g[1];b.classList.add('show');}
 function rain(){const E=['🍎','🥕','🥚','🍞','💧','🍊','🥛','⭐','💖'];for(let i=0;i<14;i++){const f=document.createElement('div');f.className='floaty';f.textContent=E[i%E.length];f.style.left=Math.random()*95+'vw';f.style.top='100vh';f.style.animationDuration=(3+Math.random()*3)+'s';f.style.animationDelay=Math.random()*1.5+'s';document.body.appendChild(f);setTimeout(()=>f.remove(),8000)}}
 SCENES.forEach((sc,i)=>{const b=sc.build;sc.build=api=>{b(api);guide(i);const cs=api.chipSet;}});
 const _cf=window.confetti;window.confetti=n=>{_cf&&_cf(n);rain();const im=document.getElementById('gimg');im.src='assets/img/p_cheer.webp';setTimeout(()=>guide(GI),2500)};
 document.addEventListener('click',e=>{const b=e.target.closest('.quiz button');if(!b)return;const im=document.getElementById('gimg');setTimeout(()=>{if(b.classList.contains('bad')){im.src='assets/img/p_think.webp';const bb=document.getElementById('bubble');bb.textContent='أوووه! فكّري مرة ثانية 🤔';bb.classList.add('show')}},50)});
 arUI(SCENES);setTimeout(rain,600);
+new MutationObserver(()=>{const t=document.getElementById('arText');const b=document.getElementById('bubble');if(t&&b&&t.dataset.base!==undefined&&t.textContent!==t.dataset.base){b.textContent=t.textContent.slice(0,90);b.classList.add('show')}}).observe(document.getElementById('arcard'),{subtree:true,childList:true,characterData:true});
 </script>
 </body>
 </html>
