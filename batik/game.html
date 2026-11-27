@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>لعبة: كنز الباتيك المفقود | تقنيات فن الباتيك</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3D1F5C;--vio:#7A3BA6;--hot:#C2185B;--gold:#A8741A;--teal:#1F7A80;--ok:#2E8B57;--no:#C0392B}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;font-family:Almarai,sans-serif;color:#fff;background:#120f2e url(img/studio.jpg) center/cover fixed}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(40,16,58,.25),rgba(40,16,58,.7));z-index:0}
+.scr{position:relative;z-index:1;display:none;min-height:100vh;padding:16px;max-width:760px;margin:auto;flex-direction:column;justify-content:center}
+.scr.on{display:flex;animation:fi .4s}@keyframes fi{from{opacity:0;transform:translateY(12px)}}
+.glass{background:rgba(58,26,84,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:18px}
+h1{font-size:clamp(28px,7vw,46px);margin:6px 0;text-align:center;text-shadow:0 3px 16px rgba(194,24,91,.6)}
+.sub{text-align:center;opacity:.92;line-height:1.8}
+.logo{display:block;margin:0 auto 6px;height:62px;background:#fff;border-radius:12px;padding:4px}
+input.nm{width:100%;font:inherit;font-size:20px;padding:12px;border-radius:14px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;text-align:center;margin:12px 0}
+.btn{display:block;width:100%;font:inherit;font-weight:800;font-size:20px;border:0;border-radius:16px;padding:14px;color:#fff;cursor:pointer;margin-top:10px;background:linear-gradient(135deg,#C2185B,#F2B01E);box-shadow:0 6px 20px rgba(194,24,91,.45)}
+.btn.s{background:linear-gradient(135deg,#1F7A80,#6A3FB5);box-shadow:none}
+.lv{display:grid;gap:12px;margin-top:12px}
+.lvb{display:flex;align-items:center;gap:12px;font:inherit;color:#fff;text-align:right;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:18px;padding:12px;cursor:pointer}
+.lvb .ic{font-size:38px}.lvb b{font-size:19px;display:block}.lvb small{opacity:.85}.lvb .st{margin-right:auto;font-size:20px;letter-spacing:2px}
+.lvb.lock{opacity:.45;pointer-events:none}
+#hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;font-size:17px;margin-bottom:10px}
+#bar{height:10px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden;margin-bottom:12px}#bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#F2B01E,#C2185B);transition:width .25s linear}
+#qt{font-size:clamp(19px,4.6vw,24px);line-height:1.8;font-weight:800;margin:6px 0 12px}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.op{display:block;width:100%;font:inherit;font-weight:700;font-size:18px;text-align:right;color:#fff;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);border-radius:14px;padding:13px;margin:8px 0;cursor:pointer;transition:.15s}
+.op:active{transform:scale(.98)}.op.ok{background:var(--ok);border-color:#fff}.op.no{background:var(--no);border-color:#fff;animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.num{display:flex;gap:8px}.num input{flex:1;font:inherit;font-size:22px;padding:12px;border-radius:14px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;text-align:center}
+#fb{display:none;margin-top:10px;padding:12px;border-radius:14px;line-height:1.8;background:rgba(46,139,87,.3);border-right:5px solid #7CFFB2}
+#fb.bad{background:rgba(192,57,43,.3);border-color:#FF9A8A}
+.pill{background:rgba(255,255,255,.14);padding:5px 12px;border-radius:999px}
+#toast{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%) scale(.7);font-size:44px;font-weight:800;opacity:0;transition:.35s;z-index:9;pointer-events:none;text-shadow:0 3px 16px rgba(0,0,0,.6)}
+#toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.cert{background:#fff;color:var(--navy);border-radius:22px;padding:20px;text-align:center;border:6px double #A8741A}
+.cert h2{margin:4px 0;color:var(--hot);font-size:28px}.cert .big{font-size:clamp(20px,6vw,34px);letter-spacing:2px}.cert{width:100%}
+.foot{position:relative;z-index:1;text-align:center;font-weight:800;color:#FFB3CF;padding:10px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:8}
+</style><link rel="stylesheet" href="guide.css"><style>
+.glass{background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(61,31,92,.62));border:1.5px solid rgba(255,255,255,.35);box-shadow:0 18px 50px rgba(20,8,30,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+.glass::before{content:"";display:block;height:5px;margin:-18px -18px 14px;border-radius:22px 22px 0 0;background:linear-gradient(90deg,#1F8C8C,#D4A437,#7A3BA6)}
+.op:hover{background:rgba(255,255,255,.24);transform:translateX(-3px)}
+.lv{position:relative}.lv::before{content:"";position:absolute;right:38px;top:20px;bottom:20px;border-right:4px dashed rgba(212,164,55,.7);z-index:0}
+.lvb{position:relative;z-index:1;background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.06));border-color:rgba(212,164,55,.6)}
+.lvb .ic{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff6d8,#D4A437);box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+.lvb .st{color:#F2C76E}
+.btn{background:linear-gradient(135deg,#7A3BA6,#C2185B 55%,#E0A526)}
+h1{background:linear-gradient(90deg,#fff,#F8E3A3);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+@media(min-width:900px){.scr{padding-left:230px}}
+</style></head><body>
+<canvas id="fx"></canvas>
+<div id="toast"></div>
+
+<section class="scr on" id="s0"><div class="glass">
+<img class="logo" src="img/moe.png" alt="وزارة التعليم">
+<h1>🗝 كنز الباتيك المفقود</h1>
+<p class="sub">لعبة درس تقنيات فن الباتيك • التربية الفنية<br>اجتازي ثلاث بوابات، واجمعي النجوم، واعثري على كنز الشمع والألوان!</p>
+<input class="nm" id="nm" placeholder="اكتبي اسمك هنا ✎" maxlength="30">
+<button class="btn" onclick="toMap()">ابدئي المغامرة ▶</button>
+<p class="sub" style="font-size:14px;margin-top:10px">لكل سؤال 30 ثانية • ثلاثة قلوب ❤ في كل بوابة • نقاط إضافية للسرعة والإجابات المتتالية</p>
+</div></section>
+
+<section class="scr" id="s1"><div class="glass">
+<h1 style="font-size:28px">🗺 خريطة البوابات</h1><p class="sub" id="hi"></p>
+<div class="lv" id="lv"></div>
+<button class="btn s" onclick="finish()">🏆 شهادتي</button>
+</div></section>
+
+<section class="scr" id="s2"><div class="glass">
+<div id="hud"><span class="pill" id="hL"></span><span class="pill" id="hH"></span><span class="pill" id="hS"></span></div>
+<div id="bar"><i id="bi"></i></div>
+<div style="opacity:.8;font-size:15px" id="qn"></div>
+<div id="qt"></div><div id="qa"></div><div id="fb"></div>
+<button class="btn" id="nx" style="display:none" onclick="next()">التالي ◀</button>
+</div></section>
+
+<section class="scr" id="s3"><div class="cert" id="cert"></div>
+<button class="btn" onclick="toMap()">🗺 العودة للخريطة</button>
+<button class="btn s" onclick="resetAll()">↻ العب من جديد</button></section>
+
+<div class="foot">صُمّم بحب ♥ أ. نوف الشريف</div>
+
+<audio id="aOk" src="snd/applause.mp3" preload="auto"></audio><audio id="aNo" src="snd/knock.mp3" preload="auto"></audio>
+<audio id="aCl" src="snd/drop.mp3" preload="auto"></audio><audio id="aTk" src="snd/tick.mp3" preload="auto"></audio><audio id="aWh" src="snd/whoosh.mp3" preload="auto"></audio><audio id="aBl" src="snd/bell.mp3" preload="auto"></audio>
+<script>
+const $=i=>document.getElementById(i);
+const play=(id,v=.7)=>{try{const a=$(id).cloneNode();a.volume=v;a.play().catch(()=>{})}catch(e){}};
+const E=t=>`<span class="ltr">${t}</span>`;
+const LV=[
+{ic:'🌍',t:'بوابة طريق الباتيك',d:'الانتشار والسمات حول العالم',Q:[
+{q:'نشأ فن الباتيك في:',o:['فرنسا','جزيرة جاوة بإندونيسيا','الولايات المتحدة'],a:1,e:'ثم انتقل بالتجارة إلى البلدان المجاورة.'},
+{q:'انتقل الباتيك إلى أوروبا عن طريق:',o:['الهولنديين والألمان','الصينيين','الهنود'],a:0,e:'ثم إلى النمسا وفرنسا، وأخيرًا الولايات المتحدة.'},
+{q:'آخر محطة وصل إليها الباتيك في رحلته غربًا:',o:['فرنسا','النمسا','الولايات المتحدة الأمريكية'],a:2,e:'وصل أخيرًا إلى الولايات المتحدة الأمريكية.'},
+{q:'يغلب على الباتيك الإفريقي الطابع القبلي: أقنعة وصيد وألوان قوية صريحة.',tf:1,a:0,e:'صح؛ من عادات القبائل ومعتقداتها وأسلوب معيشتها.'},
+{q:'التنين والأساطير القديمة من سمات باتيك:',o:['الهند','الصين واليابان','إفريقيا'],a:1,e:'مع الأشجار والطيور والبحار والطبيعة.'},
+{q:'يظهر تأثير الزخارف الإسلامية في باتيك إندونيسيا من خلال:',o:['الأشكال الهندسية الغنية بالترابط','مشاهد الصيد','التنين'],a:0,e:'زخارف هندسية مترابطة متكررة.'}]},
+{ic:'🕯',t:'بوابة سيدة الشمع',d:'الانصهار التام والأدوات والأمان',Q:[
+{q:'الشمع البارد عند تطبيقه على القماش:',o:['يعرقل تسربه بين الألياف','يتدفق بسرعة','هو الأفضل'],a:0,e:'لذا يجب أن يكون منصهرًا انصهارًا تامًّا.'},
+{q:'الشمع الساخن جدًّا:',o:['لا يتسرب','يتدفق بسرعة ويصعب التحكم فيه','لا يحتاج حرارة'],a:1,e:'فيتلف التصميم.'},
+{q:'نذيب الشمع في وعاء مباشرة على الموقد.',tf:1,a:1,e:'خطأ؛ نستخدم مصدرًا كهربائيًّا لأنه أكثر حماية، مع مطفأة قريبة.'},
+{q:'الأداة الأنسب لرسم النقاط والخطوط وتحديد المساحات:',o:['قلم (قمع) الشمع','الفرشاة الكبيرة','الإطار'],a:0,e:'قلم الشمع (Tjanting).'},
+{q:'لتعبئة أرضية التصميم الكبيرة نستخدم:',o:['الفرشاة الصغيرة','الفرشاة الكبيرة','الشوكة'],a:1,e:'الصغيرة للنقاط والزوايا الضيقة.'},
+{q:'لماذا لا تتلوّن الأجزاء المغطاة بالشمع؟',o:['لأن الشمع يعزل الألياف فلا تصلها الصبغة','لأن الصبغة تتبخر','لأن القماش لا يمتص'],a:0,e:'هذا هو مبدأ العزل في الباتيك.'}]},
+{ic:'🪵',t:'بوابة ورشة التطبيقات',d:'الخطوات والقوالب وهدية لأمي',Q:[
+{q:'أول خطوة في التطبيق الأول (الرسم بقمع الشمع):',o:['التلوين بالصبغة','نقل التصميم على القماش','إزالة الشمع'],a:1,e:'ثم تثبيت القماش على الإطار.'},
+{q:'يُزال الشمع في التطبيق الثالث (القالب) بـ:',o:['الكي','الماء المغلي','الفرشاة'],a:1,e:'أما الأول والثاني فبالكي.'},
+{q:'في التطبيق الثالث نغمس القالب في الشمع ثم:',o:['نضغطه على القماش','نكويه','نجففه'],a:0,e:'ثم نلوّن بالصبغة ونجفف.'},
+{q:'من الأدوات التي تصلح قوالب باتيك:',o:['القوالب الخشبية المحفورة والشوكة','الماء والهواء','الرمل'],a:0,e:'لكل قالب أثر شمعي مميز.'},
+{q:'القالب إما جاهز بتصميم معين أو يُجهّز وفق التصميم المراد.',tf:1,a:0,e:'صح (شكل 90).'},
+{q:'نشاط إهداء عمل بالباتيك للأم يعبّر عن قيمة:',o:['برّ الوالدين','المنافسة','التوفير'],a:0,e:'حثّ الرسول ﷺ على برّ الوالدين.'}]}];
+let S=JSON.parse(localStorage.getItem('btGame')||'null')||{name:'',best:[0,0,0],stars:[0,0,0]};
+const save=()=>{try{localStorage.setItem('btGame',JSON.stringify(S))}catch(e){}};
+function show(i){document.querySelectorAll('.scr').forEach((s,j)=>s.classList.toggle('on',s.id==='s'+i));scrollTo(0,0)}
+if(S.name)$('nm').value=S.name;
+function toMap(){const n=$('nm').value.trim();if(n)S.name=n;save();play('aWh',.5);
+$('hi').textContent=(S.name?'مرحبًا يا '+S.name+' 🌟 ':'')+'اختاري بوابة:';
+$('lv').innerHTML=LV.map((l,i)=>{const lock=i>0&&S.stars[i-1]===0;return `<button class="lvb${lock?' lock':''}" onclick="startLv(${i})"><span class="ic">${lock?'🔒':l.ic}</span><span><b>${i+1}. ${l.t}</b><small>${l.d}</small></span><span class="st">${'⭐'.repeat(S.stars[i])}${'☆'.repeat(3-S.stars[i])}</span></button>`}).join('');show(1)}
+let L,qi,score,hearts,streak,timer,tl,locked,order;
+function startLv(i){L=i;qi=0;score=0;hearts=3;streak=0;order=LV[i].Q.map((_,k)=>k).sort(()=>Math.random()-.5);play('aBl',.6);show(2);ask()}
+function hud(){$('hL').textContent=LV[L].ic+' '+LV[L].t;$('hH').textContent='❤'.repeat(hearts)+'🖤'.repeat(3-hearts);$('hS').textContent='⭐ '+score}
+function ask(){const q=LV[L].Q[order[qi]];locked=false;hud();$('qn').textContent='السؤال '+(qi+1)+' من '+LV[L].Q.length;$('qt').innerHTML=q.q;$('fb').style.display='none';$('nx').style.display='none';
+if(q.n!==undefined){$('qa').innerHTML=`<div class="num"><input id="ni" type="number" inputmode="decimal" step="any" placeholder="الإجابة"><button class="btn" style="width:auto;margin:0" onclick="chkN()">✔</button></div>`}
+else{const opts=q.tf?['✓ صح','✗ خطأ']:q.o;$('qa').innerHTML=opts.map((o,k)=>`<button class="op" onclick="chk(${k},this)">${q.tf?'':'أبج'[k]+') '}${o}</button>`).join('')}
+tl=30;$('bi').style.width='100%';clearInterval(timer);timer=setInterval(()=>{tl--;$('bi').style.width=(tl/30*100)+'%';if(tl<=5&&tl>0)play('aTk',.4);if(tl<=0){clearInterval(timer);res(false,null,'⏰ انتهى الوقت!')}},1000)}
+function chk(k,b){if(locked)return;const q=LV[L].Q[order[qi]];const ok=k===q.a;b.classList.add(ok?'ok':'no');if(!ok)$('qa').children[q.a].classList.add('ok');res(ok)}
+function chkN(){if(locked)return;const q=LV[L].Q[order[qi]],v=parseFloat($('ni').value);if(isNaN(v))return;res(Math.abs(v-q.n)<=Math.abs(q.n)*q.tol)}
+function res(ok,_,msg){locked=true;clearInterval(timer);const q=LV[L].Q[order[qi]];
+if(ok){streak++;const pts=10+Math.max(0,tl)+(streak>=3?10:0);score+=pts;toast('+'+pts+(streak>=3?' 🔥':''));play('aOk',.6);burst()}else{streak=0;hearts--;play('aNo',.7)}
+hud();$('fb').className=ok?'':'bad';$('fb').innerHTML=(msg?msg+'<br>':'')+(ok?'🎉 أحسنتِ! ':'💡 ')+q.e;$('fb').style.display='block';$('nx').style.display='block';
+$('nx').textContent=(hearts<=0||qi+1>=LV[L].Q.length)?'النتيجة 🏁':'التالي ◀'}
+function next(){play('aCl',.5);if(hearts<=0||qi+1>=LV[L].Q.length){endLv();return}qi++;ask()}
+function endLv(){const max=LV[L].Q.length*40;const st=hearts<=0?0:score>=max*.6?3:score>=max*.4?2:1;S.stars[L]=Math.max(S.stars[L],st);S.best[L]=Math.max(S.best[L],score);save();
+if(st>=2){play('aOk',.8);for(let i=0;i<4;i++)setTimeout(burst,i*250)}
+toast(st?'⭐'.repeat(st):'حاولي مجددًا 💪');setTimeout(toMap,1300)}
+function finish(){const tot=S.best.reduce((a,b)=>a+b,0),st=S.stars.reduce((a,b)=>a+b,0);
+$('cert').innerHTML=`<img src="img/moe.png" style="height:56px"><h2>شهادة إنجاز 🏆</h2><p>يشهد كنز الباتيك المفقود أن الفنانة</p><div style="font-size:30px;font-weight:800;color:#6A3FB5;margin:6px 0">${S.name||'............'}</div>
+<p>اجتازت بوابات درس تقنيات فن الباتيك (التربية الفنية)</p><div class="big">${'⭐'.repeat(st)}${'☆'.repeat(9-st)}</div><p style="font-size:22px;font-weight:800">مجموع النقاط: ${tot}</p>
+<p style="color:#C2185B;font-weight:800">${st>=8?'سيدة الباتيك الأولى! 🎨':st>=5?'رائعة! واصلي التألق ✨':'بداية جميلة، أعيدي البوابات لجمع نجوم أكثر 💪'}</p><p style="font-size:14px">صُمّم بحب ♥ أ. نوف الشريف</p>`;show(3);if(st>=5){play('aOk',.8);for(let i=0;i<6;i++)setTimeout(burst,i*200)}}
+function resetAll(){S={name:S.name,best:[0,0,0],stars:[0,0,0]};save();toMap()}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),900)}
+// rainbow confetti
+const fx=$('fx'),g=fx.getContext('2d');let P=[];function rs(){fx.width=innerWidth;fx.height=innerHeight}rs();addEventListener('resize',rs);
+function burst(){for(let i=0;i<70;i++)P.push({x:innerWidth/2,y:innerHeight*.4,vx:(Math.random()-.5)*12,vy:-Math.random()*12-3,h:Math.random()*300,l:60})}
+(function loop(){g.clearRect(0,0,fx.width,fx.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.l--;g.fillStyle=`hsl(${p.h},95%,60%)`;g.fillRect(p.x,p.y,7,11)});P=P.filter(p=>p.l>0);requestAnimationFrame(loop)})();
+</script>
+<script src="guide.js"></script><script>
+(function(){const P=['أحسنتِ يا فنانة! 🎨','رائع! إجابة ذهبية ✨','ممتاز! الشمع لا يخدعك 🕯','برافو! أنتِ نجمة الباتيك ⭐','صح! استمري 💪'];
+const N=['لا بأس، اقرئي الشرح وتعلّمي منه 💜','قريبة! فكّري في الكتاب ص 81–92 📖','حاولي مرة أخرى، الخطأ طريق التعلّم 🌱'];
+const _s=window.show,_a=window.ask,_r=window.res,_e=window.endLv,_m=window.toMap;
+window.show=function(i){_s.apply(this,arguments)};
+window.toMap=function(){_m.apply(this,arguments);say('اختاري بوابة… الكنز ينتظرك خلف البوابة الثالثة 🗝','jump')};
+window.ask=function(){_a.apply(this,arguments);say(pick(['فكّري جيدًا قبل الإجابة 🤔','عندك 30 ثانية ⏱','تذكّري ما شاهدتِه في المرسم 🎨']))};
+window.res=function(ok){_r.apply(this,arguments);ok?say(pick(P),'jump'):say(pick(N),'sad')};
+window.endLv=function(){_e.apply(this,arguments);say('أنهيتِ البوابة! 🎉 انظري كم نجمة جمعتِ','jump')};
+setTimeout(()=>say('أهلًا! أنا لمى 👋 اكتبي اسمك ولنبحث معًا عن كنز الباتيك المفقود','jump'),500)})();
+</script></body></html>

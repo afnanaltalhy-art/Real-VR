@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>الواقع المعزز | أدوات الباتيك</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3D1F5C;--gold:#A8741A;--teal:#1F7A80;--hot:#E0622B;--cold:#2B7BB9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#1a0f26;font-family:Almarai,sans-serif;color:#fff;touch-action:none}
+#cam{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+#bgFallback{position:fixed;inset:0;background:radial-gradient(circle at 50% 30%,#5a3a7a,#1a0f26 70%);z-index:0}
+#gl{position:fixed;inset:0;z-index:1}
+.glass{background:rgba(45,22,66,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:18px}
+#top{position:fixed;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:3;display:flex;align-items:center;gap:8px;padding:6px 10px}
+#top img{height:34px;background:#fff;border-radius:8px;padding:2px}#top h1{flex:1;margin:0;font-size:clamp(14px,3.6vw,20px);text-align:center}
+#info{position:fixed;top:calc(64px + env(safe-area-inset-top));right:8px;z-index:3;width:min(420px,calc(100% - 16px));padding:12px 14px;transition:.3s}
+#info h2{margin:0 0 4px;font-size:20px;color:#F2C14E}#info p{margin:0;font-size:15px;line-height:1.75}
+#info.min p{display:none}
+#bottom{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom));left:8px;right:8px;z-index:3}
+#chips{display:flex;gap:8px;overflow-x:auto;padding:8px;scrollbar-width:none}#chips::-webkit-scrollbar{display:none}
+#chips button{flex:0 0 auto;font:inherit;font-weight:800;font-size:15px;color:#fff;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);padding:9px 14px;border-radius:999px;cursor:pointer}
+#chips button.on{background:linear-gradient(135deg,#E0622B,#F2B01E);border-color:#fff;box-shadow:0 0 18px rgba(242,176,30,.7)}
+#ctrl{display:flex;gap:8px;align-items:center;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
+#ctrl label{font-size:14px;font-weight:700}#ctrl input[type=range]{flex:1;min-width:140px;accent-color:#E0622B}
+.ib{font:inherit;font-weight:800;font-size:14px;color:#fff;border:0;border-radius:12px;padding:9px 12px;cursor:pointer;background:var(--teal)}
+.ib.g{background:var(--gold)}.ib.h{background:var(--hot)}
+#side{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:10px}
+#side button{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(45,22,66,.6);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(8px)}
+#quiz,#shot,#perm,#intro{position:fixed;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:rgba(5,12,24,.55);padding:16px}
+#quiz .box,#shot .box,#perm .box,#intro .box{width:min(520px,100%);padding:18px;text-align:center}
+#quiz h3{margin:0 0 12px;font-size:21px;line-height:1.6}
+.qo{display:block;width:100%;font:inherit;font-weight:700;font-size:17px;margin:8px 0;padding:12px;border-radius:14px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;text-align:right}
+.qo.ok{background:#2E8B57;border-color:#2E8B57}.qo.no{background:#C0392B;border-color:#C0392B}
+#qfb{min-height:24px;margin-top:8px;line-height:1.7}
+#shot img{width:100%;border-radius:12px}
+#toast{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(.8);z-index:6;font-size:30px;font-weight:800;opacity:0;transition:.35s;pointer-events:none;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#hint{position:fixed;left:50%;top:58%;transform:translateX(-50%);z-index:2;font-size:14px;background:rgba(0,0,0,.4);padding:6px 12px;border-radius:999px;transition:opacity 1s;pointer-events:none}
+.big{font-size:54px;margin:4px 0}
+#eye{position:fixed;left:10px;top:calc(10px + env(safe-area-inset-top));z-index:7;width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(45,22,66,.55);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(8px)}
+body.clean #top,body.clean #info,body.clean #bottom,body.clean #side,body.clean #hint{opacity:0;pointer-events:none;transition:opacity .3s}
+#top,#info,#bottom,#side{transition:opacity .3s}
+body.clean #eye{opacity:.45}
+#eye2{position:fixed;left:50%;transform:translateX(-50%);top:calc(62px + env(safe-area-inset-top));z-index:7;font:inherit;font-weight:800;font-size:15px;color:#fff;border:2px solid #fff;border-radius:999px;padding:8px 16px;background:linear-gradient(135deg,#C2185B,#E0A526);box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer}
+body.clean #eye2{display:none}
+#info{top:calc(112px + env(safe-area-inset-top))!important}
+#top{left:66px!important}
+</style><link rel="stylesheet" href="guide.css"><style>
+#guide{left:auto!important;right:8px;width:clamp(80px,11vw,140px);bottom:clamp(125px,19vh,175px)}
+#bub{left:auto!important;right:calc(clamp(80px,11vw,140px) + 6px);bottom:calc(clamp(125px,19vh,175px) + clamp(120px,18vw,230px));border-radius:18px 18px 4px 18px}
+@media(max-width:700px){#guide{width:66px;bottom:150px}#bub{right:70px;bottom:270px;max-width:55vw}}
+body.clean #guide,body.clean #bub{opacity:0}
+#info{border:1.5px solid rgba(212,164,55,.6)!important}
+.ib{border-radius:999px!important;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+</style></head><body>
+<div id="bgFallback"></div>
+<video id="cam" playsinline muted autoplay></video>
+<canvas id="gl"></canvas>
+<div id="top" class="glass"><img src="img/moe.png" alt=""><h1>🔍 الواقع المعزز: أدوات الباتيك وعناصره</h1><span style="width:34px"></span></div>
+<div id="info" class="glass" onclick="this.classList.toggle('min')"><h2 id="iT"></h2><p id="iP"></p></div>
+<div id="side"><button id="flw" onclick="toggleFollow()" title="تثبيت في المنتصف">📌</button><button onclick="openQuiz()" title="سؤال">❓</button><button onclick="snap()" title="التقاط">📸</button><button onclick="recenter()" title="توسيط">🎯</button><button onclick="toggleSnd()" id="sndB" title="الصوت">🔊</button></div>
+<div id="hint">👁 لإخفاء الإطارات (أو انقري مرتين) • اسحبي لتدوير النموذج • قرّبي بإصبعين • 📌 النموذج ثابت في المنتصف</div>
+<div id="bottom"><div id="ctrl" class="glass"></div><div id="chips" class="glass"></div><div style="text-align:center;font-size:13px;font-weight:800;margin-top:4px;text-shadow:0 1px 6px rgba(0,0,0,.8)">إعداد المعلمة: أ. نوف الشريف</div></div>
+<div id="quiz"><div class="box glass"><h3 id="qq"></h3><div id="qo"></div><div id="qfb"></div><button class="ib g" onclick="closeQ()" style="margin-top:10px">إغلاق</button></div></div>
+<div id="shot"><div class="box glass"><img id="shotImg" alt=""><p>اضغطي مطولًا على الصورة لحفظها، أو:</p><a id="dl" class="ib h" style="display:inline-block;text-decoration:none" download="ar-energy.png">⬇ حفظ الصورة</a> <button class="ib" onclick="document.getElementById('shot').style.display='none'">إغلاق</button></div></div>
+<div id="perm"><div class="box glass"><div class="big">📷</div><h3>اسمحي بالوصول إلى الكاميرا</h3><p style="line-height:1.8">لعرض النماذج فوق ما حولك. إن ظهرت رسالة الإذن اضغطي «سماح».</p><button class="ib h" onclick="startCam(true)">تشغيل الكاميرا</button> <button class="ib" onclick="document.getElementById('perm').style.display='none'">المتابعة بدون كاميرا</button></div></div>
+<div id="toast"></div>
+<button id="eye" onclick="toggleUI()" title="إخفاء الإطارات">👁</button>
+<button id="eye2" onclick="toggleUI()">👁 إخفاء الإطارات</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ---------- camera: request immediately ----------
+const video=document.getElementById('cam');
+async function startCam(fromBtn){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    video.srcObject=st;await video.play().catch(()=>{});document.getElementById('bgFallback').style.display='none';document.getElementById('perm').style.display='none';
+  }catch(e){document.getElementById('perm').style.display='flex'}
+  if(fromBtn)enableGyro();
+}
+startCam(false);
+
+// ---------- sounds (natural only) ----------
+const SND={};['applause','knock','drop','bubble','whoosh'].forEach(n=>{SND[n]=new Audio('snd/'+n+'.mp3')});SND.bubble.loop=true;
+let sndOn=true,amb=null,unlocked=false;
+function sfx(n,v=.8){if(!sndOn)return;try{const a=SND[n].cloneNode();a.volume=v;a.play().catch(()=>{})}catch(e){}}
+function ambient(n){if(amb){amb.pause();amb=null}if(!n||!sndOn||!unlocked)return;amb=SND[n];amb.volume=.35;amb.currentTime=0;amb.play().catch(()=>{})}
+function toggleSnd(){sndOn=!sndOn;document.getElementById('sndB').textContent=sndOn?'🔊':'🔇';if(!sndOn&&amb)amb.pause();else ambient(SC[cur].amb)}
+document.addEventListener('pointerdown',()=>{if(!unlocked){unlocked=true;enableGyro();ambient(SC[cur].amb)}},{once:false});
+
+// ---------- three ----------
+const cv=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);R.outputEncoding=THREE.sRGBEncoding;
+const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.05,100);
+scene.add(new THREE.HemisphereLight(0xffffff,0x334466,.9));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(2,4,3);scene.add(dl);
+const pl=new THREE.PointLight(0xffaa66,.6,10);pl.position.set(-2,1,2);scene.add(pl);
+const anchor=new THREE.Group();anchor.position.set(0,-.15,-3);scene.add(anchor);
+const holder=new THREE.Group();anchor.add(holder);
+// shadow disc
+const disc=new THREE.Mesh(new THREE.CircleGeometry(1.5,48),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22}));disc.rotation.x=-Math.PI/2;disc.position.y=-1.05;anchor.add(disc);
+const ring=new THREE.Mesh(new THREE.RingGeometry(1.45,1.52,64),new THREE.MeshBasicMaterial({color:0xF2C14E,transparent:true,opacity:.8,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=-1.04;anchor.add(ring);
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)});
+
+// ---------- gyro (look around: objects stay in the room) ----------
+let gyro=false,q0=null;const qd=new THREE.Quaternion(),eu=new THREE.Euler(),zee=new THREE.Vector3(0,0,1),q1=new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5));
+function onOri(e){if(e.alpha==null)return;gyro=true;const a=THREE.MathUtils.degToRad(e.alpha),b=THREE.MathUtils.degToRad(e.beta),g=THREE.MathUtils.degToRad(e.gamma),o=THREE.MathUtils.degToRad(screen.orientation?screen.orientation.angle:(window.orientation||0));
+eu.set(b,a,-g,'YXZ');qd.setFromEuler(eu);qd.multiply(q1);qd.multiply(new THREE.Quaternion().setFromAxisAngle(zee,-o));if(!q0){q0=qd.clone().invert();}}
+function enableGyro(){if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')addEventListener('deviceorientation',onOri)}).catch(()=>{})}else addEventListener('deviceorientation',onOri)}
+function recenter(){q0=null;rotY=0;rotX=.5;zoom=1;sfx('whoosh',.5)}
+
+// ---------- touch rotate / pinch ----------
+let rotY=0,rotX=0,zoom=1,drag=null,pinch=null;
+const RC=new THREE.Raycaster(),NDC=new THREE.Vector2();let penOn=false,penUsed=false;
+function hitCloth(e){if(!built||!built.cloth||!built.pen)return null;NDC.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);RC.setFromCamera(NDC,cam);const h=RC.intersectObject(built.cloth);if(!h.length)return null;return built.cloth.parent.worldToLocal(h[0].point.clone())}
+cv.addEventListener('pointerdown',e=>{document.getElementById('hint').style.opacity=0;const p=hitCloth(e);penUsed=!!p;if(p){penOn=true;built.pen(p,true);return}drag={x:e.clientX,y:e.clientY}});
+addEventListener('pointermove',e=>{if(penOn){const p=hitCloth(e);if(p)built.pen(p,false);return}if(!drag||pinch)return;rotY+=(e.clientX-drag.x)*.01;rotX=Math.max(-.6,Math.min(1.1,rotX+(e.clientY-drag.y)*.006));drag={x:e.clientX,y:e.clientY}});
+addEventListener('pointerup',()=>{drag=null;if(penOn&&built&&built.penUp)built.penUp();penOn=false});
+cv.addEventListener('touchmove',e=>{if(e.touches.length===2){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch)zoom=Math.max(.5,Math.min(2.2,zoom*d/pinch));pinch=d}},{passive:true});
+cv.addEventListener('touchend',()=>pinch=null);
+cv.addEventListener('wheel',e=>{zoom=Math.max(.5,Math.min(2.2,zoom*(e.deltaY>0?.92:1.08)))},{passive:true});
+
+// ---------- helpers ----------
+const RD=()=>{const u=Math.random()*2-1,a=Math.random()*6.2832,s=Math.sqrt(1-u*u);return new THREE.Vector3(s*Math.cos(a),u,s*Math.sin(a))};
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.35,metalness:.1},o));
+function glow(color,size){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,color);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);
+const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));s.scale.set(size,size,1);return s}
+function label(txt,bg='#1E3557',fg='#fff',w=1.1){const c=document.createElement('canvas');c.width=512;c.height=128;const g=c.getContext('2d');const draw=()=>{g.clearRect(0,0,512,128);g.fillStyle=bg;g.globalAlpha=.88;g.beginPath();g.moveTo(30,10);g.lineTo(482,10);g.quadraticCurveTo(502,10,502,30);g.lineTo(502,98);g.quadraticCurveTo(502,118,482,118);g.lineTo(30,118);g.quadraticCurveTo(10,118,10,98);g.lineTo(10,30);g.quadraticCurveTo(10,10,30,10);g.fill();g.globalAlpha=1;g.fillStyle=fg;let fs=52;g.font='800 52px Almarai';while(g.measureText(s.userData.t).width>470&&fs>20){fs-=2;g.font='800 '+fs+'px Almarai'}g.textAlign='center';g.textBaseline='middle';g.direction='rtl';g.fillText(s.userData.t,256,66);tex.needsUpdate=true};
+const tex=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));s.scale.set(w,w/4,1);s.userData.t=txt;s.userData.set=t=>{s.userData.t=t;draw()};draw();s.renderOrder=10;return s}
+const tcol=(T)=>{const c=Math.max(0,Math.min(1,(T+10)/110));return new THREE.Color().setRGB(.17+c*.8,.48-c*.1+(c>.5?-.2*(c-.5):0),.73-c*.62)};
+let slider=null,sval=60,rodK=1;
+function setCtrl(html){document.getElementById('ctrl').innerHTML=html;document.getElementById('ctrl').style.display=html?'flex':'none'}
+
+// ---------- scenes ----------
+const CREAM='#F6EDD8',WAXC='#E8C66A';
+function ctex(w,h,init){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;const o={c,g,t,up(){t.needsUpdate=true},clear(){g.fillStyle=CREAM;g.fillRect(0,0,w,h);g.globalAlpha=.07;g.strokeStyle='#8D6E63';for(let x=0;x<w;x+=4){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke()}g.globalAlpha=1;t.needsUpdate=true}};if(init!==false)o.clear();return o}
+function petalsC(g,x,y,n,r){for(let k=0;k<n;k++){g.save();g.translate(x,y);g.rotate(2*Math.PI*k/n);g.beginPath();g.ellipse(r*.55,0,r*.5,r*.24,0,0,7);g.fill();g.restore()}g.beginPath();g.arc(x,y,r*.2,0,7);g.fill()}
+function starC(g,x,y,n,r1,r2){g.beginPath();for(let k=0;k<2*n;k++){const r=k%2?r2:r1,a=Math.PI*k/n-Math.PI/2;g.lineTo(x+r*Math.cos(a),y+r*Math.sin(a))}g.closePath();g.fill()}
+function crackle(g,w,h,col,n=120){g.strokeStyle=col;g.lineWidth=1;g.globalAlpha=.45;for(let i=0;i<n;i++){let x=Math.random()*w,y=Math.random()*h;g.beginPath();g.moveTo(x,y);for(let j=0;j<4;j++){x+=(Math.random()-.5)*40;y+=(Math.random()-.5)*30;g.lineTo(x,y)}g.stroke()}g.globalAlpha=1}
+function batikTex(w=512,h=512,bg='#7A3BA6'){const o=ctex(w,h,false),g=o.g;g.fillStyle=bg;g.fillRect(0,0,w,h);crackle(g,w,h,'#4E2270',160);g.fillStyle=CREAM;
+ for(let r=0;r<3;r++)for(let k=0;k<3;k++){const x=w/6+k*w/3,y=h/6+r*h/3;petalsC(g,x,y,6,w/9);g.strokeStyle=CREAM;g.lineWidth=4;g.beginPath();g.arc(x,y,w/8,0,7);g.stroke()}
+ g.fillStyle='#1FA3A3';for(let k=0;k<12;k++){g.beginPath();g.arc(Math.random()*w,Math.random()*h,5,0,7);g.fill()}o.up();return o}
+function table(g){const t=new THREE.Mesh(new THREE.BoxGeometry(2.3,.1,1.5),M(0x9C6B3E,{roughness:.7}));t.position.y=-.55;g.add(t);return t}
+function clothPlane(g,tex,w=1.6,d=1.0,y=-.495){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshStandardMaterial({map:tex.t,roughness:.9}));m.rotation.x=-Math.PI/2;m.position.y=y;g.add(m);return m}
+const CW=1.6,CD=1.0,TW=512,TH=320;const toC=(x,z)=>[(x+CW/2)/CW*TW,(z+CD/2)/CD*TH];
+function lbl(g,txt,x,y,z,bg='#3D1F5C',w=1){const l=label(txt,bg,'#fff',w);l.position.set(x,y,z);g.add(l);return l}
+function tjantingModel(){const t=new THREE.Group();const cup=new THREE.Mesh(new THREE.CylinderGeometry(.11,.07,.15,28,1,true),M(0xC8952A,{metalness:.65,roughness:.3,side:2}));cup.position.y=.13;t.add(cup);
+ const bot=new THREE.Mesh(new THREE.CircleGeometry(.07,24),M(0xA87A1E,{metalness:.6}));bot.rotation.x=Math.PI/2;bot.position.y=.055;t.add(bot);
+ const wax=new THREE.Mesh(new THREE.CircleGeometry(.1,24),M(0xFFE7A3,{emissive:0x664400,emissiveIntensity:.3}));wax.rotation.x=-Math.PI/2;wax.position.y=.17;t.add(wax);
+ const sp=new THREE.Mesh(new THREE.CylinderGeometry(.008,.016,.12,12),M(0xB8860B,{metalness:.7}));sp.position.set(0,.0,0);t.add(sp);
+ const tube=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.32,10),M(0x7A5512,{metalness:.6}));tube.rotation.z=Math.PI/2.6;tube.position.set(.2,.24,0);t.add(tube);
+ const h=new THREE.Mesh(new THREE.CylinderGeometry(.035,.03,.5,16),M(0x9C6B3E,{roughness:.6}));h.rotation.z=Math.PI/2.6;h.position.set(.55,.39,0);t.add(h);return t}
+function brushModel(big){const b=new THREE.Group();const h=new THREE.Mesh(new THREE.CylinderGeometry(big?.035:.022,big?.03:.016,.62,16),M(0xD9A066,{roughness:.6}));h.position.y=.5;b.add(h);
+ const f=new THREE.Mesh(big?new THREE.BoxGeometry(.2,.1,.05):new THREE.CylinderGeometry(.025,.025,.09,16),M(0xC0C0C0,{metalness:.8,roughness:.25}));f.position.y=.15;b.add(f);
+ const br=new THREE.Mesh(big?new THREE.BoxGeometry(.19,.12,.045):new THREE.ConeGeometry(.024,.12,16),M(0xFFE7A3,{roughness:.8}));br.position.y=.05;if(!big)br.rotation.x=Math.PI;b.add(br);return b}
+function stampFace(kind){const o=ctex(256,256,false),g=o.g;g.fillStyle={carrot:'#C99A66',okra:'#B98552',fork:'#BDC3C7',block:'#B07A47'}[kind];g.fillRect(0,0,256,256);g.fillStyle=g.strokeStyle={carrot:'#6B4423',okra:'#5A3618',fork:'#7F8C8D',block:'#6B4423'}[kind];
+ if(kind==='carrot')petalsC(g,128,128,6,105);if(kind==='okra'){g.lineWidth=14;g.beginPath();g.arc(128,128,108,0,7);g.stroke();starC(g,128,128,5,80,32)}
+ if(kind==='fork')for(let k=0;k<4;k++)g.fillRect(40+k*52,20,22,216);if(kind==='block'){g.lineWidth=10;g.strokeRect(24,24,208,208);petalsC(g,128,128,8,80)}o.up();return o}
+function printShape(g,kind,x,y,s=1){g.fillStyle=g.strokeStyle=WAXC;g.save();g.translate(x,y);g.scale(s,s);
+ if(kind==='carrot'){g.lineWidth=4;g.beginPath();g.arc(0,0,26,0,7);g.stroke();petalsC(g,0,0,6,22)}
+ if(kind==='okra'){g.lineWidth=4;g.beginPath();g.arc(0,0,24,0,7);g.stroke();starC(g,0,0,5,18,7)}
+ if(kind==='fork')for(let k=0;k<4;k++)g.fillRect(-20+k*12,-22,5,44);
+ if(kind==='block'){g.lineWidth=3;g.strokeRect(-24,-24,48,48);petalsC(g,0,0,8,18)}g.restore()}
+let bt={brush:0,mold:'carrot',temp:50,src:'e',step:0,prod:0,draw:true};
+const STEPS=['① نقل التصميم على القماش','② تثبيت القماش على الإطار','③ تجهيز الشمع المنصهر','④ تحديد التصميم بالشمع','⑤ التلوين بالصبغة','⑥ التجفيف','⑦ إزالة الشمع بالكي','⑧ المنتج النهائي ✨'];
+function flowerPath(g,cx,cy,r){g.beginPath();for(let a=0;a<=6.3;a+=.04){const rr=r*(.62+.38*Math.cos(5*a));g.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}g.closePath()}
+const SC=[
+{n:'✒ قلم الشمع',t:'قلم الشمع (التجانتنج)',still:true,p:'ارسمي بإصبعك على القماش كأنكِ تمسكين قلم الشمع! وعاء نحاسي يُملأ بالشمع المنصهر، يخرج منه عبر مصبّ رفيع، ونمسكه من مقبض خشبي. يُستخدم للنقاط والخطوط وتحديد المساحات (شكل 88).',
+ amb:null,ctrl:'<button class="ib h" onclick="built.tx.clear();sfx(\'whoosh\',.5)">↺ قماش جديد</button><button class="ib" style="background:#7A3BA6" onclick="built.dye()">🎨 اصبغي</button><button class="ib g" onclick="built.unwax()">♨ أزيلي الشمع</button>',
+ q:['يُستخدم قلم الشمع (التجانتنج) في:',['تعبئة الأرضية الكبيرة','النقاط والخطوط وتحديد المساحات','إزالة الشمع'],1],
+ build(g){table(g);this.tx=ctex(TW,TH);this.wax=document.createElement('canvas');this.wax.width=TW;this.wax.height=TH;this.cloth=clothPlane(g,this.tx);this.tool=tjantingModel();this.tool.scale.setScalar(1.5);this.tool.position.set(.35,-.3,.2);g.add(this.tool);this.last=null;
+  this.gl=glow('#FFE7A3',.2);g.add(this.gl);this.gl.material.opacity=0;this.base=this.tx.c;
+  this.tl=[lbl(this.tool,'وعاء الشمع',-.05,.42,0,'#A8741A',.75),lbl(this.tool,'المصبّ الرفيع',-.25,.02,0,'#C2185B',.8),lbl(this.tool,'المقبض الخشبي',.75,.62,0,'#1F7A80',.85)];
+  this.hint=lbl(g,'✍ ارسمي بإصبعك على القماش',0,.55,0,'#C2185B',1.4);setCtrl(this.ctrl)},
+ pen(p,start){this.tool.position.set(p.x,-.43,p.z);this.gl.position.set(p.x,-.48,p.z);this.gl.material.opacity=.8;this.hint.visible=false;this.tl.forEach(l=>l.visible=false);
+  const c=toC(p.x,p.z);[this.tx.g,this.wax.getContext('2d')].forEach((g,i)=>{g.strokeStyle=i?'#fff':WAXC;g.fillStyle=g.strokeStyle;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';
+   if(start||!this.last){g.beginPath();g.arc(c[0],c[1],2.5,0,7);g.fill()}else{g.beginPath();g.moveTo(this.last[0],this.last[1]);g.lineTo(c[0],c[1]);g.stroke()}});
+  this.last=c;this.tx.up();if(start)sfx('drop',.3)},
+ penUp(){this.last=null;this.gl.material.opacity=0;this.tool.position.y=-.3;this.tl.forEach(l=>l.visible=true)},
+ dye(){const g=this.tx.g,t=document.createElement('canvas');t.width=TW;t.height=TH;const tg=t.getContext('2d');tg.fillStyle='#7A3BA6';tg.fillRect(0,0,TW,TH);tg.globalCompositeOperation='destination-out';tg.drawImage(this.wax,0,0);
+  g.globalCompositeOperation='multiply';g.drawImage(t,0,0);g.globalCompositeOperation='source-over';this.tx.up();sfx('drop',.6);toast('🎨 الشمع حجز اللون!')},
+ unwax(){const g=this.tx.g;g.save();g.globalCompositeOperation='source-atop';const t=document.createElement('canvas');t.width=TW;t.height=TH;const tg=t.getContext('2d');tg.fillStyle=CREAM;tg.fillRect(0,0,TW,TH);tg.globalCompositeOperation='destination-in';tg.drawImage(this.wax,0,0);g.drawImage(t,0,0);g.restore();
+  this.wax.getContext('2d').clearRect(0,0,TW,TH);this.tx.up();sfx('applause',.6);toast('✨ ظهر تصميمك!')},
+ update(dt,t){if(!penOn)this.tool.position.y=-.3+.03*Math.sin(t*2)}},
+{n:'🖌 الفرش',t:'الفرش: صغيرة وكبيرة',still:true,p:'اختاري الفرشاة وارسمي بإصبعك على القماش: الصغيرة للنقاط والخطوط والزوايا الضيقة، والكبيرة لتعبئة المساحات الكبيرة مثل أرضية التصميم (شكل 89).',
+ amb:null,ctrl:'<button class="ib" onclick="bt.brush=0;built.sel()">🖌 فرشاة صغيرة</button><button class="ib g" onclick="bt.brush=1;built.sel()">🖌 فرشاة كبيرة</button><button class="ib h" onclick="built.tx.clear();built.fill();sfx(\'whoosh\',.5)">↺ قماش جديد</button>',
+ q:['الفرشاة الكبيرة مناسبة لـ:',['الزوايا الضيقة','النقاط الصغيرة','تعبئة أرضية التصميم'],2],
+ build(g){bt.brush=0;table(g);this.tx=ctex(TW,TH);this.fill();this.cloth=clothPlane(g,this.tx);
+  this.b=[brushModel(false),brushModel(true)];this.b.forEach((b,i)=>{b.position.set(i?.65:-.65,-.3,.45);g.add(b)});
+  this.l=[lbl(g,'فرشاة صغيرة: نقاط وزوايا',-.55,.55,0,'#1F7A80',1.2),lbl(g,'فرشاة كبيرة: مساحات',.55,.55,0,'#A8741A',1.2)];this.last=null;this.sel();setCtrl(this.ctrl)},
+ fill(){const o=this.tx.g;o.fillStyle='#F7DC6F';o.fillRect(0,0,TW,TH);this.tx.up()},
+ sel(){const i=bt.brush;this.l[i].material.opacity=1;this.l[1-i].material.opacity=.35;this.b[1-i].position.set(i?-.65:.65,-.3,.45);sfx('drop',.5)},
+ pen(p,start){const i=bt.brush,b=this.b[i];b.position.set(p.x,-.49,p.z);b.rotation.z=-.3;const c=toC(p.x,p.z),g=this.tx.g;g.strokeStyle=g.fillStyle=WAXC;g.lineCap='round';
+  if(i===0){g.lineWidth=6;g.globalAlpha=1}else{g.lineWidth=40;g.globalAlpha=.7}
+  if(start||!this.last){g.beginPath();g.arc(c[0],c[1],g.lineWidth/2,0,7);g.fill()}else{g.beginPath();g.moveTo(this.last[0],this.last[1]);g.lineTo(c[0],c[1]);g.stroke()}g.globalAlpha=1;this.last=c;this.tx.up();if(start)sfx('drop',.3)},
+ penUp(){this.last=null;this.b[bt.brush].position.y=-.3},
+ update(dt,t){}},
+{n:'🪵 القوالب الخشبية',t:'قوالب الباتيك الخشبية',still:true,p:'اختاري القالب ثم انقري على القماش لتطبعي به! القالب إما جاهز بتصميم معين أو يُجهّز وفق التصميم. ومن حولنا: قالب الزهرة الخشبي، وقالب النجمة الخشبي، والشوكة، والختم الخشبي المحفور. نغمسه في الشمع المنصهر ثم نضغطه على القماش (شكل 90–92).',
+ amb:null,ctrl:'<button class="ib h" onclick="bt.mold=\'carrot\'">🪵 قالب زهرة</button><button class="ib" onclick="bt.mold=\'okra\'">⭐ قالب نجمة</button><button class="ib" style="background:#607D8B" onclick="bt.mold=\'fork\'">🍴 شوكة</button><button class="ib g" onclick="bt.mold=\'block\'">🪵 خشب</button><button class="ib" style="background:#7A3BA6" onclick="built.dyed=!built.dyed;built.paint();sfx(\'drop\',.6)">🎨 اصبغي / أزيلي</button>',
+ q:['أي قالب يطبع نجمة تتكرر بانتظام؟',['الشوكة','قالب النجمة الخشبي','غطاء القارورة'],1],
+ build(g){bt.mold='carrot';table(g);this.tx=ctex(TW,TH);clothPlane(g,this.tx);this.prints=[];this.dyed=false;this.M={};
+  ['carrot','okra','fork','block'].forEach((k,i)=>{const s=new THREE.Group();const face=stampFace(k);
+   const body=k==='block'?new THREE.Mesh(new THREE.BoxGeometry(.26,.12,.26),[M(0x9C6B3E),M(0x9C6B3E),M(0x9C6B3E),new THREE.MeshStandardMaterial({map:face.t}),M(0x9C6B3E),M(0x9C6B3E)])
+    :k==='fork'?new THREE.Mesh(new THREE.BoxGeometry(.24,.05,.2),[M(0xBDC3C7,{metalness:.8}),M(0xBDC3C7,{metalness:.8}),M(0xBDC3C7,{metalness:.8}),new THREE.MeshStandardMaterial({map:face.t,metalness:.6}),M(0xBDC3C7,{metalness:.8}),M(0xBDC3C7,{metalness:.8})])
+    :new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.06,32),[M(k==='carrot'?0xA0703C:0x8E5B2E),M(k==='carrot'?0xA0703C:0x8E5B2E),new THREE.MeshStandardMaterial({map:face.t})]);
+   s.add(body);
+   if(k==='carrot'){const c=new THREE.Mesh(new THREE.CylinderGeometry(.04,.05,.32,16),M(0x6B4423));c.position.y=.19;s.add(c);const kn=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),M(0x6B4423));kn.position.y=.38;s.add(kn)}
+   if(k==='okra'){const c=new THREE.Mesh(new THREE.CylinderGeometry(.04,.05,.32,16),M(0x5A3618));c.position.y=.19;s.add(c);const kn=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),M(0x5A3618));kn.position.y=.38;s.add(kn)}
+   if(k==='fork'){const h=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.45,10),M(0x95A5A6,{metalness:.8}));h.position.y=.25;s.add(h)}
+   if(k==='block'){const h=new THREE.Mesh(new THREE.BoxGeometry(.1,.2,.1),M(0x6B4423));h.position.y=.16;s.add(h)}
+   s.position.set(-.75+i*.5,-.2,.62);g.add(s);this.M[k]=s});
+  this.cloth=this.tx&&g.children.find(o=>o.isMesh&&o.geometry.type==='PlaneGeometry');this.nm=lbl(g,'',0,.75,0,'#C2185B',1.2);this.ph=0;this.n=0;setCtrl(this.ctrl)},
+ paint(){const g=this.tx.g;this.tx.clear();if(this.dyed){g.fillStyle='#7A3BA6';g.fillRect(0,0,TW,TH);crackle(g,TW,TH,'#4E2270',90)}this.prints.forEach(([k,x,y])=>{printShape(g,k,x,y,1.2);if(this.dyed){g.globalCompositeOperation='source-atop';g.globalCompositeOperation='source-over'}});
+  if(this.dyed){this.prints.forEach(([k,x,y])=>{g.save();g.fillStyle=g.strokeStyle=CREAM;printShape(g,k,x,y,1.2);g.restore()})}this.tx.up()},
+ pen(p,start){if(!start||this.dyed)return;this.tgt=[p.x,p.z];this.anim=0;},
+ update(dt,t){const nmT={carrot:'🪵 قالب زهرة خشبي ← زهرة',okra:'⭐ قالب نجمة خشبي ← نجمة',fork:'🍴 شوكة ← خطوط',block:'🪵 قالب خشبي ← زخرفة'}[bt.mold];if(this.nm.userData.t!==nmT)this.nm.userData.set(nmT);
+  Object.entries(this.M).forEach(([k,s],i)=>{if(k!==bt.mold){s.position.x+=(-.75+i*.5-s.position.x)*.1;s.position.z+=(.62-s.position.z)*.1;s.position.y+=(-.2-s.position.y)*.1;s.rotation.x=0}});
+  const s=this.M[bt.mold];s.rotation.x=Math.PI;
+  if(this.tgt){this.anim+=dt*2.2;const [tx,tz]=this.tgt;s.position.x+=(tx-s.position.x)*.35;s.position.z+=(tz-s.position.z)*.35;s.position.y=-.43+Math.abs(Math.cos(Math.min(this.anim,1)*Math.PI))*.3;
+   if(this.anim>=.5&&!this.done){this.done=true;const c=toC(tx,tz);this.prints.push([bt.mold,c[0],c[1]]);this.paint();sfx('drop',.4)}
+   if(this.anim>=1){this.tgt=null;this.done=false}}
+  else{s.position.y+=(-.12-s.position.y)*.1}}},
+{n:'🕯 الشمع والأمان',t:'تجهيز الشمع المنصهر بأمان',p:'نذيب الشمع حتى الانصهار التام: البارد يعرقل تسربه بين الألياف، والساخن جدًّا يتدفق بسرعة ويتلف التصميم. نستخدم مصدرًا كهربائيًّا لأنه أكثر حماية، ونضع مطفأة حريق قريبة.',
+ amb:null,ctrl:'<label>حرارة الشمع</label><input type="range" min="0" max="100" value="50" oninput="bt.temp=+this.value"><button class="ib" onclick="bt.src=\'e\';sfx(\'drop\',.5)">🔌 كهربائي</button><button class="ib h" onclick="bt.src=\'s\';sfx(\'knock\',.6)">🔥 موقد مباشر</button>',
+ q:['لماذا نذيب الشمع بمصدر كهربائي؟',['لأنه أسرع فقط','لأنه يغيّر لون الشمع','لأنه أكثر حماية'],2],
+ build(g){bt.temp=50;bt.src='e';table(g);const h=new THREE.Mesh(new THREE.BoxGeometry(.7,.16,.7),M(0x4A4A55));h.position.y=-.42;g.add(h);
+  this.led=new THREE.Mesh(new THREE.SphereGeometry(.035,12,8),M(0x4DD0E1,{emissive:0x4DD0E1,emissiveIntensity:1}));this.led.position.set(.28,-.4,.36);g.add(this.led);
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.3,.26,.36,36,1,true),M(0xB0B3BA,{metalness:.7,roughness:.25,side:2}));pot.position.y=-.16;g.add(pot);
+  const hd=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.4,10),M(0x333333));hd.rotation.z=Math.PI/2;hd.position.set(.48,-.05,0);g.add(hd);
+  this.wax=new THREE.Mesh(new THREE.CircleGeometry(.29,36),M(0xFFE7A3,{emissive:0x553300,emissiveIntensity:.3}));this.wax.rotation.x=-Math.PI/2;this.wax.position.y=-.03;g.add(this.wax);
+  this.chunks=[];for(let k=0;k<5;k++){const c=new THREE.Mesh(new THREE.BoxGeometry(.08,.05,.08),M(0xECEFF1));c.position.set(-.15+k*.07,0,(k%2)*.08-.04);g.add(c);this.chunks.push(c)}
+  this.steam=[];for(let k=0;k<8;k++){const s=glow('#ffffff',.18);s.position.set((Math.random()-.5)*.4,0,(Math.random()-.5)*.3);s.userData.o=Math.random();g.add(s);this.steam.push(s)}
+  this.fl=[];for(let k=0;k<6;k++){const f=new THREE.Mesh(new THREE.ConeGeometry(.05,.18,8),M(0xFF6D00,{emissive:0xFF3D00,emissiveIntensity:1}));const a=k/6*6.28;f.position.set(.3*Math.cos(a),-.3,.3*Math.sin(a));g.add(f);this.fl.push(f)}
+  const ext=new THREE.Group();const b=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.55,24),M(0xD32F2F,{metalness:.3}));ext.add(b);const tp=new THREE.Mesh(new THREE.CylinderGeometry(.04,.05,.1,12),M(0x212121));tp.position.y=.32;ext.add(tp);
+  const hs=new THREE.Mesh(new THREE.TorusGeometry(.1,.015,8,20,Math.PI),M(0x212121));hs.position.set(.08,.3,0);ext.add(hs);ext.position.set(-.85,-.22,.2);g.add(ext);
+  lbl(g,'مطفأة حريق 🧯',-.85,.25,.2,'#C62828',.9);this.st=lbl(g,'',0,.6,0,'#7A3BA6',1.2);this.wr=lbl(g,'⚠ خطر اشتعال! استخدمي الكهرباء',0,.95,0,'#C62828',1.6);setCtrl(this.ctrl)},
+ update(dt,t){const v=bt.temp,z=v<35?0:v<=70?1:2;const s=['❄ بارد: لا يتسرب','✨ منصهر تمامًا ✔','🔥 ساخن جدًّا: يتدفق'][z];if(this.st.userData.t!==s)this.st.userData.set(s);
+  this.wax.material.color.set([0xCFD8DC,0xFFE7A3,0xFFB74D][z]);this.chunks.forEach(c=>c.visible=z===0);
+  this.steam.forEach(p=>{p.userData.o=(p.userData.o+dt*.5)%1;p.position.y=0+p.userData.o*.6;p.material.opacity=z===2?(1-p.userData.o)*.7:0});
+  const stove=bt.src==='s';this.fl.forEach((f,i)=>{f.visible=stove;f.scale.y=.8+.4*Math.sin(t*12+i)});this.led.visible=!stove;this.wr.visible=stove}},
+{n:'🖼 الإطار والخطوات',t:'الإطار وخطوات التطبيق الأول',p:'نشدّ القماش على إطار خشبي ونثبته بالدبابيس، ثم نتابع خطوات الرسم بقمع الشمع حتى المنتج النهائي. اضغطي «الخطوة التالية» لتشاهدي كل خطوة على القماش (ص 89).',
+ amb:null,ctrl:'<button class="ib g" onclick="bt.step=(bt.step+1)%8;built.show();sfx(\'drop\',.6)">⏭ الخطوة التالية</button><button class="ib" onclick="bt.step=0;built.show();sfx(\'whoosh\',.5)">↺ من البداية</button>',
+ q:['ما الخطوة التي تأتي بعد التلوين بالصبغة؟',['نقل التصميم','التجفيف','تثبيت القماش'],1],
+ build(g){bt.step=0;table(g);this.tx=ctex(TW,TH);this.cl=clothPlane(g,this.tx,1.6,1.0,-.47);
+  this.fr=new THREE.Group();const wm=M(0x9C6B3E,{roughness:.6});[[0,-.55,1.8,.1],[0,.55,1.8,.1],[-.85,0,.1,1.2],[.85,0,.1,1.2]].forEach(([x,z,w,d])=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,.08,d),wm);b.position.set(x,-.46,z);this.fr.add(b)});
+  for(let k=0;k<9;k++)[-.52,.52].forEach(z=>{const p=new THREE.Mesh(new THREE.SphereGeometry(.018,8,6),M(0xDADADA,{metalness:.8}));p.position.set(-.8+k*.2,-.41,z);this.fr.add(p)});g.add(this.fr);
+  this.pot=new THREE.Group();const pc=new THREE.Mesh(new THREE.CylinderGeometry(.14,.12,.16,24),M(0xB0B3BA,{metalness:.7}));this.pot.add(pc);const pw=new THREE.Mesh(new THREE.CircleGeometry(.13,24),M(0xFFE7A3));pw.rotation.x=-Math.PI/2;pw.position.y=.081;this.pot.add(pw);
+  this.pot.position.set(1.0,-.42,-.45);g.add(this.pot);this.tj=tjantingModel();this.tj.scale.setScalar(.8);g.add(this.tj);
+  this.iron=new THREE.Group();const ib=new THREE.Mesh(new THREE.BoxGeometry(.36,.1,.2),M(0x90A4AE,{metalness:.5}));this.iron.add(ib);const ih=new THREE.Mesh(new THREE.TorusGeometry(.1,.02,8,16,Math.PI),M(0x455A64));ih.position.y=.06;this.iron.add(ih);g.add(this.iron);
+  this.sl=lbl(g,'',0,.65,0,'#C2185B',1.4);this.show();setCtrl(this.ctrl)},
+ show(){const s=bt.step,g=this.tx.g;this.tx.clear();const cx=TW/2,cy=TH/2;
+  if(s>=4){g.fillStyle=s>=5?'#7A3BA6':'#8E4FBA';g.fillRect(0,0,TW,TH);crackle(g,TW,TH,'#4E2270',s>=6?120:40)}
+  if(s===0){g.setLineDash([8,6]);g.strokeStyle='#888';g.lineWidth=2;flowerPath(g,cx,cy,110);g.stroke();g.setLineDash([])}
+  if(s>=1&&s<=2){g.strokeStyle='#999';g.lineWidth=2;flowerPath(g,cx,cy,110);g.stroke()}
+  if(s>=3){g.strokeStyle=s>=6?CREAM:WAXC;g.lineWidth=7;flowerPath(g,cx,cy,110);g.stroke();g.fillStyle=g.strokeStyle;for(let k=0;k<10;k++){const a=k/10*6.28;g.beginPath();g.arc(cx+145*Math.cos(a),cy+145*Math.sin(a)*.8,6,0,7);g.fill()}}
+  this.tx.up();this.fr.visible=s>=1;this.pot.visible=s>=2&&s<=3;this.tj.visible=s===3;this.iron.visible=s===6;this.sl.userData.set(STEPS[s])},
+ update(dt,t){if(this.tj.visible){const a=t*1.2,r=.25*(.62+.38*Math.cos(5*a));this.tj.position.set(r*Math.cos(a),-.42,r*Math.sin(a)*.8)}
+  if(this.iron.visible)this.iron.position.set(Math.sin(t*1.5)*.5,-.38,Math.cos(t*.9)*.2);this.cl.position.y=bt.step===5?-.47+.01*Math.sin(t*4):-.47}},
+{n:'🎁 المنتج النهائي',t:'من القماش إلى منتج مفيد',p:'نوظّف الباتيك في منتجات مفيدة كالوسادة والحقيبة والوشاح، ونهدي أحدها لأمهاتنا برًّا بهن وإدخالًا للسرور على قلوبهن (نشاط 4، ص 92).',
+ amb:null,ctrl:'<button class="ib h" onclick="bt.prod=0;sfx(\'drop\',.5)">🛋 وسادة</button><button class="ib" onclick="bt.prod=1;sfx(\'drop\',.5)">👜 حقيبة</button><button class="ib g" onclick="bt.prod=2;sfx(\'drop\',.5)">🧣 وشاح</button>',
+ q:['نهدي أمهاتنا عملًا فنيًّا بالباتيك تعبيرًا عن:',['المنافسة','برّ الوالدين ومحبتهن','التسلية فقط'],1],
+ build(g){bt.prod=0;const tx=batikTex(512,512,'#7A3BA6'),tx2=batikTex(512,512,'#1F8C8C'),tx3=batikTex(512,256,'#C2185B');
+  const pg=new THREE.BoxGeometry(1.1,1.1,.5,24,24,6);{const a=pg.attributes.position.array;for(let i=0;i<a.length;i+=3){const x=a[i]/.55,y=a[i+1]/.55;const f=Math.max(.12,(1-Math.pow(Math.abs(x),4))*(1-Math.pow(Math.abs(y),4)));a[i+2]*=f;a[i]*=1-.06*y*y;a[i+1]*=1-.06*x*x}pg.computeVertexNormals()}
+  const pil=new THREE.Mesh(pg,new THREE.MeshStandardMaterial({map:tx.t,roughness:.85}));pil.rotation.x=-.25;
+  const bag=new THREE.Group();const bb=new THREE.Mesh(new THREE.BoxGeometry(.8,.85,.18),new THREE.MeshStandardMaterial({map:tx2.t,roughness:.85}));bag.add(bb);[-.2,.2].forEach(x=>{const h=new THREE.Mesh(new THREE.TorusGeometry(.14,.025,8,24,Math.PI),M(0xF6EDD8));h.position.set(x,.42,0);bag.add(h)});
+  const geo=new THREE.PlaneGeometry(1.8,.5,40,6);const pos=geo.attributes.position;this.sg=geo;this.base=pos.array.slice();const sc=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({map:tx3.t,side:2,roughness:.85}));
+  const bow=new THREE.Group();[-1,1].forEach(s=>{const l=new THREE.Mesh(new THREE.TorusGeometry(.1,.03,8,16),M(0xE0A526,{metalness:.4}));l.position.set(s*.11,.25,0);l.scale.set(1,.6,1);bow.add(l)});bow.position.set(0,.36,.12);pil.add(bow);
+  this.P=[pil,bag,sc];this.P.forEach(p=>{g.add(p)});this.l=lbl(g,'هدية لأمي 💜',0,.8,0,'#C2185B',1.1);setCtrl(this.ctrl)},
+ update(dt,t){this.P.forEach((p,i)=>{const on=i===bt.prod;const s=p.scale;p.visible=true;const k=on?1:0;p.userData.k=(p.userData.k||0)+(k-(p.userData.k||0))*.15;p.visible=p.userData.k>.02;p.position.y=(i===0?.05:-.1)+(1-p.userData.k)*-.6});
+  const a=this.sg.attributes.position.array;for(let i=0;i<a.length;i+=3){a[i+2]=.12*Math.sin(this.base[i]*3+t*2)}this.sg.attributes.position.needsUpdate=true;this.sg.computeVertexNormals()}}];
+
+let cur=0,built=null;
+function load(i){cur=i;rotX=.5;rotY=0;while(holder.children.length)holder.remove(holder.children[0]);const s=SC[i];built=Object.create(s);const inner=new THREE.Group();holder.add(inner);holder.scale.setScalar(1);holder.rotation.set(0,0,0);built.build(inner);
+inner.updateMatrixWorld(true);const bx=new THREE.Box3();inner.traverse(o=>{if(o.isMesh&&o.visible!==false){o.geometry.computeBoundingBox();const b=o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld);bx.union(b)}});
+if(!bx.isEmpty()){const c=new THREE.Vector3();bx.getCenter(c);holder.worldToLocal(c);inner.position.set(-c.x,-c.y+.1,-c.z)}
+document.getElementById('iT').textContent=s.t;document.getElementById('iP').textContent=s.p;document.getElementById('info').classList.remove('min');
+document.querySelectorAll('#chips button').forEach((b,j)=>b.classList.toggle('on',j===i));holder.scale.setScalar(.01);pop=0;sfx('whoosh',.55);ambient(s.amb);try{history.replaceState(null,'','#s'+i)}catch(e){}}
+let pop=1;
+document.getElementById('chips').innerHTML=SC.map((s,i)=>`<button onclick="load(${i})">${s.n}</button>`).join('');
+// quiz
+function openQuiz(){const q=SC[cur].q;document.getElementById('qq').textContent='❓ '+q[0];document.getElementById('qfb').textContent='';
+document.getElementById('qo').innerHTML=q[1].map((o,i)=>`<button class="qo" onclick="qa(${i},this)">${'أبج'[i]}) ${o}</button>`).join('');document.getElementById('quiz').style.display='flex';sfx('drop',.5)}
+function qa(i,b){const q=SC[cur].q;if(b.parentNode.dataset.d)return;b.parentNode.dataset.d=1;const ok=i===q[2];b.classList.add(ok?'ok':'no');b.parentNode.children[q[2]].classList.add('ok');
+document.getElementById('qfb').textContent=ok?'🎉 أحسنتِ! إجابة صحيحة':'💡 الإجابة الصحيحة مظلّلة بالأخضر';sfx(ok?'applause':'knock',.8);if(ok)toast('⭐ +10')}
+function closeQ(){document.getElementById('quiz').style.display='none'}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1200)}
+// snapshot
+function snap(){const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');
+if(video.videoWidth){const vr=video.videoWidth/video.videoHeight,cr=c.width/c.height;let sw=video.videoWidth,sh=video.videoHeight,sx=0,sy=0;if(vr>cr){sw=sh*cr;sx=(video.videoWidth-sw)/2}else{sh=sw/cr;sy=(video.videoHeight-sh)/2}g.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height)}else{g.fillStyle='#16304f';g.fillRect(0,0,c.width,c.height)}
+g.drawImage(cv,0,0);g.fillStyle='rgba(61,31,92,.85)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • التربية الفنية • أ. نوف الشريف',c.width/2,c.height-25);
+const u=c.toDataURL('image/png');document.getElementById('shotImg').src=u;document.getElementById('dl').href=u;document.getElementById('shot').style.display='flex';sfx('drop',.7)}
+function toggleUI(){const c=document.body.classList.toggle('clean');document.getElementById('eye').textContent=c?'🙈':'👁';sfx('drop',.4);if(c)toast('اضغطي 🙈 لإظهار الإطارات')}
+let lastTap=0;cv.addEventListener('pointerup',e=>{if(penUsed){lastTap=0;return}const n=Date.now();if(n-lastTap<300)toggleUI();lastTap=n});
+let follow=false;function toggleFollow(){follow=!follow;q0=null;document.getElementById('flw').textContent=follow?'🧭':'📌';toast(follow?'🧭 يتحرك مع اتجاه الجوال':'📌 النموذج ثابت في المنتصف');sfx('drop',.4)}
+// loop
+const clock=new THREE.Clock();
+function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+if(follow&&gyro&&q0){cam.quaternion.copy(q0).multiply(qd)}else{cam.quaternion.set(0,0,0,1)}
+pop=Math.min(1,pop+dt*2.2);const e=1-Math.pow(1-pop,3)*(1-pop*0)+Math.sin(pop*Math.PI)*.08;
+var asp=innerWidth/innerHeight;window.base=asp<1?.4+asp*.4:1;anchor.position.y=asp<1?.08:-.02;holder.scale.setScalar(Math.max(.01,e)*zoom*base);disc.scale.setScalar(base);disc.position.y=ring.position.y=-.75*base;holder.rotation.y+=((rotY+((drag||SC[cur].still)?0:t*.15))-holder.rotation.y)*.2;holder.rotation.x+=(rotX-holder.rotation.x)*.2;
+ring.material.opacity=.5+.3*Math.sin(t*3);ring.scale.setScalar((1+.03*Math.sin(t*3))*base);
+if(built)built.update.call(built,dt,t);R.render(scene,cam);requestAnimationFrame(loop)}
+document.fonts.load('800 52px Almarai').finally(()=>{const h=location.hash.match(/^#s(\d)$/);load(h&&+h[1]<SC.length?+h[1]:0);loop()});
+setTimeout(()=>document.getElementById('hint').style.opacity=0,6000);
+</script>
+<script src="guide.js"></script><script>
+(function(){const T=['ارسمي بإصبعك على القماش ✒','اختاري الفرشاة وارسمي 🖌','انقري على القماش لتطبعي بالقالب 🪵','حرّكي مؤشر الحرارة وانتبهي للأمان ⚠','اضغطي «الخطوة التالية» ⏭','اختاري المنتج… هدية لأمي 💜'];
+const _l=window.load;window.load=function(i){_l.apply(this,arguments);say(T[i]||'','jump')}})();
+</script></body></html>

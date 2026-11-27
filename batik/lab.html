@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مرسم الشمع السحري | تقنيات فن الباتيك</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#3D1F5C;--gold:#A8741A;--teal:#1F7A80;--cream:#F3ECFB;--hot:#C2185B;--vio:#7A3BA6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Almarai,sans-serif;color:var(--navy);min-height:100vh;background:#223 url(img/tjanting.jpg) right center/cover fixed no-repeat}
+header{position:relative;min-height:150px;display:flex;align-items:flex-end}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(61,31,92,.88),rgba(61,31,92,.15))}
+.hin{position:relative;padding:18px 20px;color:#fff;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.hin h1{margin:0;font-size:clamp(22px,4vw,34px)}.hin p{margin:6px 0 0;opacity:.92}
+.logos img{height:58px;background:#fff;border-radius:10px;padding:4px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;border-radius:14px;margin-top:8px}
+nav button{flex:0 0 auto;border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--navy);color:#fff}
+main{max-width:1100px;margin:auto;padding:16px}
+@media(min-width:1000px){.wrapL{width:62vw;max-width:1000px;margin-left:2vw!important;margin-right:auto!important}}
+.lab{display:none}.lab.on{display:block;animation:fi .4s}@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.card{background:rgba(255,255,255,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(61,31,92,.1);margin-bottom:14px}
+h2{margin:0 0 6px;font-size:24px}
+.q{background:rgba(243,236,251,.9);border-right:5px solid var(--vio);padding:10px 12px;border-radius:10px;margin:8px 0;line-height:1.8}
+.row{display:flex;gap:14px;flex-wrap:wrap}.col{flex:1 1 300px}
+canvas{direction:ltr;width:100%;background:rgba(250,250,255,.9);border-radius:12px;border:1px solid #d7d2ea;display:block}
+canvas.dark{background:#0d0b1e}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input[type=range]{width:100%;accent-color:var(--vio)}
+select,input[type=number]{font:inherit;padding:6px;border-radius:8px;border:1px solid #a9a3c8;width:100%}
+.btn{border:0;background:var(--teal);color:#fff;font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;cursor:pointer;margin:6px 0 0 6px}
+.btn.gold{background:var(--gold)}.btn.hot{background:var(--hot)}.btn.vio{background:var(--vio)}
+.out{font-size:18px;font-weight:800;color:var(--teal);margin-top:8px;line-height:1.8}
+table{border-collapse:collapse;width:100%;margin-top:8px}td,th{border:1px solid #cfc8e6;padding:6px;text-align:center}th{background:var(--navy);color:#fff}
+.reveal{display:none;background:#E7F5EF;border-right:5px solid #2E8B57;padding:10px;border-radius:10px;margin-top:6px;line-height:1.9}
+.tag{display:inline-block;background:var(--vio);color:#fff;border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:6px}
+.ltr{direction:ltr;unicode-bidi:embed;display:inline-block}
+.chips button{border:2px solid var(--navy);background:#fff;font:inherit;padding:6px 10px;border-radius:10px;margin:3px;cursor:pointer}
+.chips button.on{background:var(--navy);color:#fff}
+.chips button.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.chips button.no{background:#c0392b;color:#fff;border-color:#c0392b}
+.warn{background:#FFF3E0;border-right:5px solid #E65100;padding:8px 12px;border-radius:10px;margin:8px 0}
+footer{text-align:center;padding:12px;font-size:14px;background:rgba(255,255,255,.75);margin:0 16px 16px;border-radius:12px}
+</style>
+
+<style>
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tools button{border:2px solid var(--navy);background:#fff;color:var(--navy);font:inherit;font-weight:700;padding:7px 12px;border-radius:999px;cursor:pointer}
+.tools button.on{background:var(--navy);color:#fff}
+.dye{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #3D1F5C;cursor:pointer;display:inline-block;vertical-align:middle;margin:3px}
+.dye.on{box-shadow:0 0 0 4px #C2185B}
+canvas.cloth{background:#F6EDD8;touch-action:none;cursor:crosshair}
+.step{display:inline-block;background:#F3ECFB;border:2px solid #cfc8e6;border-radius:12px;padding:8px 12px;margin:4px;cursor:pointer;font-weight:700}
+.step.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.step.no{animation:sh .35s;background:#c0392b;color:#fff}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;min-height:44px;background:rgba(255,255,255,.6);border-radius:12px;padding:6px}
+.flow span{background:var(--navy);color:#fff;border-radius:10px;padding:6px 10px;font-weight:700}
+</style>
+<link rel="stylesheet" href="guide.css"><style>
+header{background:linear-gradient(135deg,rgba(61,31,92,.95),rgba(122,59,166,.88) 60%,rgba(31,140,140,.85))!important;border-bottom:4px solid #D4A437}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(255,255,255,.78))!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid rgba(212,164,55,.55)!important;border-radius:22px!important;box-shadow:0 16px 40px rgba(61,31,92,.22)!important}
+.card h2{color:#3D1F5C}.card .tag{background:linear-gradient(135deg,#D4A437,#F2C76E)!important;color:#3D1F5C!important}
+#nav button{border-radius:999px!important;border:2px solid rgba(212,164,55,.6)!important}
+#nav button.on{background:linear-gradient(135deg,#7A3BA6,#C2185B)!important;color:#fff!important}
+.btn{border-radius:14px!important;box-shadow:0 4px 12px rgba(61,31,92,.25)}
+canvas.cloth{border-radius:16px;box-shadow:inset 0 0 0 6px #9C6B3E,0 10px 26px rgba(61,31,92,.25)}
+.dye{transition:transform .15s}.dye:hover{transform:scale(1.15)}
+@media(min-width:900px){main{padding-left:190px}}
+</style></head>
+<body>
+<header><div class="hin"><div><h1>🎨 مرسم الشمع السحري: تقنيات فن الباتيك</h1><p>التربية الفنية • مجال الطباعة • الموضوع الثاني • أ. نوف الشريف</p></div><div class="logos"><img src="img/moe.png" alt="وزارة التعليم"></div></div></header>
+<nav id="nav" class="wrapL"></nav>
+<main class="wrapL">
+
+<section class="lab" id="temp" data-t="① مقياس حرارة الشمع">
+<div class="card"><span class="tag">تجربة 1</span><h2>الانصهار التام: لا بارد ولا ساخن جدًّا</h2>
+<div class="q">غيّري حرارة الشمع ومصدر الحرارة، ثم ارسمي خطًا بالشمع واصبغي القماش. متى يتسرب الشمع بين الألياف ويعطي خطًا واضحًا؟ (ص 86)</div>
+<canvas id="tC" class="dark" width="900" height="360"></canvas>
+<div class="row"><div class="col"><label>حرارة الشمع: <b id="tV">منصهر تمامًا</b></label><input type="range" id="tT" min="0" max="100" value="50"></div>
+<div class="col"><label>مصدر الحرارة</label><div class="tools" id="tSrc"><button class="on" data-v="e">🔌 مصدر كهربائي</button><button data-v="s">🔥 موقد مباشر</button></div></div></div>
+<button class="btn vio" onclick="tStage(1)">✒ ارسمي خطًا بالشمع</button> <button class="btn hot" onclick="tStage(2)">🎨 اصبغي</button> <button class="btn" onclick="tStage(0)">↺ من جديد</button>
+<div class="out" id="tO"></div>
+<button class="btn gold" onclick="rv('r1')">▶ ماذا تلاحظين؟</button>
+<div class="reveal" id="r1">الشمع البارد يعرقل تسربه بين ألياف القماش فتتسرب الصبغة تحته، والساخن جدًّا يتدفق بسرعة فيصعب التحكم فيه ويتلف التصميم. أفضل نتيجة عند الانصهار التام، ونذيب الشمع دائمًا بمصدر كهربائي لأنه أكثر حماية، مع مطفأة حريق قريبة.</div></div>
+</section>
+
+<section class="lab" id="draw" data-t="② ارسمي بقلم الشمع ثم اصبغي">
+<div class="card"><span class="tag">تجربة 2</span><h2>الرسم بقمع الشمع (التطبيق الأول)</h2>
+<div class="q">ارسمي تصميمك بقلم الشمع على القماش، ثم اختاري صبغة واصبغي، ثم أزيلي الشمع بالكي. جرّبي ألوانًا متعددة: أصفر ← شمع جديد ← بنفسجي.</div>
+<div class="tools" id="dTools"></div>
+<div><span style="font-weight:700">الصبغة: </span><span id="dDyes"></span></div>
+<canvas id="dC" class="cloth" width="900" height="460"></canvas>
+<button class="btn hot" onclick="CL.d.dye()">🎨 اصبغي</button> <button class="btn gold" onclick="CL.d.remove('كي')">♨ أزيلي الشمع بالكي</button> <button class="btn" onclick="CL.d.reset()">↺ قطعة جديدة</button> <button class="btn vio" onclick="CL.d.save()">⬇ احفظي عملك</button>
+<div class="out" id="dO">✒ ارسمي بالشمع على القماش…</div>
+<button class="btn gold" onclick="rv('r2')">▶ ماذا تلاحظين؟</button>
+<div class="reveal" id="r2">الأجزاء التي غطاها الشمع لم تصلها الصبغة، فظهرت بلون القماش (أو باللون السابق) بعد إزالة الشمع. ولاحظي الشقوق الدقيقة (التشقق) التي تتسرب إليها الصبغة فتعطي الباتيك طابعه المميز.</div></div>
+</section>
+
+<section class="lab" id="brush" data-t="③ الفرشاة: صغيرة وكبيرة">
+<div class="card"><span class="tag">تجربة 3</span><h2>الرسم بالفرشاة (التطبيق الثاني)</h2>
+<div class="q">نقلنا لكِ تصميم غصن بأوراق على القماش. حدّدي العروق والنقاط بالفرشاة الصغيرة، واملئي الأوراق بالفرشاة الكبيرة، ثم اصبغي وأزيلي الشمع. (ص 87 و 90)</div>
+<div class="tools" id="bTools"></div>
+<div><span style="font-weight:700">الصبغة: </span><span id="bDyes"></span></div>
+<canvas id="bC" class="cloth" width="900" height="420"></canvas>
+<button class="btn hot" onclick="CL.b.dye()">🎨 اصبغي</button> <button class="btn gold" onclick="CL.b.remove('كي')">♨ أزيلي الشمع بالكي</button> <button class="btn" onclick="CL.b.reset()">↺ من جديد</button>
+<div class="out" id="bO"></div>
+<h3 style="margin:14px 0 4px">🎯 تحدّي: أي أداة؟</h3>
+<div id="bQ"></div>
+<div class="out" id="bQO"></div></div>
+</section>
+
+<section class="lab" id="stamp" data-t="④ اطبعي بقوالب البيئة">
+<div class="card"><span class="tag">تجربة 4</span><h2>الباتيك بقالب من البيئة (التطبيق الثالث)</h2>
+<div class="q">اختاري قالبًا من البيئة، واغمسيه في الشمع المنصهر، ثم اضغطيه على القماش بالنقر. بعدها اصبغي وأزيلي الشمع بالماء المغلي. (ص 88 و 91)</div>
+<div class="tools" id="sTools"></div>
+<div><span style="font-weight:700">الصبغة: </span><span id="sDyes"></span></div>
+<canvas id="sC" class="cloth" width="900" height="420"></canvas>
+<button class="btn hot" onclick="CL.s.dye()">🎨 اصبغي</button> <button class="btn gold" onclick="CL.s.remove('ماء')">♨ أزيلي الشمع بالماء المغلي</button> <button class="btn" onclick="CL.s.reset()">↺ قطعة جديدة</button> <button class="btn vio" onclick="CL.s.save()">⬇ احفظي عملك</button>
+<div class="out" id="sO">🪵 اختاري قالبًا واضغطي على القماش…</div>
+<button class="btn gold" onclick="rv('r4')">▶ ماذا تلاحظين؟</button>
+<div class="reveal" id="r4">لكل قالب أثر شمعي مميز: قالب الزهرة الخشبي زهرة، وقالب النجمة الخشبي نجمة، والشوكة خطوط متوازية، وغطاء القارورة دوائر. القالب يكرر الزخرفة بسرعة وانتظام، ونزيل الشمع في هذا التطبيق بالماء المغلي.</div></div>
+</section>
+
+<section class="lab" id="multi" data-t="⑤ تعدد الألوان">
+<div class="card"><span class="tag">تجربة 5</span><h2>من الفاتح إلى الغامق</h2>
+<div class="q">رتّبي ثلاث صبغات بالضغط عليها بالترتيب الذي تريدينه. بين كل صبغة وأخرى نغطي جزءًا جديدًا من الزهرة بالشمع. أي ترتيب يُظهر الألوان كلها بوضوح؟</div>
+<div id="mDy"></div><div class="flow" id="mFlow"></div>
+<div class="row"><div class="col"><canvas id="mC" width="440" height="440"></canvas></div>
+<div class="col"><div class="out" id="mO">اختاري ثلاث صبغات…</div><button class="btn" onclick="mReset()">↺ من جديد</button>
+<button class="btn gold" onclick="rv('r5')">▶ القاعدة</button>
+<div class="reveal" id="r5">نصبغ من الفاتح إلى الغامق؛ لأن كل صبغة تُضاف فوق ما قبلها فتُغمّق اللون، والصبغة الفاتحة لا تظهر فوق الغامقة. ونغطي بالشمع قبل كل صبغة الأجزاء التي نريد الاحتفاظ بلونها.</div></div></div></div>
+</section>
+
+<section class="lab" id="order" data-t="⑥ رتّبي خطوات التطبيقات">
+<div class="card"><span class="tag">تجربة 6</span><h2>رتّبي خطوات التطبيق</h2>
+<div class="q">اختاري التطبيق، ثم اضغطي على الخطوات بترتيبها الصحيح كما في الكتاب (ص 89–91).</div>
+<div class="tools" id="oApps"></div>
+<div class="flow" id="oFlow"></div><div id="oCards"></div>
+<div class="out" id="oO"></div></div>
+</section>
+</main>
+<footer>🎨 مرسم الشمع السحري • التربية الفنية • إعداد المعلمة: أ. نوف الشريف</footer>
+<audio id="sClick" src="snd/drop.mp3" preload="auto"></audio><audio id="sOk" src="snd/applause.mp3" preload="auto"></audio><audio id="sNo" src="snd/knock.mp3" preload="auto"></audio><audio id="sBub" src="snd/bubble.mp3" preload="auto"></audio>
+<script>
+const $=i=>document.getElementById(i);
+const snd=n=>{try{const a=$(n).cloneNode();a.volume=.6;a.play().catch(()=>{})}catch(e){}};
+function rv(id){const e=$(id);e.style.display=e.style.display==='block'?'none':'block';snd('sClick')}
+const labs=[...document.querySelectorAll('.lab')];
+$('nav').innerHTML=labs.map((l,i)=>`<button onclick="go(${i})">${l.dataset.t}</button>`).join('');
+function go(i){labs.forEach((l,j)=>l.classList.toggle('on',i===j));[...$('nav').children].forEach((b,j)=>b.classList.toggle('on',i===j));snd('sClick');try{history.replaceState(null,'','#'+labs[i].id)}catch(e){}}
+const CREAM='#F6EDD8';
+const DYES=[['أصفر','#F4C430'],['برتقالي','#E67E22'],['وردي','#E07AA8'],['فيروزي','#1FA3A3'],['بنفسجي','#7A3BA6'],['نيلي','#2E3A87']];
+function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
+function star(g,x,y,n,r1,r2){g.beginPath();for(let k=0;k<2*n;k++){const r=k%2?r2:r1,a=Math.PI*k/n-Math.PI/2;g.lineTo(x+r*Math.cos(a),y+r*Math.sin(a))}g.closePath();g.fill()}
+function petals(g,x,y,n,r){for(let k=0;k<n;k++){const a=2*Math.PI*k/n;g.save();g.translate(x,y);g.rotate(a);g.beginPath();g.ellipse(r*.55,0,r*.5,r*.24,0,0,7);g.fill();g.restore()}g.beginPath();g.arc(x,y,r*.2,0,7);g.fill()}
+const STAMPS={
+ carrot:{t:'🪵 قالب زهرة',f:(g,x,y)=>{g.beginPath();g.arc(x,y,30,0,7);g.lineWidth=5;g.stroke();petals(g,x,y,6,26)}},
+ okra:{t:'⭐ قالب نجمة',f:(g,x,y)=>{g.beginPath();g.arc(x,y,26,0,7);g.lineWidth=5;g.stroke();star(g,x,y,5,20,8)}},
+ fork:{t:'🍴 شوكة',f:(g,x,y)=>{for(let k=0;k<4;k++)g.fillRect(x-22+k*13,y-26,6,52)}},
+ cap:{t:'⭕ غطاء قارورة',f:(g,x,y)=>{g.lineWidth=6;g.beginPath();g.arc(x,y,24,0,7);g.stroke();g.beginPath();g.arc(x,y,10,0,7);g.stroke()}},
+ block:{t:'🪵 قالب خشبي',f:(g,x,y)=>{g.lineWidth=4;g.strokeRect(x-30,y-30,60,60);petals(g,x,y,8,22);[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>{g.beginPath();g.arc(x+a*22,y+b*22,4,0,7);g.fill()})}}};
+class Cloth{
+ constructor(id,out,tools,dyes,opts={}){this.C=$(id);this.g=this.C.getContext('2d');this.W=this.C.width;this.H=this.C.height;this.out=out;this.opts=opts;
+  this.tools=tools;this.tool=tools[0][0];this.dyeCol=DYES[opts.dye||0][1];this.dyeName=DYES[opts.dye||0][0];
+  const tb=$(opts.toolsEl);tb.innerHTML=tools.map(([k,t])=>`<button data-k="${k}">${t}</button>`).join('');
+  [...tb.children].forEach(b=>b.onclick=()=>{this.tool=b.dataset.k;[...tb.children].forEach(x=>x.classList.toggle('on',x===b));snd('sClick')});tb.children[0].classList.add('on');
+  const de=$(opts.dyesEl);de.innerHTML=DYES.map(([n,c],i)=>`<span class="dye" title="${n}" style="background:${c}" data-i="${i}"></span>`).join('');
+  [...de.children].forEach(s=>s.onclick=()=>{this.dyeCol=DYES[s.dataset.i][1];this.dyeName=DYES[s.dataset.i][0];[...de.children].forEach(x=>x.classList.toggle('on',x===s));snd('sClick')});de.children[opts.dye||0].classList.add('on');
+  this.reset(true);let down=false,last=null;
+  const P=e=>{const r=this.C.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return[(t.clientX-r.left)*this.W/r.width,(t.clientY-r.top)*this.H/r.height]};
+  const st=e=>{e.preventDefault();const p=P(e);if(STAMPS[this.tool]){this.stamp(p);return}down=true;last=p;this.stroke(p,p)};
+  const mv=e=>{if(!down)return;e.preventDefault();const p=P(e);this.stroke(last,p);last=p};
+  const en=()=>{if(down){down=false;this.msg()}};
+  this.C.addEventListener('mousedown',st);this.C.addEventListener('mousemove',mv);addEventListener('mouseup',en);
+  this.C.addEventListener('touchstart',st,{passive:false});this.C.addEventListener('touchmove',mv,{passive:false});addEventListener('touchend',en)}
+ reset(first){this.col=mk(this.W,this.H);const c=this.col.getContext('2d');c.fillStyle=CREAM;c.fillRect(0,0,this.W,this.H);
+  c.globalAlpha=.06;c.strokeStyle='#8D6E63';for(let x=0;x<this.W;x+=4){c.beginPath();c.moveTo(x,0);c.lineTo(x,this.H);c.stroke()}for(let y=0;y<this.H;y+=4){c.beginPath();c.moveTo(0,y);c.lineTo(this.W,y);c.stroke()}c.globalAlpha=1;
+  if(this.opts.template)this.opts.template(c);
+  this.wax=mk(this.W,this.H);this.baths=0;this.waxed=0;this.draw();if(!first){snd('sClick');$(this.out).textContent='قطعة جديدة ✨'}}
+ width(){return {tj:4,sb:11,bb:38}[this.tool]||6}
+ stroke(a,b){const w=this.wax.getContext('2d');w.strokeStyle='#fff';w.fillStyle='#fff';w.lineCap='round';w.lineJoin='round';w.lineWidth=this.width();
+  w.beginPath();w.moveTo(a[0],a[1]);w.lineTo(b[0],b[1]);w.stroke();this.waxed++;this.draw()}
+ stamp(p){const w=this.wax.getContext('2d');w.fillStyle='#fff';w.strokeStyle='#fff';STAMPS[this.tool].f(w,p[0],p[1]);this.waxed+=40;snd('sBub');this.draw();this.msg()}
+ msg(){if(this.waxed)$(this.out).textContent=`🕯 طبّقتِ الشمع… اختاري صبغة ثم اضغطي «اصبغي»`}
+ dye(){if(!this.waxed&&!this.baths){$(this.out).textContent='💡 طبّقي الشمع أولًا؛ وإلا تلوّن القماش كله!'}
+  const t=mk(this.W,this.H),g=t.getContext('2d');g.fillStyle=this.dyeCol;g.fillRect(0,0,this.W,this.H);g.globalCompositeOperation='destination-out';g.drawImage(this.wax,0,0);
+  // crackle inside wax
+  const k=mk(this.W,this.H),kg=k.getContext('2d');kg.strokeStyle=this.dyeCol;kg.lineWidth=1.2;kg.globalAlpha=.55;
+  for(let i=0;i<160;i++){let x=Math.random()*this.W,y=Math.random()*this.H;kg.beginPath();kg.moveTo(x,y);for(let j=0;j<4;j++){x+=(Math.random()-.5)*50;y+=(Math.random()-.5)*40;kg.lineTo(x,y)}kg.stroke()}
+  kg.globalCompositeOperation='destination-in';kg.globalAlpha=1;kg.drawImage(this.wax,0,0);
+  const c=this.col.getContext('2d');c.globalCompositeOperation='multiply';c.drawImage(t,0,0);c.drawImage(k,0,0);c.globalCompositeOperation='source-over';
+  this.baths++;snd('sBub');this.draw();
+  $(this.out).textContent=`🎨 صُبغ القماش باللون ${this.dyeName}. الأجزاء المشمّعة لم تتلوّن! أضيفي شمعًا ولونًا أغمق، أو أزيلي الشمع.`}
+ remove(how){if(!this.baths){$(this.out).textContent='💡 اصبغي القماش أولًا ثم أزيلي الشمع.';return}
+  let a=1;const anim=()=>{a-=.08;this.draw(Math.max(a,0));if(a>0)requestAnimationFrame(anim);else{this.wax=mk(this.W,this.H);this.waxed=0;this.draw();snd('sOk');
+   $(this.out).textContent=`✨ أُزيل الشمع ${how==='ماء'?'بالماء المغلي':'بالكي بين طبقات الورق'}… وظهر التصميم! أحسنتِ يا فنانة 👏`}};anim()}
+ draw(a=1){const g=this.g;g.clearRect(0,0,this.W,this.H);g.drawImage(this.col,0,0);
+  const t=mk(this.W,this.H),tg=t.getContext('2d');tg.fillStyle='#FFE7A3';tg.fillRect(0,0,this.W,this.H);tg.globalCompositeOperation='destination-in';tg.drawImage(this.wax,0,0);
+  g.globalAlpha=.78*a;g.drawImage(t,0,0);g.globalAlpha=1}
+ save(){const a=document.createElement('a');a.download='batik.png';a.href=this.C.toDataURL('image/png');a.click()}}
+const leafT=g=>{g.strokeStyle='rgba(90,90,90,.45)';g.lineWidth=1.5;g.setLineDash([6,5]);g.beginPath();g.moveTo(80,380);g.bezierCurveTo(300,300,520,260,840,120);g.stroke();
+ [[220,330,-1],[360,290,1],[500,250,-1],[640,200,1],[760,150,-1]].forEach(([x,y,s])=>{g.save();g.translate(x,y);g.rotate(s*-.9-.4);g.beginPath();g.ellipse(55,0,55,24,0,0,7);g.stroke();g.beginPath();g.moveTo(0,0);g.lineTo(108,0);g.stroke();g.restore()});g.setLineDash([])};
+const CL={
+ d:new Cloth('dC','dO',[['tj','✒ قلم الشمع'],['sb','🖌 فرشاة صغيرة'],['bb','🖌 فرشاة كبيرة']],DYES,{toolsEl:'dTools',dyesEl:'dDyes',dye:0}),
+ b:new Cloth('bC','bO',[['sb','🖌 فرشاة صغيرة'],['bb','🖌 فرشاة كبيرة'],['tj','✒ قلم الشمع']],DYES,{toolsEl:'bTools',dyesEl:'bDyes',dye:2,template:leafT}),
+ s:new Cloth('sC','sO',Object.entries(STAMPS).map(([k,v])=>[k,v.t]),DYES,{toolsEl:'sTools',dyesEl:'sDyes',dye:4})};
+$('bO').textContent='🖌 ابدئي بالفرشاة الصغيرة لتحديد العروق…';
+// tool quiz
+const BQ=[['نقاط صغيرة في زاوية ضيقة','فرشاة صغيرة'],['تعبئة أرضية التصميم الكبيرة','فرشاة كبيرة'],['خطوط رفيعة متصلة حول ورقة','قلم الشمع'],['تكرار زهرة عشرين مرة بانتظام','القالب']];
+$('bQ').innerHTML=BQ.map(([q,a],i)=>`<div style="margin:6px 0"><b>${i+1}. ${q}</b><div class="chips">${['قلم الشمع','فرشاة صغيرة','فرشاة كبيرة','القالب'].map(o=>`<button onclick="bq(this,${i},'${o}')">${o}</button>`).join('')}</div></div>`).join('');
+let bqs=0;function bq(b,i,o){const ok=o===BQ[i][1];b.classList.add(ok?'ok':'no');snd(ok?'sOk':'sNo');if(ok){bqs++;b.parentNode.querySelectorAll('button').forEach(x=>x.disabled=true)}$('bQO').textContent=ok?`🎉 صحيح! (${bqs}/4)`:'💡 فكّري في حجم المساحة ودقة التفاصيل.'}
+// temperature lab
+let tS=0,src='e';[...$('tSrc').children].forEach(b=>b.onclick=()=>{src=b.dataset.v;[...$('tSrc').children].forEach(x=>x.classList.toggle('on',x===b));snd(src==='s'?'sNo':'sClick');tDraw()});
+$('tT').oninput=()=>{tS=0;tDraw()};
+function zone(){const v=+$('tT').value;return v<35?0:v<=70?1:2}
+function tStage(s){if(s===2&&tS<1){$('tO').textContent='💡 ارسمي الخط بالشمع أولًا.';return}tS=s;snd(s===2?'sBub':'sClick');tDraw()}
+function tDraw(){const g=$('tC').getContext('2d'),v=+$('tT').value,z=zone();g.fillStyle='#1a1030';g.fillRect(0,0,900,360);
+ $('tV').textContent=['بارد','منصهر تمامًا','ساخن جدًّا'][z];
+ // thermometer
+ const grd=g.createLinearGradient(40,0,300,0);grd.addColorStop(0,'#64B5F6');grd.addColorStop(.5,'#FFD54F');grd.addColorStop(1,'#E53935');g.fillStyle=grd;g.fillRect(40,30,260,16);
+ g.fillStyle='#fff';g.beginPath();g.arc(40+v*2.6,38,11,0,7);g.fill();g.font='700 15px Almarai';g.textAlign='center';g.fillText('بارد',55,70);g.fillText('منصهر تمامًا',170,70);g.fillText('ساخن جدًّا',285,70);
+ // heater + pot
+ if(src==='s'){g.fillStyle='#E65100';for(let k=0;k<5;k++){g.beginPath();g.moveTo(100+k*30,290);g.quadraticCurveTo(110+k*30,250-Math.random()*20,120+k*30,290);g.fill()}g.fillStyle='#424242';g.fillRect(80,290,180,24)}
+ else{g.fillStyle='#5C5C66';g.fillRect(80,270,180,40);g.fillStyle='#4DD0E1';g.beginPath();g.arc(240,290,7,0,7);g.fill()}
+ g.fillStyle='#B0B3BA';g.beginPath();g.moveTo(95,170);g.lineTo(245,170);g.lineTo(235,265);g.lineTo(105,265);g.closePath();g.fill();
+ g.fillStyle=['#CFD8DC','#FFE7A3','#FFB74D'][z];g.beginPath();g.ellipse(170,170,75,14,0,0,7);g.fill();
+ if(z===0){g.fillStyle='#ECEFF1';for(let k=0;k<4;k++)g.fillRect(120+k*28,152,22,16)}
+ if(z===2){g.strokeStyle='rgba(220,220,220,.8)';g.lineWidth=3;for(let k=0;k<3;k++){g.beginPath();g.moveTo(140+k*30,150);g.quadraticCurveTo(125+k*30,125,145+k*30,100);g.stroke()}}
+ if(src==='s'){g.fillStyle='#FF5252';g.font='800 18px Almarai';g.fillText('⚠ خطر اشتعال الشمع!',170,345)}
+ // fibers cross-section
+ const x0=360;g.fillStyle='#fff';g.font='700 16px Almarai';g.fillText('مقطع مكبّر في ألياف القماش',630,30);
+ for(let k=0;k<10;k++){const x=x0+30+k*52,y=170+(k%2?10:-10);let col=CREAM;const inW=k>=3&&k<=6;
+  if(tS===2){const prot=z===1?inW:z===2?(k>=2&&k<=7):false;col=prot?CREAM:'#7A3BA6'}
+  g.fillStyle=col;g.strokeStyle='#8D7B66';g.lineWidth=2;g.beginPath();g.ellipse(x,y,22,20,0,0,7);g.fill();g.stroke()}
+ if(tS===1||(tS===2)){g.globalAlpha=tS===2?.5:.85;g.fillStyle='#FFE7A3';
+  if(z===0){for(let k=3;k<=6;k++){g.beginPath();g.arc(x0+30+k*52,140,14,0,7);g.fill()}}
+  else if(z===1){g.fillRect(x0+30+3*52-26,140,3*52+52,60)}
+  else{g.beginPath();g.ellipse(x0+30+4.5*52,170,190,44,0,0,7);g.fill()}g.globalAlpha=1}
+ if(tS===2&&z===0){g.fillStyle='#B388FF';for(let k=3;k<=6;k++){g.beginPath();g.arc(x0+30+k*52,200,5,0,7);g.fill()}}
+ // top view
+ g.fillStyle='#7A3BA6';g.fillRect(470,250,300,90);g.fillStyle=CREAM;
+ if(tS===2){if(z===0){for(let k=0;k<10;k++){g.globalAlpha=.4;g.beginPath();g.arc(500+k*27,295,6,0,7);g.fill()}g.globalAlpha=1}
+  if(z===1){g.lineWidth=7;g.strokeStyle=CREAM;g.beginPath();g.moveTo(490,300);g.bezierCurveTo(560,250,650,340,750,290);g.stroke()}
+  if(z===2){g.globalAlpha=.75;g.beginPath();g.ellipse(620,295,130,38,0,0,7);g.fill();g.globalAlpha=1}}
+ else{g.fillStyle='rgba(255,255,255,.15)';g.fillRect(470,250,300,90);g.fillStyle='#fff';g.font='14px Almarai';g.fillText('النتيجة بعد الصبغ',620,300)}
+ const msg=[['❄ الشمع بارد: لا يتسرب بين الألياف… ستتسرب الصبغة تحته!','✨ الشمع منصهر تمامًا: يتسرب بين الألياف بانتظام.','🔥 الشمع ساخن جدًّا: يتدفق بسرعة وينتشر خارج الخط!'],
+  ['✗ النتيجة: خط باهت متقطع، الصبغة تسربت تحت الشمع.','✔ النتيجة: خط واضح نظيف بلون القماش. ممتاز!','✗ النتيجة: بقعة واسعة أتلفت التصميم.']];
+ $('tO').textContent=(tS===0?'غيّري الحرارة ثم ارسمي خطًا بالشمع ✒':msg[tS-1][z])+(src==='s'?'  ⚠ استخدمي مصدرًا كهربائيًّا لأنه أكثر حماية!':'')}
+// multi colors
+let mSeq=[];$('mDy').innerHTML=DYES.map(([n,c],i)=>`<button class="btn" style="background:${c}" onclick="mAdd(${i})">${n}</button>`).join('');
+const L=h=>{const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255]};
+const mul=(a,b)=>a.map((v,i)=>Math.round(v*b[i]/255));const rgb=a=>`rgb(${a})`;const lum=a=>.3*a[0]+.59*a[1]+.11*a[2];
+function mAdd(i){if(mSeq.length>=3||mSeq.includes(i))return;mSeq.push(i);snd('sBub');mDraw()}
+function mReset(){mSeq=[];snd('sClick');mDraw()}
+function mDraw(){const g=$('mC').getContext('2d');const c0=L(CREAM);let cs=[c0];mSeq.forEach(i=>cs.push(mul(cs[cs.length-1],L(DYES[i][1]))));
+ $('mFlow').innerHTML=mSeq.map((i,k)=>`<span>${k===0?'':'🕯 شمع ← '}${DYES[i][0]}</span>`).join('');
+ const bg=cs[cs.length-1];g.fillStyle=rgb(bg);g.fillRect(0,0,440,440);
+ if(mSeq.length>=3){g.fillStyle=rgb(cs[2]);for(let k=0;k<8;k++){g.save();g.translate(220,220);g.rotate(k*Math.PI/4);g.beginPath();g.ellipse(120,0,70,30,0,0,7);g.fill();g.restore()}}
+ if(mSeq.length>=2){g.fillStyle=rgb(cs[1]);g.beginPath();g.arc(220,220,90,0,7);g.fill()}
+ g.fillStyle=rgb(cs[0]);g.beginPath();g.arc(220,220,38,0,7);g.fill();
+ if(mSeq.length<3){$('mO').textContent=`اختاري ${3-mSeq.length} صبغة أخرى…`;return}
+ const ls=mSeq.map(i=>lum(L(DYES[i][1])));const ok=ls[0]>=ls[1]&&ls[1]>=ls[2];
+ const diff=Math.min(Math.abs(lum(cs[1])-lum(cs[2])),Math.abs(lum(cs[2])-lum(cs[3])));
+ $('mO').innerHTML=ok?'🎉 رائع! بدأتِ بالفاتح وانتهيتِ بالغامق، فظهرت الألوان متدرجة واضحة.':`💡 لاحظي: اللون ${diff<25?'الفاتح اختفى تقريبًا':'لم يظهر كما أردتِ'} لأنه صُبغ بعد لون أغمق منه. جرّبي الترتيب من الفاتح إلى الغامق.`;snd(ok?'sOk':'sNo')}
+// ordering
+const APPS=[['التطبيق الأول: قمع الشمع',['نقل التصميم على القماش','تثبيت القماش على الإطار','تجهيز الشمع المنصهر','تحديد التصميم بالشمع في قمع الشمع','التلوين بالصبغة','التجفيف','إزالة الشمع بالكي','المنتج النهائي']],
+ ['التطبيق الثاني: الفرشاة',['إعداد الخامات والأدوات','نقل التصميم على القماش','تجهيز الشمع المنصهر','تحديد التصميم بالشمع بالفرشاة','التلوين بالصبغة','التجفيف','إزالة الشمع بالكي','المنتج النهائي']],
+ ['التطبيق الثالث: قالب من البيئة',['إعداد الخامات والأدوات','تجهيز الشمع المنصهر','غمر القالب في الشمع','اضغطي القالب على القماش','التلوين بالصبغة','التجفيف','إزالة الشمع بالماء المغلي','المنتج النهائي']]];
+let oA=0,oI=0,oErr=0;$('oApps').innerHTML=APPS.map((a,i)=>`<button onclick="oStart(${i})">${a[0]}</button>`).join('');
+function oStart(i){oA=i;oI=0;oErr=0;[...$('oApps').children].forEach((b,j)=>b.classList.toggle('on',i===j));const st=APPS[i][1].map((t,k)=>[t,k]).sort(()=>Math.random()-.5);
+ $('oCards').innerHTML=st.map(([t,k])=>`<span class="step" onclick="oTap(this,${k})">${t}</span>`).join('');$('oFlow').innerHTML='';$('oO').textContent='اضغطي الخطوة الأولى…';snd('sClick')}
+function oTap(e,k){if(e.classList.contains('ok'))return;if(k===oI){e.classList.add('ok');e.textContent=(oI+1)+'. '+e.textContent;$('oFlow').innerHTML+=`<span>${oI+1}</span>`;oI++;snd('sClick');
+  if(oI===8){$('oO').textContent=`🏆 أحسنتِ! رتّبتِ خطوات ${APPS[oA][0]} ${oErr?'مع '+oErr+' محاولة خاطئة':'دون أي خطأ'} ✨`;snd('sOk')}else $('oO').textContent=`✔ صحيح! الخطوة ${oI+1}؟`}
+ else{oErr++;e.classList.remove('no');void e.offsetWidth;e.classList.add('no');setTimeout(()=>e.classList.remove('no'),400);snd('sNo');$('oO').textContent='💡 ليست هذه الخطوة التالية، فكّري مرة أخرى.'}}
+{const h=location.hash.slice(1);const k=labs.findIndex(l=>l.id===h);go(k<0?0:k)}
+tDraw();mDraw();oStart(0);
+</script>
+<script src="guide.js"></script><script>
+(function(){const TIP={temp:'حرّكي مؤشر الحرارة… متى يصير الشمع منصهرًا تمامًا؟ 🌡',draw:'ارسمي بالشمع، ثم اصبغي، ثم أزيلي الشمع… وشوفي السحر ✨',brush:'الصغيرة للتفاصيل والكبيرة للمساحات 🖌',stamp:'اختاري قالبًا خشبيًا وانقري على القماش 🪵',multi:'جرّبي ترتيب الألوان… من الفاتح إلى الغامق 🎨',order:'رتّبي الخطوات كما في الكتاب 📖'};
+const _g=window.go;window.go=function(i){_g.apply(this,arguments);say(TIP[labs[i].id]||'هيا نجرّب!','jump')};
+const _o=window.snd;window.snd=function(n){_o.apply(this,arguments);if(n==='sOk')say(pick(['أحسنتِ يا فنانة! 🎉','رائع! عمل جميل ✨','برافو! 👏']),'jump')};
+setTimeout(()=>say('أهلًا بكِ في مرسم الشمع السحري! أنا لمى 👋 اختاري تجربة وابدئي','jump'),600)})();
+</script></body></html>

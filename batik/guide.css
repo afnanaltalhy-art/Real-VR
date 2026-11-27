@@ -1,0 +1,8 @@
+#guide{position:fixed;left:8px;bottom:0;z-index:6;width:clamp(110px,17vw,200px);pointer-events:none;transition:transform .4s}
+#guide img{width:100%;display:block;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
+#guide.jump{animation:gj .7s}@keyframes gj{30%{transform:translateY(-26px) rotate(-3deg)}60%{transform:translateY(0)}80%{transform:translateY(-8px)}}
+#guide.sad{animation:gs .6s}@keyframes gs{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+#bub{position:fixed;left:calc(clamp(110px,17vw,200px) - 10px);bottom:clamp(170px,30vw,330px);z-index:6;max-width:min(260px,52vw);background:#fff;color:#3D1F5C;font-family:Almarai,sans-serif;font-weight:800;font-size:clamp(13px,1.6vw,16px);line-height:1.7;padding:10px 14px;border-radius:18px 18px 18px 4px;box-shadow:0 8px 24px rgba(0,0,0,.25);border:2px solid #D4A437;transition:.3s;pointer-events:none}
+#bub:empty{opacity:0}
+#bub.pop{animation:bp .35s}@keyframes bp{from{transform:scale(.6);opacity:0}}
+@media(max-width:700px){#guide{width:92px;opacity:.97}#bub{left:84px;bottom:150px;max-width:58vw}}

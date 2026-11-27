@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>جواز سفر الباتيك: رحلة حول العالم | تقنيات فن الباتيك</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--plum:#3D1F5C;--vio:#7A3BA6;--hot:#C2185B;--gold:#E0A526;--teal:#1F8C8C}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Almarai,sans-serif;color:var(--plum);min-height:100vh;background:#2a163f url(img/globe.jpg) right center/cover fixed}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(90deg,rgba(40,16,58,.15),rgba(40,16,58,.35));z-index:-1}
+header{color:#fff;padding:18px 20px;background:linear-gradient(0deg,rgba(61,31,92,.92),rgba(61,31,92,.55));display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{margin:0;font-size:clamp(22px,4vw,34px)}header p{margin:4px 0 0;opacity:.9}
+header img{height:56px;background:#fff;border-radius:10px;padding:4px}
+main{max-width:1000px;padding:14px;margin-left:auto;margin-right:2vw}
+@media(min-width:1000px){main{width:64vw;margin-left:2vw;margin-right:auto}}
+.card{background:rgba(255,255,255,.84);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+h2{margin:0 0 6px}
+#map{position:relative;width:100%;aspect-ratio:920/420;background:#1E2A47;border-radius:14px;overflow:hidden}
+#map canvas{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;transform:translate(-50%,-50%);border:0;cursor:pointer;font:inherit;font-weight:800;color:#fff;background:var(--hot);border-radius:999px;padding:6px 10px;font-size:clamp(11px,1.6vw,15px);box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,.4);animation:pulse 2s infinite;white-space:nowrap}
+.pin.done{background:#2E8B57;animation:none}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(255,255,255,.5),0 4px 12px rgba(0,0,0,.4)}}
+.btn{border:0;font:inherit;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--hot),var(--gold));padding:10px 16px;border-radius:12px;cursor:pointer;margin:6px 0 0 6px}
+.btn.s{background:var(--teal)}
+#pass{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+.st{border:2px dashed #b9a6cf;border-radius:12px;padding:8px;text-align:center;min-height:86px;font-size:13px;font-weight:700;background:#fff}
+.st b{display:block;font-size:30px}.st.on{border:3px solid var(--hot);background:#FCE4EC;transform:rotate(-4deg)}
+#dlg{position:fixed;inset:0;background:rgba(20,8,30,.6);display:none;align-items:center;justify-content:center;padding:12px;z-index:9}
+#dlg.on{display:flex}
+#box{background:#fff;border-radius:18px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:16px;animation:pop .3s}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+#box canvas{width:100%;border-radius:12px;display:block}
+ul{line-height:1.9;margin:8px 0;padding-right:20px}
+.op{display:block;width:100%;text-align:right;font:inherit;font-weight:700;border:2px solid #d6c8e6;background:#faf7fd;border-radius:12px;padding:10px;margin:6px 0;cursor:pointer}
+.op.ok{background:#2E8B57;color:#fff;border-color:#2E8B57}.op.no{background:#c0392b;color:#fff;border-color:#c0392b}
+#fb{font-weight:800;margin-top:6px}
+#route{font-weight:700;line-height:1.9;min-height:28px}
+footer{text-align:center;color:#fff;padding:12px;background:rgba(61,31,92,.8);border-radius:12px;margin:0 14px 14px}
+.cert{text-align:center;border:6px double var(--vio);border-radius:16px;padding:18px;background:#fff}
+</style></head><body>
+<header><div><h1>🌍 جواز سفر الباتيك: رحلة حول العالم</h1><p>التربية الفنية • تقنيات فن الباتيك • أ. نوف الشريف</p></div><img src="img/moe.png" alt="وزارة التعليم"></header>
+<main>
+<div class="card"><h2>🗺 خريطة الرحلة</h2>
+<p style="margin:4px 0 8px">اضغطي على كل محطة لتتعرّفي باتيك ذلك البلد، وأجيبي عن سؤالها لتحصلي على ختم في جواز سفرك 🛂</p>
+<div id="map"><canvas id="mc" width="920" height="420"></canvas></div>
+<button class="btn s" onclick="route()">✈ شاهدي رحلة انتشار الباتيك</button>
+<div id="route"></div></div>
+<div class="card"><h2>🛂 جواز سفري <span id="cnt" style="font-size:16px;color:var(--hot)"></span></h2>
+<input id="nm" placeholder="اكتبي اسمك ✎" style="font:inherit;padding:8px;border-radius:10px;border:2px solid #d6c8e6;width:100%;margin-bottom:8px">
+<div id="pass"></div>
+<button class="btn" onclick="cert()">🏆 شهادة الرحّالة</button> <button class="btn s" onclick="resetP()">↺ رحلة جديدة</button>
+<div id="certBox" style="margin-top:10px"></div></div>
+</main>
+<footer>🌍 جواز سفر الباتيك • إعداد المعلمة: أ. نوف الشريف</footer>
+<div id="dlg" onclick="if(event.target===this)closeD()"><div id="box"></div></div>
+<audio id="aOk" src="snd/applause.mp3" preload="auto"></audio><audio id="aNo" src="snd/knock.mp3" preload="auto"></audio><audio id="aCl" src="snd/drop.mp3" preload="auto"></audio><audio id="aWh" src="snd/whoosh.mp3" preload="auto"></audio>
+<script>
+const $=i=>document.getElementById(i);const play=n=>{try{const a=$(n).cloneNode();a.volume=.6;a.play().catch(()=>{})}catch(e){}};
+function petals(g,x,y,n,r,c,cc){g.fillStyle=c;for(let k=0;k<n;k++){g.save();g.translate(x,y);g.rotate(2*Math.PI*k/n);g.beginPath();g.ellipse(r*.55,0,r*.5,r*.24,0,0,7);g.fill();g.restore()}g.fillStyle=cc||c;g.beginPath();g.arc(x,y,r*.22,0,7);g.fill()}
+function leaf(g,x,y,l,a,c){g.save();g.translate(x,y);g.rotate(a);g.fillStyle=c;g.beginPath();g.ellipse(l/2,0,l/2,l*.2,0,0,7);g.fill();g.restore()}
+const P={
+indo(g){g.fillStyle='#5A3A22';g.fillRect(0,0,640,220);for(let k=0;k<8;k++){const x=40+k*80;g.strokeStyle='#C9A46B';g.lineWidth=3;g.beginPath();g.moveTo(x-35,130);g.quadraticCurveTo(x,10,x+35,130);g.stroke();leaf(g,x,70,32,-2.4,'#8FBF6A');leaf(g,x,96,28,-.7,'#8FBF6A');petals(g,x,30,5,18,'#F2C14E','#C0392B')}
+ g.fillStyle='#E8A87C';[[160,90],[470,60]].forEach(([x,y])=>{g.beginPath();g.ellipse(x-16,y,18,11,-.5,0,7);g.ellipse(x+16,y,18,11,.5,0,7);g.fill()});
+ g.fillStyle='#2E3A87';g.fillRect(0,140,640,80);for(let r=0;r<1;r++)for(let k=0;k<11;k++){const x=30+k*58,y=180;for(let a=0;a<4;a++){g.save();g.translate(x,y);g.rotate(a*Math.PI/2+Math.PI/4);g.fillStyle='#E9D8A6';g.beginPath();g.ellipse(13,0,13,8,0,0,7);g.fill();g.restore()}}},
+india(g){g.fillStyle='#5DADE2';g.fillRect(0,0,640,80);g.fillStyle='#F4C542';g.fillRect(0,80,640,140);[[110],[530]].forEach(([x])=>{g.fillStyle='#6E3B1E';g.fillRect(x-7,60,14,110);g.fillStyle='#2E8B57';g.beginPath();g.ellipse(x,55,70,42,0,0,7);g.fill()});
+ [250,320,390].forEach(x=>{g.fillStyle='#E59866';g.fillRect(x-30,120,60,45);g.fillStyle='#A04000';g.beginPath();g.moveTo(x-38,122);g.lineTo(x,90);g.lineTo(x+38,122);g.fill()});
+ g.fillStyle='#fff';g.beginPath();g.ellipse(330,195,34,14,0,0,7);g.fill();['#E74C3C','#8E44AD','#2980B9','#E67E22'].forEach((c,k)=>{g.fillStyle=c;g.beginPath();g.ellipse(200+k*30,192,6,12,0,0,7);g.fill()})},
+china(g){g.fillStyle='#C0392B';g.fillRect(0,0,300,220);g.fillStyle='#fff';g.beginPath();g.arc(150,100,80,0,7);g.fill();g.fillStyle='#1B1B1B';g.beginPath();g.arc(150,100,72,0,7);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(150,100,66,0,7);g.fill();
+ g.strokeStyle='#C0392B';g.lineWidth=9;g.beginPath();for(let t=0;t<6.3;t+=.1)g.lineTo(150+42*Math.cos(t)*Math.sin(t*1.5),100+42*Math.sin(t));g.stroke();
+ g.fillStyle='#F6EDD8';g.fillRect(320,0,320,220);for(let r=0;r<5;r++)for(let k=0;k<9;k++){const cx=320+k*40+(r%2?20:0),cy=30+r*46;[[28,'#2E3A87'],[20,'#F6EDD8'],[13,'#5B7DB1'],[6,'#F6EDD8']].forEach(([rr,c])=>{g.fillStyle=c;g.beginPath();g.arc(cx,cy,rr,Math.PI,2*Math.PI);g.fill()})}
+ g.fillStyle='#E07B39';g.beginPath();g.arc(560,50,26,0,7);g.fill()},
+africa(g){g.fillStyle='#1B1B1B';g.fillRect(0,0,640,220);['#E07B39','#F4D03F','#C0392B','#27AE60','#E07B39'].forEach((c,k)=>{const x=70+k*125,y=90;g.fillStyle=c;g.beginPath();g.ellipse(x,y,38,54,0,0,7);g.fill();g.fillStyle='#1B1B1B';g.beginPath();g.ellipse(x-14,y-12,8,5,0,0,7);g.ellipse(x+14,y-12,8,5,0,0,7);g.fill();g.fillRect(x-12,y+22,24,6)});
+ g.fillStyle='#E07B39';for(let k=0;k<640;k+=26){g.beginPath();g.moveTo(k,0);g.lineTo(k+13,16);g.lineTo(k+26,0);g.fill();g.beginPath();g.moveTo(k,220);g.lineTo(k+13,204);g.lineTo(k+26,220);g.fill()}
+ g.strokeStyle='#F4D03F';g.lineWidth=4;for(let k=0;k<6;k++){const x=50+k*110,y=185;g.beginPath();g.arc(x,y-30,7,0,7);g.moveTo(x,y-22);g.lineTo(x,y);g.lineTo(x-10,y+14);g.moveTo(x,y);g.lineTo(x+10,y+14);g.moveTo(x-16,y-26);g.lineTo(x+24,y-6);g.stroke()}},
+phil(g){g.fillStyle='#B07CC6';g.fillRect(0,0,640,220);for(let k=0;k<7;k++){petals(g,50+k*90,60+(k%2)*60,5,24,'#F5EEF8','#E91E63');leaf(g,40+k*90,170,30,-.4,'#D2B4DE')}},
+zimb(g){for(let r=0;r<3;r++)for(let k=0;k<9;k++){const x=k*71,y=r*73;g.fillStyle=(r+k)%2?'#1E8449':'#922B21';g.fillRect(x,y,71,73);g.strokeStyle='#F5E6CA';g.lineWidth=2;g.strokeRect(x+3,y+3,65,67);g.beginPath();g.moveTo(x+35,y+10);g.lineTo(x+60,y+36);g.lineTo(x+35,y+62);g.lineTo(x+10,y+36);g.closePath();g.stroke()}},
+malay(g){['#F1948A','#AED6F1','#F9E79F','#E74C3C','#C39BD3','#76D7C4'].forEach((c,k)=>{g.fillStyle=c;g.fillRect(k*107,0,95,220);for(let j=0;j<4;j++)leaf(g,k*107+47,30+j*52,30,-2+(j%2)*.9,k===2?'#A04000':'#fff')})},
+west(g){g.fillStyle='#F6EDD8';g.fillRect(0,0,640,220);const pts=[[560,180,'جاوة'],[420,70,'هولندا وألمانيا'],[300,40,'النمسا'],[250,120,'فرنسا'],[80,100,'أمريكا']];
+ g.strokeStyle='#7A3BA6';g.lineWidth=4;g.setLineDash([10,7]);g.beginPath();pts.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke();g.setLineDash([]);
+ pts.forEach(([x,y,t])=>{g.fillStyle='#C2185B';g.beginPath();g.arc(x,y,10,0,7);g.fill();g.fillStyle='#3D1F5C';g.font='800 18px Almarai';g.textAlign='center';g.fillText(t,x,y+32)})}};
+const ST=[
+{k:'indo',n:'إندونيسيا',f:'🌺',x:810,y:322,fig:'شكل (81) و ص 83',L:['الموطن الأصلي للباتيك: جزيرة جاوة.','تصاميم مستوحاة من الأزهار والنباتات المتسلقة وبراعم أوراق الشجر والطيور والفراشات والأسماك والحشرات؛ فهي تعكس البيئة.','يظهر فيها تأثير الزخارف الإسلامية من خلال أشكال هندسية غنية بالترابط.'],
+ q:'ما الذي تعكسه تصاميم باتيك إندونيسيا؟',o:['البيئة التي يعيش فيها الناس','الأساطير القديمة كالتنين','مشاهد الصيد القبلية'],a:0},
+{k:'india',n:'الهند',f:'🐘',x:610,y:200,fig:'شكل (83)',L:['تكثر موضوعات الشعائر الدينية والعادات والتقاليد.','ألوان زاهية تعكس نمط البيئة المحيطة.'],
+ q:'بأي ألوان يتميز الباتيك الهندي؟',o:['ألوان زاهية تعكس البيئة','ألوان رمادية باهتة','الأبيض والأسود فقط'],a:0},
+{k:'china',n:'الصين واليابان',f:'🐉',x:760,y:120,fig:'شكل (84)',L:['تغلب الأشجار والطيور والبحار وكل ما يتعلق بالطبيعة.','بالإضافة إلى الأساطير القديمة كالتنين.'],
+ q:'أي كائن أسطوري يظهر في باتيك الصين واليابان؟',o:['التنين','الجمل','الحصان'],a:0},
+{k:'africa',n:'إفريقيا',f:'🛡',x:470,y:260,fig:'شكل (82)',L:['يغلب الطابع القبلي من عادات ومعتقدات وأسلوب معيشة.','صور الكائنات الحية والأقنعة وأساليب الصيد والمعيشة.','ألوان زاهية قوية وصريحة.'],
+ q:'يغلب على تصاميم الباتيك الإفريقي:',o:['الطابع القبلي','الزخرفة الهندسية الإسلامية','التنين'],a:0},
+{k:'phil',n:'الفلبين',f:'🧣',x:865,y:220,fig:'شكل (85)',L:['نماذج من الأوشحة والأقمشة بزخارف نباتية وزهرية.','ألوان وردية وبنفسجية متدرجة.'],
+ q:'كيف وصل الباتيك إلى بلدان آسيا المجاورة لجاوة؟',o:['عن طريق التجارة','عن طريق الحروب','عن طريق البريد'],a:0},
+{k:'malay',n:'ماليزيا',f:'🍃',x:690,y:258,fig:'شكل (87)',L:['أوشحة طويلة بزخارف أوراق وأغصان وخطوط.','ألوان متنوعة على أرضيات فاتحة وغامقة.'],
+ q:'ما الأداة الأنسب لتكرار زخرفة ورقة على وشاح طويل بسرعة؟',o:['القالب','الإطار','المكواة'],a:0},
+{k:'zimb',n:'زمبابوي',f:'🏺',x:500,y:350,fig:'شكل (86)',L:['نموذج من باتيك إفريقيا بمربعات وأشكال هندسية وأوانٍ.','ألوان قوية كالأحمر والأخضر.'],
+ q:'زمبابوي بلد في قارة:',o:['إفريقيا','آسيا','أوروبا'],a:0},
+{k:'west',n:'أوروبا وأمريكا',f:'✈',x:250,y:110,fig:'ص 82',L:['انتقل الباتيك إلى أوروبا عن طريق الهولنديين والألمان.','ثم إلى النمسا وفرنسا.','وأخيرًا إلى الولايات المتحدة الأمريكية.'],
+ q:'وصل الباتيك إلى أوروبا عن طريق:',o:['الهولنديين والألمان','الصينيين','الهنود'],a:0}];
+let S;try{S=JSON.parse(localStorage.getItem('btPass')||'null')}catch(e){}S=S||{name:'',done:[]};
+const save=()=>{try{localStorage.setItem('btPass',JSON.stringify(S))}catch(e){}};
+$('nm').value=S.name;$('nm').oninput=()=>{S.name=$('nm').value;save()};
+function drawMap(hl){const g=$('mc').getContext('2d');g.fillStyle='#1E2A47';g.fillRect(0,0,920,420);g.strokeStyle='#2C3B60';g.lineWidth=1;
+ for(let k=1;k<8;k++){g.beginPath();g.moveTo(0,k*52);g.lineTo(920,k*52);g.stroke()}for(let k=1;k<12;k++){g.beginPath();g.moveTo(k*76,0);g.lineTo(k*76,420);g.stroke()}
+ [[[40,80],[200,60],[250,130],[190,210],[130,200],[60,150]],[[200,70],[320,50],[340,110],[260,140]],[[420,170],[540,160],[560,280],[510,380],[460,350],[430,240]],[[430,90],[880,70],[900,160],[800,230],[660,250],[560,190],[460,160]],[[740,300],[860,290],[880,330],[760,335]]]
+ .forEach(p=>{g.fillStyle='#3B4C3F';g.beginPath();p.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.fill()});
+ if(hl){g.strokeStyle='#FFD54F';g.lineWidth=4;g.setLineDash([10,7]);hl.forEach(([a,b])=>{g.beginPath();g.moveTo(a[0],a[1]);g.quadraticCurveTo((a[0]+b[0])/2,(a[1]+b[1])/2-60,b[0],b[1]);g.stroke()});g.setLineDash([])}}
+function pins(){$('map').querySelectorAll('.pin').forEach(p=>p.remove());ST.forEach((s,i)=>{const b=document.createElement('button');b.className='pin'+(S.done.includes(s.k)?' done':'');b.style.left=(s.x/920*100)+'%';b.style.top=(s.y/420*100)+'%';b.textContent=s.f+' '+s.n;b.onclick=()=>open(i);$('map').appendChild(b)});
+ $('pass').innerHTML=ST.map(s=>`<div class="st${S.done.includes(s.k)?' on':''}"><b>${S.done.includes(s.k)?s.f:'⬚'}</b>${s.n}</div>`).join('');$('cnt').textContent=`(${S.done.length}/${ST.length})`}
+function open(i){const s=ST[i];play('aWh');$('box').innerHTML=`<h2>${s.f} باتيك ${s.n}</h2><canvas id="pc" width="640" height="220"></canvas><div style="font-size:13px;color:#888;margin-top:4px">نموذج توضيحي مستوحى من ${s.fig} في الكتاب</div>
+ <ul>${s.L.map(l=>`<li>${l}</li>`).join('')}</ul><div style="font-weight:800;margin-top:6px">🧩 ${s.q}</div>${s.o.map((o,k)=>[o,k]).sort(()=>Math.random()-.5).map(([o,k])=>`<button class="op" onclick="ans(${i},${k},this)">${o}</button>`).join('')}<div id="fb"></div>
+ <button class="btn s" onclick="closeD()">✖ إغلاق</button>`;P[s.k]($('pc').getContext('2d'));$('dlg').classList.add('on')}
+function ans(i,k,b){const s=ST[i];if(b.parentNode.querySelector('.op.ok'))return;const ok=k===s.a;b.classList.add(ok?'ok':'no');
+ if(ok){if(!S.done.includes(s.k))S.done.push(s.k);save();pins();play('aOk');$('fb').innerHTML='🛂 أحسنتِ! حصلتِ على ختم '+s.n+' في جواز سفرك';if(S.done.length===ST.length)setTimeout(()=>{closeD();cert()},1200)}
+ else{play('aNo');$('fb').innerHTML='💡 حاولي مرة أخرى؛ اقرئي البطاقة جيدًا.'}}
+function closeD(){$('dlg').classList.remove('on')}
+const J=[790,300];const R=[['الصين',[760,120]],['اليابان',[870,90]],['وسط آسيا وجنوبها',[610,200]],['الشرق الأوسط',[530,150]],['إفريقيا',[470,260]],['هولندا وألمانيا',[300,70]],['النمسا',[340,95]],['فرنسا',[250,110]],['الولايات المتحدة',[130,130]]];
+let rt=null;function route(){clearInterval(rt);let k=0,segs=[];play('aWh');$('route').textContent='🚢 تبدأ الرحلة من جاوة… عن طريق التجارة';
+ rt=setInterval(()=>{if(k>=R.length){clearInterval(rt);$('route').textContent='🏁 وصل الباتيك أخيرًا إلى الولايات المتحدة الأمريكية! (ص 82)';return}
+  const from=k<5?J:k===5?J:k<8?R[5][1]:R[7][1];segs.push([from,R[k][1]]);drawMap(segs);
+  $('route').textContent=(k<5?'🚢 بالتجارة إلى: ':k===5?'⛵ عن طريق الهولنديين والألمان إلى أوروبا: ':k<8?'➡ ثم إلى: ':'✈ وأخيرًا إلى: ')+R[k][0];play('aCl');k++},1100)}
+function cert(){const n=S.done.length;$('certBox').innerHTML=`<div class="cert"><img src="img/moe.png" style="height:50px"><h2>شهادة الرحّالة الصغيرة 🌍</h2><p>يشهد جواز سفر الباتيك أن الفنانة</p>
+ <div style="font-size:28px;font-weight:800;color:var(--vio)">${S.name||'............'}</div><p>جمعت ${n} من ${ST.length} أختام في رحلة الباتيك حول العالم</p><div style="font-size:28px">${ST.map(s=>S.done.includes(s.k)?s.f:'⬚').join(' ')}</div>
+ <p style="color:var(--hot);font-weight:800">${n===ST.length?'رحّالة الباتيك الأولى! ✨':'أكملي بقية المحطات للحصول على الشهادة كاملة 💪'}</p><p style="font-size:13px">إعداد المعلمة: أ. نوف الشريف</p></div>`;if(n===ST.length)play('aOk')}
+function resetP(){S.done=[];save();pins();$('certBox').innerHTML=''}
+drawMap();pins();
+</script></body></html>
