@@ -215,7 +215,7 @@ let pop=1;
 document.getElementById('chips').innerHTML=SC.map((s,i)=>`<button onclick="load(${i})">${s.n}</button>`).join('');
 // quiz
 function openQuiz(){const q=SC[cur].q;document.getElementById('qq').textContent='❓ '+q[0];document.getElementById('qfb').textContent='';
-document.getElementById('qo').innerHTML=q[1].map((o,i)=>`<button class="qo" onclick="qa(${i},this)">${'أبج'[i]}) ${o}</button>`).join('');document.getElementById('quiz').style.display='flex';sfx('drop',.5)}
+delete document.getElementById('qo').dataset.d;document.getElementById('qo').innerHTML=q[1].map((o,i)=>`<button class="qo" onclick="qa(${i},this)">${'أبج'[i]}) ${o}</button>`).join('');document.getElementById('quiz').style.display='flex';sfx('drop',.5)}
 function qa(i,b){const q=SC[cur].q;if(b.parentNode.dataset.d)return;b.parentNode.dataset.d=1;const ok=i===q[2];b.classList.add(ok?'ok':'no');b.parentNode.children[q[2]].classList.add('ok');
 document.getElementById('qfb').textContent=ok?'🎉 أحسنتِ! إجابة صحيحة':'💡 الإجابة الصحيحة مظلّلة بالأخضر';sfx(ok?'applause':'knock',.8);if(ok)toast('⭐ +10')}
 function closeQ(){document.getElementById('quiz').style.display='none'}
