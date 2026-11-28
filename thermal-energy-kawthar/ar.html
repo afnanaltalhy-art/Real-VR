@@ -223,7 +223,7 @@ function toast(t){const e=document.getElementById('toast');e.textContent=t;e.cla
 // snapshot
 function snap(){const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');
 if(video.videoWidth){const vr=video.videoWidth/video.videoHeight,cr=c.width/c.height;let sw=video.videoWidth,sh=video.videoHeight,sx=0,sy=0;if(vr>cr){sw=sh*cr;sx=(video.videoWidth-sw)/2}else{sh=sw/cr;sy=(video.videoHeight-sh)/2}g.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height)}else{g.fillStyle='#16304f';g.fillRect(0,0,c.width,c.height)}
-g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 2 • أ/ كوثر السبيعي',c.width/2,c.height-25);
+g.drawImage(cv,0,0);g.fillStyle='rgba(30,53,87,.8)';g.fillRect(0,c.height-70,c.width,70);g.fillStyle='#fff';g.font='700 30px Almarai';g.textAlign='center';g.direction='rtl';g.fillText(SC[cur].t+' • فيزياء 2 • المعلمة / كوثر السبعي',c.width/2,c.height-25);
 const u=c.toDataURL('image/png');document.getElementById('shotImg').src=u;document.getElementById('dl').href=u;document.getElementById('shot').style.display='flex';sfx('drop',.7)}
 // loop
 const clock=new THREE.Clock();
